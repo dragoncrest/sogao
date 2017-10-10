@@ -1,0 +1,97 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use Illuminate\Http\Request;
+
+use App\Category;
+use App\Document;
+
+use App\Http\Requests;
+use App\Http\Controllers\Controller;
+
+class HomeController extends Controller
+{
+    public function __construct()
+    {
+    }    
+    
+    public function index()
+    {
+        $content['nav']  = null;
+        
+        $data = array('data' => $content) ;
+        
+        return view('admin.home', $data);
+    }
+
+    public function upload()
+    {
+        return;
+        $ext    = "htm";
+        // $ext    = "html";
+        // $ext    = "xhtml";
+        $dir    = 'D:\tmp\2';
+        $files  = glob($dir."\*." . $ext);
+        $length = count($files);
+
+        echo $length."<br>";
+        if ($length == 0) return;
+
+        for ($i = 0; $i < $length; $i++) {
+            echo ($i+1) . ". " . basename($files[$i]) . "<br><br>";
+
+            $name = str_replace(['.htm', '.html', '.xhtml'], "", basename($files[$i]));
+            $str  = file_get_contents($files[$i]);
+
+            $str = utf8_encode($str);
+            // $str  = mb_convert_encoding($str, 'UTF-8', 'UCS-2LE'); 
+
+            $str = $this->saveHTM($str);
+            
+            if(!empty($str)) {
+                $doc = new Document;
+                $doc->id            = "";
+                $doc->title         = $name;
+                $doc->slug          = str_slug($name);
+                $doc->content       = $str;
+                $doc->category      = 11;
+                $doc->updated_at    = time();
+                $doc->save();
+            }
+
+            // var_dump($str);
+            // $fi  = fopen("D:\\a.html", 'w');
+            // fwrite($fi, $str);
+            // fclose($fi);
+        }
+    }
+
+    private function saveHTM($str)
+    {
+        preg_match("/<div[^>]*class=WordSection1>(.*?)<\\/div>/si", $str, $match);
+        if (!empty($match)) {
+            $str = html_entity_decode($match[0]);
+        } else {
+            $str = $this->getBody($str);
+        }
+        return $str;
+    }
+
+    private function getBody($str)
+    {
+        preg_match("/<body>(.*?)<\\/body>/si", $str, $match);
+        if (!empty($match)) {
+            $str = "";
+            $arrStr = explode("\n", $match[1]);
+            $count  = count($arrStr);
+            for ($j=1; $j<$count; $j++) {
+                $str .= $arrStr[$j];
+            }
+            $str = "<div class=WordSection1>\n" . $str . '</div>';
+        } else {
+            echo "---------Failed--------------<br/>";
+        }
+        return $str;
+    }
+}

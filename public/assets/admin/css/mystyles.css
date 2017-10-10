@@ -1,0 +1,15 @@
+/* please use this file for your own styles 
+ * it's need for easiest update of newest wersions
+*/
+.but-load{margin-left: 10px;}
+.but-load span{font-size: 14px;}
+.but-load:hover .icon{border-color: #888888 !important;}
+			/**********************************************/		
+					/*--> Begin tab <--*/
+.tab-header{display: inline-block;padding: 0 15px 6px;cursor: pointer;background: #dcdcdc;}
+.tab-active{background: #fff;padding-top: 5px;}
+.WordSection1{background: #fff;padding: 5px 25px 15px;font-size: 13px !important;}	
+.tab-content{background: #fff;}
+#tab-content-2{display: none;}	
+.MsoNormal{margin: 0 !important;}	
+					/*--> End tab <--*/
