@@ -167,12 +167,6 @@ class HomeController extends Controller
                 //remove "-> XD.TT-PPP3" token
                 $endA       = strrpos($pMatch[$i], "/a>")+3;
                 $pMatch[$i] = substr($pMatch[$i], 0, $endA);
-                // $iSpan = 0;
-                // while($seek = strrpos($pMatch[$i], "<span")){
-                //     if($iSpan == 5) break;
-                //     $pMatch[$i] = substr($pMatch[$i], 0, $seek);
-                //     $iSpan++;
-                // }
             }elseif($yelPos){                                 //background color = yellow
                 //....<span style="color:#00B050"> DIEU 11 </span>..<span style="background-color: yello">[ ID ]</span>
                 $numbs  = $this->CountColor($pMatch[$i],'yellow');
@@ -227,26 +221,21 @@ class HomeController extends Controller
                 do {
                     //get the id "59/2015/NĐ-CP" of document and insert <a href=id>
                     $second = $this->InsertAtag($second);
-                    //determine if <p> have another "59/2015/NĐ-CP"
-                    //and cut the second part to insert <a>
+                    /**
+                    * determine if <p> have another "59/2015/NĐ-CP"
+                    * and cut the second part to insert <a>
+                    */
                     $redPos = strpos($second, ":red");       //research red position after insert <a>
                     if ($first) {
                         $first  = $first .":red";
                     }
                     $first  = $first . substr($second, 0, $redPos);
                     $second = substr($second, $redPos+4, strlen($second));
-                    //insert <a> between first and second part if find red color
-                    // if(strpos($second, "red")){
-                    //     $second     = $this->InsertAtag($second);
-                    //     $pMatch[$i] = $first."red".$second;
-                    // }
-
                 } while (strpos($second, ":red"));
                 $pMatch[$i] = $first .":red" . substr($second, 0, $redPos);
-                $current = file_get_contents("d:\\xampp\_tmp\a.html");$current .= $first;file_put_contents("d:\\xampp\_tmp\a.html", $current);
             }
 
-            if($redPos)
+            if ($redPos)
                 $pMatch[$i] = str_replace('replace', 'style="color:red"', $pMatch[$i]);
 
             $quaPos = null;
