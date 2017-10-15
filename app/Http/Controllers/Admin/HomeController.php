@@ -31,11 +31,11 @@ class HomeController extends Controller
         $ext    = "htm";
         // $ext    = "html";
         // $ext    = "xhtml";
-        $dir    = 'D:\tmp\2';
+        $dir    = 'D:\xampp\_tmp\Y';
         $files  = glob($dir."\*." . $ext);
         $length = count($files);
 
-        echo $length."<br>";
+        echo "Total: ".$length."<br>";
         if ($length == 0) return;
 
         for ($i = 0; $i < $length; $i++) {
@@ -44,18 +44,16 @@ class HomeController extends Controller
             $name = str_replace(['.htm', '.html', '.xhtml'], "", basename($files[$i]));
             $str  = file_get_contents($files[$i]);
 
-            $str = utf8_encode($str);
-            // $str  = mb_convert_encoding($str, 'UTF-8', 'UCS-2LE'); 
-
             $str = $this->saveHTM($str);
             
-            if(!empty($str)) {
+            if (!empty($str)) {
                 $doc = new Document;
                 $doc->id            = "";
                 $doc->title         = $name;
                 $doc->slug          = str_slug($name);
+                $doc->content       = "Updating";
                 $doc->content       = $str;
-                $doc->category      = 11;
+                $doc->category      = 8;
                 $doc->updated_at    = time();
                 $doc->save();
             }
@@ -67,15 +65,25 @@ class HomeController extends Controller
         }
     }
 
-    private function saveHTM($str)
+    private function saveHTM($strOrigin)
     {
-        preg_match("/<div[^>]*class=WordSection1>(.*?)<\\/div>/si", $str, $match);
-        if (!empty($match)) {
-            $str = html_entity_decode($match[0]);
-        } else {
-            $str = $this->getBody($str);
+        $i = 1;
+        while ($i) {
+            if ($i == 1) {
+                $str = utf8_encode($strOrigin);
+            } elseif($i == 2) {
+                $str = mb_convert_encoding($strOrigin, 'UTF-8', 'UCS-2LE'); 
+            } else {
+                echo "---------Failed--------------<br/>";
+                return null;
+            }
+            preg_match("/<div[^>]*class=WordSection1>(.*?)<\\/div>/si", $str, $match);
+            if (!empty($match)) {
+                return html_entity_decode($match[0]);
+            } else {
+                $i++;
+            }
         }
-        return $str;
     }
 
     private function getBody($str)

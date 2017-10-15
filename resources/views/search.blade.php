@@ -25,19 +25,19 @@
             
             <script type="text/javascript">
                 $(".aTable").DataTable( {
-                        "processing": true,
-                        "serverSide": true,
-                        "order": [],
-                        "ajax":{ 
-                                    "url": "<?php echo url('/home/ajaxTable');?>",
-                                    "data": function ( d ) {
-                                                d.cat = <?php echo $catID;?>;
-                                            }
-                                },
-                        "columnDefs": [{ 
-                                        "targets": [ 0 ], //first column / numbering column
-                                        "orderable": false, //set not orderable
-                                      }],        
-                        });
+                    "processing": true,
+                    "serverSide": true,
+                    "order": [],
+                    "ajax":{ 
+                        "url": "<?php echo url('/home/ajaxTable');?>",
+                        "data": function ( d ) {
+                            d.cat = <?php echo $catID;?>;
+                        }
+                    },
+                    "columnDefs": [{ 
+                        "targets": [ 0 ], //first column / numbering column
+                        "orderable": false, //set not orderable
+                    }],        
+                });
             </script>
 @endsection  

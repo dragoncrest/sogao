@@ -19,7 +19,10 @@
                     @if($doc['stt'])
                     <?php $id = ($doc['id']) ? $doc['id'] : $doc['stt'];?>
                     <div class="row-form">
-                        <a data-fancybox data-type="ajax" data-src="<?php echo url('document/ajaxThutuc/'.$id);?>" href="javascript:;">
+                        <!--<a data-fancybox data-type="ajax" data-src="<?php //echo url('document/ajaxThutuc/'.$id);?>" href="javascript:;">
+                            Xem bài <?php// echo $id;?>
+                        </a>-->
+                        <a href="<?php echo url('document/'.$id);?>" href="javascript:;">
                             Xem bài <?php echo $id;?>
                         </a>
                     </div>
@@ -27,12 +30,12 @@
                 <?php  
                     $errID='';
                     $errTitle='';
-                    $errContent='';                
+                    $errContent='';
                     $errors = $data['errors'];
                    
-                    if($errors->has('id')) $errID = 'error';                                
-                    if($errors->has('title')) $errTitle = 'error';                                
-                    if($errors->has('content')) $errContent = 'error';                                
+                    if($errors->has('id')) $errID = 'error';
+                    if($errors->has('title')) $errTitle = 'error';
+                    if($errors->has('content')) $errContent = 'error';
                     
                     echo Form::open(['url' => url('admin/document/edit/'.$doc['stt']),'id' => 'myform','method'=>'post']);
                         echo Form::hidden('stt', $doc['stt']);
@@ -63,22 +66,21 @@
                             echo "<span class='span2'>Nội dung:</span>";
                             echo "<div class='span10'>";
                             echo Form::textarea('content', $doc['content'], array('id'=> 'editor'));
-                            // echo "<div id='editor'></div>";
                             if($errors->has('content')) echo '<span>'.$errors->first('content').'</span>';
                             echo "</div>";
-                        echo "</div>";                  
+                        echo "</div>";
                         
                         echo '<div style="width:100%; text-align:center;">'.
                                 '<input type="submit" value="Upload!" class="btn" />'. 
                             '</div>';  
                         
                     echo Form::close(); 
-                ?>                    
+                ?>
                 </div><!-- end row-fluid -->
             </div><!-- end content -->
             
             <script>
-            initSample();
+                initSample();
                 // CKEDITOR.replace( 'ckeditor',{
                 //     allowedContent: true
                 // } );

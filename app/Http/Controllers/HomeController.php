@@ -49,10 +49,11 @@ class HomeController extends Controller
             $doc = Document::where('stt', $id)->first();
         
         if($doc){
-            $data = $this->setData( $doc->title,
-                                    $doc->stt,
-                                    $this->ProcessContent($doc->content),
-                                    0
+            $data = $this->setData(
+                $doc->title,
+                $doc->stt,
+                $this->ProcessContent($doc->content),
+                0
            );
         }else 
             $data = $this->setData("Không tìm thấy",null,null,null);
@@ -84,20 +85,21 @@ class HomeController extends Controller
         $no = $_GET['start'];
         foreach ($list as $document) {
             $no++;
-            $row = array();
+            $id    = $document->id ? $document->id : $document->stt;
+            $row   = array();
             $row[] = $no;
-            $row[] = "<a href='".url("/document/".$document->id)."'>".$document->title."</a>";
+            $row[] = "<a href='".url("/document/".$id)."'>".$document->title."</a>";
             $row[] = $document->updated_at ? date('d-m-Y',strtotime($document->updated_at)) : null;
  
             $data[] = $row;
         }
  
         $output = array(
-                        "draw" => $_GET['draw'],
-                        "recordsTotal" => $doc->count_all(),
-                        "recordsFiltered" => $doc->count_filtered(),
-                        "data" => $data,
-                );
+            "draw"            => $_GET['draw'],
+            "recordsTotal"    => $doc->count_all(),
+            "recordsFiltered" => $doc->count_filtered(),
+            "data"            => $data,
+        );
         //output to json format
         echo json_encode($output);
     }
@@ -110,11 +112,11 @@ class HomeController extends Controller
     private function setData($title=null, $stt=null, $content=null, $catID=null)
     {
         return array(
-                        'title'   => $title,
-                        'stt'     => $stt,
-                        'content' => $content,
-                        'catID'   => $catID
-                      );
+            'title'   => $title,
+            'stt'     => $stt,
+            'content' => $content,
+            'catID'   => $catID
+        );
     }
     
     /**
@@ -318,7 +320,7 @@ class HomeController extends Controller
     */  
     private function ExtractID($str)
     {
-        $str = $this->RemoveNBSP($str); //decode some vietnamese character
+        $str = $this->RemoveNBSP($str);             //decode some vietnamese character
         
         if(strpos($str, "uật")){            
             if(strpos($str, "Đầu")){
@@ -344,18 +346,14 @@ class HomeController extends Controller
                 }
             }
             
-        }
-        elseif(stripos($str, "hông")){
+        } elseif (stripos($str, "hông")) {
             return $this->stringToID($str, "thongtu");
-        }
-        elseif(stripos($str, "ghị")){
-            return $this->stringToID($str, "nghidinh");
-            
-        }
-        elseif(strpos($str, "quyết")){
+        } elseif(stripos($str, "ghị")) {
+            return $this->stringToID($str, "nghidinh");            
+        } elseif(strpos($str, "quyết")) {
             return $this->stringToID($str, "quyetdinh");
         }
-    }//end ExtractID($str)
+    }
     
     /**
      * count all position of one color
@@ -423,27 +421,33 @@ class HomeController extends Controller
        }
         return $str;
     }
-    
+
+    /**
+    * Find acronym(in document's name) by acronym(defined in db)
+    * @param string $str full document's name
+    * @param string $type type of document
+    * @return string - ID of document
+    */
     private function stringToID($str, $type)
-    {        
-        $arrL = Acronym::where('type','like',$type)->get();
+    {
+        $arrL = Acronym::where('type','like',$type)->get();         //get all acronym in db
         foreach ($arrL as $law) {
-            if(stripos($str, $law->search)){
+            if (stripos($str, $law->search)) {                      //if isset acronym(`search` field in db) in document's name
                 $sub    = '';
-                $exPos  = stripos($str, 'iều');
-                if($exPos){
+                $exPos  = stripos($str, 'iều');                     //finding addendum in document's name
+                if ($exPos) {
                     $sub = substr($str, $exPos);
                     $sub = preg_replace('/\D/','',$sub);
-                }elseif($law->extra!=null){
+                } elseif ($law->extra != null) {                    //if that acronym has addendum stored in db
                     $extra = [];
-                    if(stripos($law->extra, ',')){
+                    if (stripos($law->extra, ',')) {                //if that acronym has multi addendum
                         $extra = explode(',', $law->extra);
-                    }else{
+                    } else {
                         $extra[0] = $law->extra;
                     }
                     foreach ($extra as $ex) {
                         $exPos = stripos($str, $ex);
-                        if($exPos){
+                        if($exPos){                                 //if isset addendum(`extra` field stored in db) in document's name
                             $sub = substr($str, $exPos);
                             $sub = preg_replace('/\s/','',$sub);
                             $sub = $this->vn_str_filter($sub);
