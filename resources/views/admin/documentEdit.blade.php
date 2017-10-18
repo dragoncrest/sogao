@@ -22,7 +22,7 @@
                         <!--<a data-fancybox data-type="ajax" data-src="<?php //echo url('document/ajaxThutuc/'.$id);?>" href="javascript:;">
                             Xem bài <?php// echo $id;?>
                         </a>-->
-                        <a href="<?php echo url('document/'.$id);?>" href="javascript:;">
+                        <a href="<?php echo url('document/'.$id);?>" target="_blank">
                             Xem bài <?php echo $id;?>
                         </a>
                     </div>
