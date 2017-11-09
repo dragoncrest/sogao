@@ -5,7 +5,7 @@
                 <div class="block">
                     <div class="head blue">
                         <h2>Bảng tìm kiếm</h2>
-                    </div>                
+                    </div>
                     <div class="data-fluid">
                         <table class="table aTable" cellpadding="0" cellspacing="0" width="100%">
                             <thead>
@@ -18,7 +18,7 @@
                             <tbody>
 
                             </tbody>
-                        </table>                    
+                        </table>
                     </div> 
                 </div><!-- end block -->
             </div><!-- end content -->
@@ -28,16 +28,16 @@
                     "processing": true,
                     "serverSide": true,
                     "order": [],
-                    "ajax":{ 
+                    "ajax":{
                         "url": "<?php echo url('/home/ajaxTable');?>",
                         "data": function ( d ) {
                             d.cat = <?php echo $catID;?>;
                         }
                     },
-                    "columnDefs": [{ 
+                    "columnDefs": [{
                         "targets": [ 0 ], //first column / numbering column
                         "orderable": false, //set not orderable
-                    }],        
+                    }],
                 });
             </script>
 @endsection  

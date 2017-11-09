@@ -25,20 +25,21 @@ class Document extends Model
         $catID = $_GET['cat'];
         if($catID>0)
             $this->query->where('category', $_GET['cat']);
- 
+
         $i = 0;
         foreach ($this->column_search as $item) // loop column 
         {
             if($_GET['search']['value']) // if datatable send POST for search
             {
-                $str = preg_replace('/\s\s+/', ' ', $_GET['search']['value']); //remove duplicate white space
+                $search = preg_replace('/\s\s+/', ' ', $_GET['search']['value']); //remove duplicate white space
+                $search = rtrim($search);
                 if ($i === 0) { // first loop
                    // $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
-                    $this->query->where($item, 'like', '%'.$str.'%');   //searching whole string
+                    $this->query->where($item, 'like', '%'.$search.'%');   //searching whole string
                 } else {
-                    if (strpos($str, " ")) {
+                    if (strpos($search, " ")) {
                         //searching 2 by 1
-                        $strs = explode(" ", $str);
+                        $strs = explode(" ", $search);
                         $strsCount = count($strs)/2 + 1;
                         for ($j = 0; $j < $strsCount; $j += 2) {
                             $subStr = $strs[$j];
@@ -48,7 +49,7 @@ class Document extends Model
                             $this->query->orWhere($item, 'like', '%'.$subStr.'%');
                         }
                     } else {
-                        $this->query->orWhere($item, 'like', '%'.$str.'%');
+                        $this->query->orWhere($item, 'like', '%'.$search.'%');
                     }
                 }
                 //if(count($this->column_search) - 1 == $i) //last loop
@@ -67,7 +68,7 @@ class Document extends Model
             $this->query->orderBy(key($order), $order[key($order)]);
         }
     }
- 
+
     public function get_datatables()
     {
         $this->_get_datatables_query();
@@ -83,16 +84,15 @@ class Document extends Model
             $numResult = count($result);
             for ($i = 0; $i < $numResult; $i++) {
                 $search = preg_replace('/\s\s+/', ' ', Input::get('search.value')); //remove duplicate white space
+                $search = rtrim($search);
                 $result[$i]->title = preg_replace("/\p{L}*?".preg_quote($search)."\p{L}*/ui", "<b style='background-color:yellow;'>$0</b>", $result[$i]->title);
 
                 if (strpos($result[$i]->title, "<b")) continue; //not highlight if it is already highlighted
-                if (strpos($search, " ") && (substr_count($search, ' ') > 2)) {
+                if (strpos($search, " ") && (substr_count($search, ' ') >= 2)) {
                     $strs = explode(" ", $search);
                     $strsCount = count($strs)/2 + 1;
                     for ($j = 0; $j < $strsCount; $j += 2) {
-                        if ($strs[$j] != " ") {
-                            $subStr = $strs[$j];
-                        }
+                        $subStr = $strs[$j];
                         if (isset($strs[$j + 1])) {
                             $subStr = $subStr." ".$strs[$j + 1];
                         }
@@ -103,17 +103,17 @@ class Document extends Model
         }
         return $result;
     }
- 
+
     public function count_filtered()
     {
         $this->_get_datatables_query();
         
         return $this->query->count();
     }
- 
+
     public function count_all()
     {
         return DB::table($this->table)->count();
     }
-             
+
 }

@@ -21,7 +21,7 @@
             </div><!-- end menu sidebar -->
             
             <div class="sidebar sidebar-skyblue">
-                                                
+
             @if(Auth::user())
                 <span class="sidebar-header sidebar-header-white sidebar-header-login">
                     Xin chào: <b>{{ Auth::user()->name }}</b>
@@ -44,8 +44,8 @@
                         <div class="login-err error">
                             {{ $errors->first('email') }}
                         </div>
-                    @endif     
-                                       
+                    @endif
+
                         <div class="full login-margin">
                             <span>MẬT KHẨU</span>
                             <input class="login-input" type="password" name="password" />
@@ -54,8 +54,8 @@
                         <div class="login-err error">
                             {{ $errors->first('password') }}
                         </div>
-                    @endif  
-                                          
+                    @endif
+
                         <div class="full login-margin" style="text-align:right;"><input class="login-submit" type="submit" value="ĐĂNG NHẬP" /></div>                       
                     <div class="full">
                         <a href="{{ url('register') }}">ĐĂNG KÝ MỚI</a>
@@ -64,6 +64,6 @@
                     </form>
                 </div>
             @endif
-                
+
             </div><!-- end login sidebar -->
         </div><!-- end body col 1 -->

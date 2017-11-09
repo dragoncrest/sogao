@@ -16,20 +16,20 @@ use Validator;
 class DocumentController extends Controller
 {
     private $myData;
-        
+
     public function index($idCat=1)
-    {               
-        $this->SetCategory($idCat);  
-        return view('admin.document', ['data' => $this->myData]);        
+    {
+        $this->SetCategory($idCat);
+        return view('admin.document', ['data' => $this->myData]);
     }
-    
+
     /**
      * create table of list document by category
      * @return json 
      */
     public function ajax()
     {
-        $doc  = new Document();        
+        $doc  = new Document();
         $list = $doc->get_datatables();
         
         $data = array();
@@ -76,7 +76,7 @@ class DocumentController extends Controller
             
         $this->SetDocument($doc);
         $this->SetCategory();  
-         
+
         if (Input::has('_token')){
             $data = Input::except(array('token'));  
              
@@ -84,38 +84,39 @@ class DocumentController extends Controller
                 'title'  =>'required',
                 'content'=>'required'
             ];
-                    
+
             $message = [ 
                 'title.required'   => 'Chưa điền tên',
                 'content.required' => 'Chưa điền nội dung'
             ];
             $valid = Validator::make($data, $rule, $message);
-        }else               
+        }else
             $valid = Validator::make(array(), array(), array());
-        
+
             $this->myData['errors'] = $valid->errors();
-       
+
        //when submit update or create new
         if (!$valid->fails() && Input::has('_token'))
         {
             $doc = new Document;
             $stt = Input::get('stt');
-            
+
             if($stt){
-                $doc = Document::find($stt);    
+                $doc = Document::find($stt);
             }
-            
+
             $doc->id            = preg_replace('/\W/', '', Input::get('id'));
             $doc->title         = Input::get('title');
             $doc->slug          = str_slug($doc->title);
             $doc->content       = $this->Extract(Input::get('content'));
             $doc->category      = Input::get('cat');
+            $doc->hasTable      = Input::get('hasTable');
             $doc->updated_at    = time();
             $doc->save();
             
             $this->SetDocument($doc);
         }
-            
+
         $option = array();
         foreach($this->myData['cats'] as $cat){
             $option[$cat->id] = $cat->title;
@@ -124,19 +125,20 @@ class DocumentController extends Controller
         
         return view('admin/documentEdit', ['data' => $this->myData]);
     }
-    
+
     private function SetDocument($doc=null)
     {
-        $arr            = array();
-        $arr['stt']     = ($doc) ? $doc->stt : null;
-        $arr['id']      = ($doc) ? $doc->id : '';
-        $arr['title']   = ($doc) ? $doc->title : '';
-        $arr['content'] = ($doc) ? $doc->content : '';
-        $arr['category']= ($doc) ? $doc->category : 1;
-        
+        $arr             = array();
+        $arr['stt']      = ($doc) ? $doc->stt : null;
+        $arr['id']       = ($doc) ? $doc->id : '';
+        $arr['title']    = ($doc) ? $doc->title : '';
+        $arr['content']  = ($doc) ? $doc->content : '';
+        $arr['category'] = ($doc) ? $doc->category : 1;
+        $arr['hasTable'] = ($doc) ? $doc->hasTable : 1;
+
         $this->myData['doc'] = $arr;
     }
-    
+
     /**
      * set category to use in navigation and header table
      */
@@ -154,7 +156,7 @@ class DocumentController extends Controller
             }
         }
     }
-    
+
     /**
      * Extract <div class=WordSection1> content in page
      * 
@@ -173,5 +175,5 @@ class DocumentController extends Controller
                 return $string; 
         }
         return html_entity_decode($match[0]);
-    } 
+    }
 }
