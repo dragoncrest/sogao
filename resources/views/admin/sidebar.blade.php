@@ -20,8 +20,8 @@
                             <li><a href="{{ url('/admin/document/edit') }}">Thêm mới văn bản</a></li>
                             
                             <?php foreach($cates as $cat):?>
-                            <li><a href="<?php echo url('/admin/document/'.$cat->id)?>"><?php echo $cat->title;?></a></li>    
-                            <?php endforeach;?>    
+                            <li><a href="<?php echo url('/admin/document/'.$cat->id)?>"><?php echo $cat->title;?></a></li>
+                            <?php endforeach;?>
                         </ul>
                     </li>
                     <li  class="<?php if($nav=='cat') echo 'active';?>">
@@ -32,13 +32,13 @@
                             <li><a href="{{ url('/admin/category') }}">Danh sách</a></li>
                         </ul>
                     </li>
-                    <li><a href="statistic.html" class="blred">Statistic</a></li>                
+                    <li><a href="javascript:void(0)" class="blred open_file_manager">Quản lý file</a></li>
                     <li>
                         <a href="#" class="bldblue">Tables</a>
                         <div class="open"></div>
                         <ul>
                             <li><a href="tables.html">Simple</a></li>
-                            <li><a href="tables_dynamic.html">Dynamic</a></li>                    
+                            <li><a href="tables_dynamic.html">Dynamic</a></li>
                         </ul>
                     </li>
                     <li>
@@ -47,7 +47,7 @@
                         <ul>
                             <li><a href="faq.html">FAQ</a></li>
                             <li><a href="login.html">Login</a></li>
-                        </ul>                    
+                        </ul>
                     </li>
                     @if (!Auth::guest())
                     <li>
@@ -64,3 +64,9 @@
             </div>
             
         </div><!-- end sidebar-->
+
+        <script type="text/javascript">
+            $('.open_file_manager').on("click", function() {
+                window.open('//sotay.dev/public/assets/admin/js/plugins/elfinder/elfinder.html?lang=vi','name','width=800,height=500');
+            });
+        </script>

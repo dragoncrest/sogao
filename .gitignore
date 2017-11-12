@@ -4,3 +4,6 @@
 Homestead.yaml
 Homestead.json
 .env
+/public/assets/admin/js/plugins/imageuploader
+/public/assets/admin/js/plugins/elfinder
+/public/upload

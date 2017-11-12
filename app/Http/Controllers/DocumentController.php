@@ -8,11 +8,18 @@ use App\Document;
 use App\Acronym;
 use App\Http\Requests;
 
+use File;
 use DocumentHelper;
 
 class DocumentController extends Controller
 {
-    //
+    private $docPath;
+
+    public function __construct()
+    {
+        $this->docPath = public_path() . "\upload\documents\\";
+    }
+
     public function document($id)
     {
         $doc = Document::where('id', $id)->first();
@@ -73,16 +80,13 @@ class DocumentController extends Controller
     public function ajaxCheckFileExits($id)
     {
         $doc     = Document::where('id', $id)->first();
-        $file    = public_path(). "/documents/".$doc->id.".docx";
+        $file    = $this->docPath.$doc->id.".docx";
         $status  = TRUE;
         $message = "";
 
-        if (!file_exists($file)) {
-            $file = public_path(). "/documents/".$doc->id.".doc";
-            if (!file_exists($file)) {
-                $status  = FALSE;
-                $message = "'" . $doc->title . "' không tồn tại.";
-            }
+        if (!$this->checkFileExits($doc->id)) {
+            $status  = FALSE;
+            $message = "'" . $doc->title . "' không tồn tại.";
         }
 
         return [
@@ -99,7 +103,7 @@ class DocumentController extends Controller
     public function download($id)
     {
         $doc  = Document::where('id', $id)->first();
-        $file = public_path(). "/documents/".$doc->id.".docx";
+        $file = $this->docPath . $doc->id . $this->checkFileExits($doc->id);
         $headers = [
             'Content-Type' => 'application/docx'
         ];
@@ -120,5 +124,25 @@ class DocumentController extends Controller
             'content' => $content,
             'catID'   => $catID
         );
+    }
+
+    /**
+     * Check if file is exits on server
+     * @param string $id file's id
+     * @return string file's extention
+     */
+    private function checkFileExits($id)
+    {
+        $file = $this->docPath.$id.".docx";
+        if (!File::exists($file)) {
+            $file = $this->docPath.$id.".doc";
+            if (!File::exists($file)) {
+                return FALSE;
+            } else {
+                return ".doc";
+            }
+        } else {
+            return ".docx";
+        }
     }
 }
