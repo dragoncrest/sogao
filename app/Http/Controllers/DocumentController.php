@@ -43,7 +43,7 @@ class DocumentController extends Controller
         return view('document', $data);
     }
 
-    public function ajaxDieuKhoan($id=0)
+    public function ajaxDieuKhoan($id = 0)
     {
         if(!$id) return;
 
@@ -57,7 +57,7 @@ class DocumentController extends Controller
             echo '<div class="WordSection1">Dữ liệu ' . $id . " đang được cập nhật</div>";
     }
 
-    public function ajaxThutuc($id)
+    public function ajaxThutuc($id = 0)
     {
         if(!$id) return;
 
@@ -77,14 +77,14 @@ class DocumentController extends Controller
      * @param string $id file's id
      * @return array
      */
-    public function ajaxCheckFileExits($id)
+    public function ajaxCheckFileExits($id = 0)
     {
         $doc     = Document::where('id', $id)->first();
-        $file    = $this->docPath.$doc->id.".docx";
+        $catSlug = $doc->category()->first()->slug;
         $status  = TRUE;
         $message = "";
 
-        if (!$this->checkFileExits($doc->id)) {
+        if (!$this->checkFileExits($doc->id, $catSlug)) {
             $status  = FALSE;
             $message = "'" . $doc->title . "' không tồn tại.";
         }
@@ -102,12 +102,13 @@ class DocumentController extends Controller
      */
     public function download($id)
     {
-        $doc  = Document::where('id', $id)->first();
-        $file = $this->docPath . $doc->id . $this->checkFileExits($doc->id);
-        $headers = [
-            'Content-Type' => 'application/docx'
-        ];
-        return response()->download($file, $doc->slug.'.docx', $headers);
+        $doc      = Document::where('id', $id)->first();
+        $catSlug  = $doc->category()->first()->slug;
+        $extend   = $this->checkFileExits($doc->id, $catSlug);
+        $catSlug .= '\\';
+        $file     = $this->docPath . $catSlug . $doc->id . "." . $extend;
+        $headers  = ['Content-Type' => 'application/'.$extend];
+        return response()->download($file, $doc->slug.".".$extend, $headers);
     }
 
     /**
@@ -117,13 +118,13 @@ class DocumentController extends Controller
      */
     private function setData($stt=null, $id=null, $title=null, $content=null, $catID=null)
     {
-        return array(
+        return [
             'stt'     => $stt,
-            'id'     => $id,
+            'id'      => $id,
             'title'   => $title,
             'content' => $content,
             'catID'   => $catID
-        );
+        ];
     }
 
     /**
@@ -131,18 +132,19 @@ class DocumentController extends Controller
      * @param string $id file's id
      * @return string file's extention
      */
-    private function checkFileExits($id)
+    private function checkFileExits($id, $catSlug)
     {
-        $file = $this->docPath.$id.".docx";
+        $catSlug .= '\\';
+        $file     = $this->docPath.$catSlug.$id.".docx";
         if (!File::exists($file)) {
-            $file = $this->docPath.$id.".doc";
+            $file = $this->docPath.$catSlug.$id.".doc";
             if (!File::exists($file)) {
                 return FALSE;
             } else {
-                return ".doc";
+                return "doc";
             }
         } else {
-            return ".docx";
+            return "docx";
         }
     }
 }

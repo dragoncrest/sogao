@@ -88,6 +88,7 @@ class CategoryController extends Controller
                 if($id) $cat = Category::find($id); 
                 
                 $cat->title  = Input::get('title');
+                $cat->slug   = str_slug(Input::get('title'));
                 $cat->parent = Input::get('parent');
                 $cat->save(); 
                 

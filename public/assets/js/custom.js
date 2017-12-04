@@ -85,13 +85,13 @@ $(document).ready(function(){
               //data: { id : id },
               //dataType: "html"
         });
-             
+
         request.done(function( msg ) {
           $( attr ).html( msg );
         });
-             
+
         request.fail(function( jqXHR, textStatus ) {
-          alert( "Request failed: " + textStatus );
+          console.log( "Request failed: " + textStatus );
         });        
     };
 //  END ----------------------------- 4

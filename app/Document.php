@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Document extends Model
 {
-    //
     protected $primaryKey = 'stt';
     
     protected $query;
     protected $table = 'ti_document';
-    protected $column_order = array(null, 'id','title','updated_at'); //set column field database for datatable orderable
-    protected $column_search = array('id','title'); //set column field database for datatable searchable 
-    protected $order = array('id' => 'asc'); // default order 
+    protected $column_order = [null, 'id','title','updated_at']; //set column field database for datatable orderable
+    protected $column_search = ['id','title']; //set column field database for datatable searchable 
+    protected $order = ['id' => 'asc']; // default order 
 
     private function _get_datatables_query()
     {
@@ -23,12 +22,12 @@ class Document extends Model
         $this->query = DB::table($this->table);
         
         $catID = $_GET['cat'];
-        if($catID>0)
+        if ($catID>0)
             $this->query->where('category', $_GET['cat']);
 
         $i = 0;
-        foreach ($this->column_search as $item) // loop column 
-        {
+         // loop column 
+        foreach ($this->column_search as $item) {
             if($_GET['search']['value']) // if datatable send POST for search
             {
                 $search = preg_replace('/\s\s+/', ' ', $_GET['search']['value']); //remove duplicate white space
@@ -57,13 +56,14 @@ class Document extends Model
             }
             $i++;
         }
-         
-        if(isset($_GET['order'])) // here order processing
-        {
-            $this->query->orderBy($this->column_order[$_GET['order']['0']['column']], $_GET['order']['0']['dir']);
+        // here order processing
+        if (isset($_GET['order'])) {
+            $this->query->orderBy(
+                $this->column_order[$_GET['order']['0']['column']],
+                $_GET['order']['0']['dir']
+            );
         } 
-        else if(isset($this->order))
-        {
+        else if(isset($this->order)) {
             $order = $this->order;
             $this->query->orderBy(key($order), $order[key($order)]);
         }
@@ -73,7 +73,7 @@ class Document extends Model
     {
         $this->_get_datatables_query();
         
-        if($_GET['length'] != -1){
+        if ($_GET['length'] != -1) {
             $this->query->offset($_GET['start']);
             $this->query->limit($_GET['length']);
         }
@@ -85,7 +85,11 @@ class Document extends Model
             for ($i = 0; $i < $numResult; $i++) {
                 $search = preg_replace('/\s\s+/', ' ', Input::get('search.value')); //remove duplicate white space
                 $search = rtrim($search);
-                $result[$i]->title = preg_replace("/\p{L}*?".preg_quote($search)."\p{L}*/ui", "<b style='background-color:yellow;'>$0</b>", $result[$i]->title);
+                $result[$i]->title = preg_replace(
+                    "/\p{L}*?".preg_quote($search)."\p{L}*/ui",
+                    "<b style='background-color:yellow;'>$0</b>",
+                    $result[$i]->title
+                );
 
                 if (strpos($result[$i]->title, "<b")) continue; //not highlight if it is already highlighted
                 if (strpos($search, " ") && (substr_count($search, ' ') >= 2)) {
@@ -96,7 +100,11 @@ class Document extends Model
                         if (isset($strs[$j + 1])) {
                             $subStr = $subStr." ".$strs[$j + 1];
                         }
-                        $result[$i]->title = preg_replace("/\p{L}*?".preg_quote($subStr)."\p{L}*/ui", "<b style='background-color:yellow;'>$0</b>", $result[$i]->title);
+                        $result[$i]->title = preg_replace(
+                            "/\p{L}*?".preg_quote($subStr)."\p{L}*/ui",
+                            "<b style='background-color:yellow;'>$0</b>",
+                            $result[$i]->title
+                        );
                     }
                 }
             }
@@ -116,4 +124,8 @@ class Document extends Model
         return DB::table($this->table)->count();
     }
 
+    public function category()
+    {
+        return $this->belongsTo('App\Category', 'category');
+    }
 }

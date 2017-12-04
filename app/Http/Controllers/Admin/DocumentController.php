@@ -41,13 +41,14 @@ class DocumentController extends Controller
             $row[] = $document->id;
             $row[] = $document->title;
             $row[] = $document->updated_at ? date('d-m-Y',strtotime($document->updated_at)) : null;
-            $row[] = '  <a href="'.url("admin/document/edit/".$document->stt).'" class="button green">
-                            <div class="icon"><span class="ico-pencil"></span></div>
-                        </a>
-                        <a onclick=$.confirmdelete("'.$document->id.'",'.$document->stt.') href="#" class="button red">
-                            <div class="icon"><span class="ico-remove"></span></div>
-                        </a>';
- 
+            $row[] = '
+                <a href="'.url("admin/document/edit/".$document->stt).'" class="button green">
+                    <div class="icon"><span class="ico-pencil"></span></div>
+                </a>
+                <a id="'.$document->stt.'" onclick=$.confirmdelete("'.$document->id.'",'.$document->stt.') href="javascript:void(0);" class="button red delete-">
+                    <div class="icon"><span class="ico-remove"></span></div>
+                </a>
+            ';
             $data[] = $row;
         }
  
@@ -61,12 +62,17 @@ class DocumentController extends Controller
         echo json_encode($output);
     }
 
-    public function delete($stt=null, $idCat)
+    public function delete($stt=null)
     {
-        if(!$stt) return;
-        
-        Document::find($stt)->delete();
-        return redirect('admin/document/'.$idCat)->with('delete', $stt);
+        $status = false;
+        if (!$stt) return $status;
+
+        if (Document::find($stt)->delete()) {
+            $status = true;
+        }
+        return [
+            'status' => $status
+        ];
     }
 
     public function edit($stt=null)
@@ -77,7 +83,7 @@ class DocumentController extends Controller
         $this->SetDocument($doc);
         $this->SetCategory();  
 
-        if (Input::has('_token')){
+        if (Input::has('_token')) {
             $data = Input::except(array('token'));  
              
             $rule = [
@@ -122,7 +128,7 @@ class DocumentController extends Controller
             $option[$cat->id] = $cat->title;
         }
         $this->myData['options'] = $option;
-        
+
         return view('admin/documentEdit', ['data' => $this->myData]);
     }
 
@@ -166,11 +172,11 @@ class DocumentController extends Controller
     private function Extract($string)
     {
         //$string = preg_replace("/text-indent(.*?)\\;/si", "", $string);
-        
+
         preg_match("/<div[^>]*class=WordSection1>(.*?)<\\/div>/si", $string, $match);
         if(!isset($match[0])){
             if(!strpos($string, 'WordSection1'))
-                return '<div class=WordSection1>'.$string.'</div>';                
+                return '<div class=WordSection1>'.$string.'</div>';
             else 
                 return $string; 
         }

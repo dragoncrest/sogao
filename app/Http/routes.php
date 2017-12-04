@@ -37,7 +37,7 @@ Route::group(['middleware' => ['auth','roles'], 'roles'=>['admin']], function ()
     Route::get('/admin/document/ajax', 'Admin\DocumentController@ajax');
     Route::get('/admin/document/{idCat}', 'Admin\DocumentController@index');
 
-    Route::get('/admin/document/delete/{stt}/{idcat}', 'Admin\DocumentController@delete');
+    Route::get('/admin/document/delete/{stt}', 'Admin\DocumentController@delete');
 
     Route::get('/admin/category', 'Admin\CategoryController@index');
     Route::get('/admin/category/ajax', 'Admin\CategoryController@ajax');

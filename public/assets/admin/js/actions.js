@@ -1,28 +1,29 @@
+
 $(document).ready(function(){
-	
+
     var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
-	
+
     /* Site settings */
-	if(is_chrome){
-		var sSet  = $.localStorage.get("sSet");
-		if(null == sSet){
-			$.localStorage.set("sSet", "1");
-			$.localStorage.set("cNav", "bordered");
-		}
-		
-		var cNav  = $.localStorage.get("cNav");
-		var cCont = $.localStorage.get("cCont"); 
-	}
-	else {
-		var sSet  = $.cookies.get('sSet');
-		if(null == sSet){
-			$.cookies.set('sSet','1');
-			$.cookies.set('cNav','bordered');
-		}
-		
-		var cNav  = $.cookies.get('cNav');
-		var cCont = $.cookies.get('cCont');
-	}
+    if(is_chrome){
+        var sSet  = $.localStorage.get("sSet");
+        if(null == sSet){
+            $.localStorage.set("sSet", "1");
+            $.localStorage.set("cNav", "bordered");
+        }
+        
+        var cNav  = $.localStorage.get("cNav");
+        var cCont = $.localStorage.get("cCont"); 
+    }
+    else {
+        var sSet  = $.cookies.get('sSet');
+        if(null == sSet){
+            $.cookies.set('sSet','1');
+            $.cookies.set('cNav','bordered');
+        }
+        
+        var cNav  = $.cookies.get('cNav');
+        var cCont = $.cookies.get('cCont');
+    }
     
     if(null != cNav){
         if(cNav == 'bordered'){
@@ -231,34 +232,38 @@ $(document).ready(function(){
     
     /* alert delete document */    
     $.confirmdelete = function(id, stt){
-    	var link = window.location.href;
-    	var arr  = link.split('/');
-    	var j    = 1;
-    	
-    	if(link.indexOf("delete")>0) j=3;
-    	link='http:/';
-    	    	
-    	for(i = 1; i<arr.length-j; i++)
-    		link = link + arr[i]+'/';
-    	link = link + 'delete/' + stt + '/' + arr[arr.length-1];
-    	
-    	if (confirm("Xóa văn bản mã "+id) == true)
-        	window.location.replace(link);
-	}; 
+        if (confirm("Xóa văn bản mã "+id) == true) {
+            link = deleteUrl + '/' + stt;
+            $.ajax({
+                type: "GET",
+                url: link,
+                success: function (data) {
+                    if (data.status) {
+                        $('tr#'+stt).fadeOut(500, 'swing', function(){
+                            $('tr#'+stt).remove();
+                        });
+                    }
+                },
+                error: function (data) {
+                    console.log('Error:', data);
+                }
+            });
+        }
+    }; 
     /* eof alert delete*/ 
     
-	setTimeout(function(){
-	    $('.alert').fadeOut(1000);
-	}, 1500);     
-	   
+    setTimeout(function(){
+        $('.alert').fadeOut(1000);
+    }, 1500);     
+       
     /* alert delete category */    
     $.deleteCat = function(title, id){
-    	var link = window.location.href;
-    		link = link + '/delete/' + id;
+        var link = window.location.href;
+            link = link + '/delete/' + id;
 
-    	if (confirm("Xóa danh mục " + title) == true)
-        	window.location.replace(link);
-	}; 
+        if (confirm("Xóa danh mục " + title) == true)
+            window.location.replace(link);
+    }; 
 });
 
 $(window).load(function(){    
