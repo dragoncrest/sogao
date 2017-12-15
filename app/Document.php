@@ -13,48 +13,68 @@ class Document extends Model
     protected $query;
     protected $table = 'ti_document';
     protected $column_order = [null, 'id','title','updated_at']; //set column field database for datatable orderable
-    protected $column_search = ['id','title']; //set column field database for datatable searchable 
+    protected $column_search = ['title']; //set column field database for datatable searchable 
     protected $order = ['id' => 'asc']; // default order 
 
     private function _get_datatables_query()
     {
          
         $this->query = DB::table($this->table);
-        
-        $catID = $_GET['cat'];
-        if ($catID>0)
-            $this->query->where('category', $_GET['cat']);
+        $this->query->select('stt', 'id', 'title','updated_at');
 
-        $i = 0;
+        if (Input::get('cat') > 0)
+            $this->query->where('category', Input::get('cat'));
+
          // loop column 
         foreach ($this->column_search as $item) {
-            if($_GET['search']['value']) // if datatable send POST for search
-            {
-                $search = preg_replace('/\s\s+/', ' ', $_GET['search']['value']); //remove duplicate white space
+            if(Input::get('search.value')) {
+                //remove duplicate white space
+                $search = preg_replace('/\s\s+/', ' ', Input::get('search.value'));
                 $search = rtrim($search);
-                if ($i === 0) { // first loop
-                   // $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
-                    $this->query->where($item, 'like', '%'.$search.'%');   //searching whole string
+                // Quote regular expression characters
+                $search = preg_quote($search);
+                // count " in string
+                $cQuote = preg_match_all('/"/', $search);
+                // check if exits two of " or '
+                if ($cQuote > 1) {
+                    $sQuote = '"';
                 } else {
+                    $cQuote = preg_match_all("/'/", $search);
+                    if ($cQuote > 1)
+                        $sQuote = "'";
+                }
+                // only search text between " " or ' '
+                if ($cQuote > 1) {
+                    $posBegin = strpos($search, $sQuote) + 1;
+                    $posEnd  = strpos($search, $sQuote, $posBegin);
+                    $length = $posEnd - $posBegin;
+                    $search = substr($search, $posBegin, $length);
+                }
+                // remove " and '
+                $search = preg_replace('/"/', '', $search);
+                $search = preg_replace("/'/", '', $search);
+                // creat new input to use when highlight
+                Input::merge(['sSearch' => $search]);
+
+                $this->query->where( function($q) use($item, $search) {
+                    // searching whole string
+                    $q->where($item, 'like', '%'.$search.'%');
+                    // then each part of string
                     if (strpos($search, " ")) {
-                        //searching 2 by 1
-                        $strs = explode(" ", $search);
+                        //searching 1 by 2
+                        $strs      = explode(" ", $search);
                         $strsCount = count($strs)/2 + 1;
                         for ($j = 0; $j < $strsCount; $j += 2) {
                             $subStr = $strs[$j];
                             if (isset($strs[$j + 1])) {
                                 $subStr = $subStr." ".$strs[$j + 1];
                             }
-                            $this->query->orWhere($item, 'like', '%'.$subStr.'%');
+                            $q->orWhere($item, 'like', '%'.$subStr.'%');
                         }
-                    } else {
-                        $this->query->orWhere($item, 'like', '%'.$search.'%');
                     }
-                }
-                //if(count($this->column_search) - 1 == $i) //last loop
-                    //$this->db->group_end(); //close bracket
+                });
+
             }
-            $i++;
         }
         // here order processing
         if (isset($_GET['order'])) {
@@ -77,21 +97,28 @@ class Document extends Model
             $this->query->offset($_GET['start']);
             $this->query->limit($_GET['length']);
         }
-        
         $result = $this->query->get();
-        //highlight result
-        if (Input::has('search.value')) {
+
+        if (empty($result)) return $result;
+
+        //highlight matching result
+        if (Input::has('sSearch')) {
+            $full      = $part = [];
             $numResult = count($result);
+            $search    = Input::get('sSearch');
+
             for ($i = 0; $i < $numResult; $i++) {
-                $search = preg_replace('/\s\s+/', ' ', Input::get('search.value')); //remove duplicate white space
-                $search = rtrim($search);
                 $result[$i]->title = preg_replace(
-                    "/\p{L}*?".preg_quote($search)."\p{L}*/ui",
+                    "/\p{L}*?".$search."\p{L}*/ui",
                     "<b style='background-color:yellow;'>$0</b>",
                     $result[$i]->title
                 );
-
-                if (strpos($result[$i]->title, "<b")) continue; //not highlight if it is already highlighted
+                // add "highlight all text" to $full array
+                if (strpos($result[$i]->title, "</b") > 0) {
+                    $full[] = $result[$i];
+                    continue;
+                }
+                // add "highlight each part" to $part array
                 if (strpos($search, " ") && (substr_count($search, ' ') >= 2)) {
                     $strs = explode(" ", $search);
                     $strsCount = count($strs)/2 + 1;
@@ -101,13 +128,15 @@ class Document extends Model
                             $subStr = $subStr." ".$strs[$j + 1];
                         }
                         $result[$i]->title = preg_replace(
-                            "/\p{L}*?".preg_quote($subStr)."\p{L}*/ui",
+                            "/\p{L}*?".$subStr."\p{L}*/ui",
                             "<b style='background-color:yellow;'>$0</b>",
                             $result[$i]->title
                         );
+                        $part[] = $result[$i];
                     }
                 }
             }
+            $result = array_merge($full, $part);
         }
         return $result;
     }

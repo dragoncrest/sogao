@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use App\Category;
+use App\Models\Coin;
+
+use Auth;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -18,6 +21,15 @@ class AppServiceProvider extends ServiceProvider
         //
         view()->composer('*',function($view) {
             $view->with('cates', Category::all());
+            if (Auth::user()) {
+                $coin = Coin::where('user_id', Auth::user()->id)->first();
+                if (!$coin) {
+                    $coin = 0;
+                } else {
+                    $coin = $coin->coin;
+                }
+                $view->with('coin', $coin);
+            }
         });
     }
 

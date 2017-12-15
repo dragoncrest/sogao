@@ -15,6 +15,8 @@
 
     Route::auth();
 
+    Route::get('/register', 'HomeController@register');
+
     Route::get('/home/ajaxTable', 'HomeController@ajaxTable');
     Route::get('/home/ajax/{id}', 'HomeController@ajax');
 

@@ -24,10 +24,14 @@
 
             @if(Auth::user())
                 <span class="sidebar-header sidebar-header-white sidebar-header-login">
-                    Xin chào: <b>{{ Auth::user()->name }}</b>
+                    Xin chào: {{ Auth::user()->name }}
                 </span>
                 
                 <div class="sidebar-body">
+                    <div class="coin clear">
+                        <img src="{{ url('public/assets/images/coin.gif') }}"/>
+                        <span>{{ $coin }}</span>
+                    </div>
                     <a href="{{ url('logout/u') }}">Đăng xuất</a>
                 </div>
             @else
@@ -35,26 +39,16 @@
                 <div class="sidebar-body">
                     <form id="login-form" method="POST" action="{{ url('login') }}">
                         {{ csrf_field() }}
-                        
+
                         <div class="full login-margin">
                             <span>Email</span>
                             <input class="login-input" type="text" name="email" />
                         </div>
-                    @if ($errors->has('email'))
-                        <div class="login-err error">
-                            {{ $errors->first('email') }}
-                        </div>
-                    @endif
 
                         <div class="full login-margin">
                             <span>MẬT KHẨU</span>
                             <input class="login-input" type="password" name="password" />
                         </div>
-                    @if ($errors->has('password'))
-                        <div class="login-err error">
-                            {{ $errors->first('password') }}
-                        </div>
-                    @endif
 
                         <div class="full login-margin" style="text-align:right;"><input class="login-submit" type="submit" value="ĐĂNG NHẬP" /></div>                       
                     <div class="full">

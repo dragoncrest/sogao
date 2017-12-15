@@ -33,7 +33,7 @@ class User extends Authenticatable
     {
         $role = Role::where('name', $role)->first();
         
-        if(strtolower($role['id']) == strtolower($this->role))
+        if(strtolower($role['id']) == strtolower($this->role_id))
             return TRUE;
         else 
             return null;

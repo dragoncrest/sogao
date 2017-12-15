@@ -105,6 +105,12 @@ class HomeController extends Controller
         echo json_encode($output);
     }
 
+    public function register()
+    {
+        $data = $this->setData("Sổ tay 56",null,null,0);
+        return view('user.register', $data);
+    }
+
     /**
      * Set data to put into view
      * @param $title, stt, content, cates, catID
