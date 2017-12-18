@@ -87,9 +87,10 @@ class CategoryController extends Controller
                 
                 if($id) $cat = Category::find($id); 
                 
-                $cat->title  = Input::get('title');
-                $cat->slug   = str_slug(Input::get('title'));
-                $cat->parent = Input::get('parent');
+                $cat->title      = Input::get('title');
+                $cat->slug       = str_slug(Input::get('title'));
+                $cat->parent     = Input::get('parent');
+                $cat->searchable = Input::get('searchable');
                 $cat->save(); 
                 
                 $myData['cat']  = $this->SetCatgory($cat);           
@@ -137,9 +138,10 @@ class CategoryController extends Controller
     
     private function SetCatgory($cat)
     {
-        $data['id']     = $cat ? $cat->id : '';
-        $data['title']  = $cat ? $cat->title : '';
-        $data['parent'] = $cat ? $cat->parent : '';
+        $data['id']         = $cat ? $cat->id : '';
+        $data['title']      = $cat ? $cat->title : '';
+        $data['parent']     = $cat ? $cat->parent : '';
+        $data['searchable'] = $cat ? $cat->searchable : '';
         
         return $data;
     }

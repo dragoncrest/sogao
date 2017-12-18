@@ -24,6 +24,7 @@
                     
                     echo Form::open(['url' => url('admin/category/edit'),'id' => 'myform','method'=>'post']);
                         echo Form::hidden('id', $cat['id']);
+
                         echo '<div class="row-form '.$errTitle.'">';
                             echo "<span class='span2'>Tên:</span>";
                             echo "<div class='span5'>";
@@ -38,7 +39,17 @@
                             echo Form::select('parent', $data['options'], $cat['parent']);
                             echo "</div>";
                         echo "</div>";
-                        
+
+                        echo '<div class="row-form ">';
+                            echo "<span class='span2'>Tìm kiếm:</span>";
+                            echo "<div class='span5'>";
+                                echo Form::radio('searchable', 0, $cat['searchable'] == 0 ? true : false);
+                                echo '<span for="nosearchable">Không</span>';
+                                echo Form::radio('searchable', 1, $cat['searchable'] == 1 ? true : false);
+                                echo '<span for="searchable">Có (hiển thị ở chức năng tìm kiếm)</span>';
+                            echo "</div>";
+                        echo '</div>';
+
                         echo '<div style="width:100%; text-align:center;">'.
                                 '<input type="submit" value="Upload!" class="btn" />'. 
                             '</div>';  

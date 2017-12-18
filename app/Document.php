@@ -9,25 +9,25 @@ use Illuminate\Database\Eloquent\Model;
 class Document extends Model
 {
     protected $primaryKey = 'stt';
-    
     protected $query;
-    protected $table = 'ti_document';
-    protected $column_order = [null, 'id','title','updated_at']; //set column field database for datatable orderable
-    protected $column_search = ['title']; //set column field database for datatable searchable 
-    protected $order = ['id' => 'asc']; // default order 
+    protected $table = 'documents';
+    protected $column_order = [null, 'documents.id','documents.title','documents.updated_at']; //set column field database for datatable orderable
+    protected $column_search = ['documents.title']; //set column field database for datatable searchable 
+    protected $order = ['documents.id' => 'asc']; // default order 
 
     private function _get_datatables_query()
     {
-         
         $this->query = DB::table($this->table);
-        $this->query->select('stt', 'id', 'title','updated_at');
+        $this->query->join('categories', 'categories.id', '=', 'documents.category_id');
+        $this->query->select('documents.stt', 'documents.id', 'documents.title','documents.updated_at');
+        $this->query->where('categories.searchable', 1);
 
         if (Input::get('cat') > 0)
-            $this->query->where('category', Input::get('cat'));
+            $this->query->where('documents.category', Input::get('cat'));
 
          // loop column 
         foreach ($this->column_search as $item) {
-            if(Input::get('search.value')) {
+            if(Input::has('search.value')) {
                 //remove duplicate white space
                 $search = preg_replace('/\s\s+/', ' ', Input::get('search.value'));
                 $search = rtrim($search);
@@ -46,9 +46,15 @@ class Document extends Model
                 // only search text between " " or ' '
                 if ($cQuote > 1) {
                     $posBegin = strpos($search, $sQuote) + 1;
-                    $posEnd  = strpos($search, $sQuote, $posBegin);
-                    $length = $posEnd - $posBegin;
-                    $search = substr($search, $posBegin, $length);
+                    $posEnd   = strpos($search, $sQuote, $posBegin);
+                    $length   = $posEnd - $posBegin;
+                    $search   = substr($search, $posBegin, $length);
+                    // remove " and '
+                    $search = preg_replace('/"/', '', $search);
+                    $search = preg_replace("/'/", '', $search);
+                    $this->query->where($item, 'like', '%'.$search.'%');
+                    Input::merge(['sSearch' => $search]);
+                    continue;
                 }
                 // remove " and '
                 $search = preg_replace('/"/', '', $search);
@@ -92,17 +98,18 @@ class Document extends Model
     public function get_datatables()
     {
         $this->_get_datatables_query();
-        
-        if ($_GET['length'] != -1) {
-            $this->query->offset($_GET['start']);
-            $this->query->limit($_GET['length']);
+        // when not use searching
+        if (!Input::has('search.value')) {
+            $this->query->offset(Input::get('start'));
+            $this->query->limit(Input::get('length'));
         }
+        // get all match result
         $result = $this->query->get();
 
         if (empty($result)) return $result;
 
         //highlight matching result
-        if (Input::has('sSearch')) {
+        if (Input::has('search.value')) {
             $full      = $part = [];
             $numResult = count($result);
             $search    = Input::get('sSearch');
@@ -137,6 +144,15 @@ class Document extends Model
                 }
             }
             $result = array_merge($full, $part);
+            // paging by cutting array
+            $end = Input::get('start') + Input::get('length');
+            $tmp = [];
+            for ($i = Input::get('start'); $i < $end; $i++) {
+                if (isset($result[$i])) {
+                    $tmp[] = $result[$i];
+                }
+            }
+            return $tmp;
         }
         return $result;
     }
@@ -155,6 +171,6 @@ class Document extends Model
 
     public function category()
     {
-        return $this->belongsTo('App\Category', 'category');
+        return $this->belongsTo('App\Category', 'category_id');
     }
 }

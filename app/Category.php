@@ -12,7 +12,7 @@ class Category extends Model
     public $timestamps = FALSE;
 
     protected $query;
-    protected $table = 'ti_category';
+    protected $table = 'categories';
     protected $column_order = array(null, 'id','title'); //set column field database for datatable orderable
     protected $column_search = array('title'); //set column field database for datatable searchable 
     protected $order = array('id' => 'asc'); // default order 

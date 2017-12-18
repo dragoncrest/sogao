@@ -30,15 +30,9 @@ class DocumentController extends Controller
             $doc = Document::where('stt', $id)->first();
 
         if($doc){
-            $data = $this->setData(
-                $doc->stt,
-                $doc->id,
-                $doc->title,
-                DocumentHelper::ProcessContent($doc->content, $doc->hasTable),
-                0
-           );
+            $data = $this->setData($doc, 0);
         }else 
-            $data = $this->setData("Không tìm thấy",null,null,null);
+            $data = $this->setData(null, 0);
 
         return view('document', $data);
     }
@@ -112,18 +106,20 @@ class DocumentController extends Controller
     }
 
     /**
-     * Set data to put into view
-     * @param $title, stt, content, cates, catID
+     * Set data to display in view
+     * @param $doc
      * @return array
      */
-    private function setData($stt=null, $id=null, $title=null, $content=null, $catID=null)
+    private function setData($doc, $catID=null)
     {
+        $content = !is_null($doc) ? DocumentHelper::ProcessContent($doc->content, $doc->hasTable) : '';
         return [
-            'stt'     => $stt,
-            'id'      => $id,
-            'title'   => $title,
-            'content' => $content,
-            'catID'   => $catID
+            'stt'        => !is_null($doc) ? $doc->stt : '',
+            'id'         => !is_null($doc) ? $doc->id : '',
+            'title'      => !is_null($doc) ? $doc->title : '',
+            'content'    => $content,
+            'isDownload' => !is_null($doc) ? $doc->isDownload : 0,
+            'catID'      => $catID
         ];
     }
 

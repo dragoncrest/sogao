@@ -111,13 +111,14 @@ class DocumentController extends Controller
                 $doc = Document::find($stt);
             }
 
-            $doc->id            = preg_replace('/\W/', '', Input::get('id'));
-            $doc->title         = Input::get('title');
-            $doc->slug          = str_slug($doc->title);
-            $doc->content       = $this->Extract(Input::get('content'));
-            $doc->category      = Input::get('cat');
-            $doc->hasTable      = Input::get('hasTable');
-            $doc->updated_at    = time();
+            $doc->id         = preg_replace('/\W/', '', Input::get('id'));
+            $doc->title      = Input::get('title');
+            $doc->slug       = str_slug($doc->title);
+            $doc->content    = $this->Extract(Input::get('content'));
+            $doc->category   = Input::get('cat');
+            $doc->hasTable   = Input::get('hasTable');
+            $doc->isDownload = Input::get('isDownload');
+            $doc->updated_at = time();
             $doc->save();
             
             $this->SetDocument($doc);
@@ -134,13 +135,14 @@ class DocumentController extends Controller
 
     private function SetDocument($doc=null)
     {
-        $arr             = array();
-        $arr['stt']      = ($doc) ? $doc->stt : null;
-        $arr['id']       = ($doc) ? $doc->id : '';
-        $arr['title']    = ($doc) ? $doc->title : '';
-        $arr['content']  = ($doc) ? $doc->content : '';
-        $arr['category'] = ($doc) ? $doc->category : 1;
-        $arr['hasTable'] = ($doc) ? $doc->hasTable : 1;
+        $arr               = array();
+        $arr['stt']        = ($doc) ? $doc->stt : null;
+        $arr['id']         = ($doc) ? $doc->id : '';
+        $arr['title']      = ($doc) ? $doc->title : '';
+        $arr['content']    = ($doc) ? $doc->content : '';
+        $arr['category']   = ($doc) ? $doc->category : 1;
+        $arr['hasTable']   = ($doc) ? $doc->hasTable : 1;
+        $arr['isDownload'] = ($doc) ? $doc->isDownload : 0;
 
         $this->myData['doc'] = $arr;
     }

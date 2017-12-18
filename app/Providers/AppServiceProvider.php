@@ -20,7 +20,8 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         view()->composer('*',function($view) {
-            $view->with('cates', Category::all());
+            $cats = Category::where('searchable', 1)->get();
+            $view->with('cates', $cats);
             if (Auth::user()) {
                 $coin = Coin::where('user_id', Auth::user()->id)->first();
                 if (!$coin) {

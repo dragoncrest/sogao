@@ -36,6 +36,7 @@
 
                     echo Form::open(['url' => url('admin/document/edit/'.$doc['stt']),'id' => 'myform','method'=>'post']);
                         echo Form::hidden('stt', $doc['stt']);
+
                         echo '<div class="row-form ">';
                             echo "<span class='span2'>Bảng:</span>";
                             echo "<div class='span5'>";
@@ -45,6 +46,17 @@
                                 echo '<span for="hasTable">Có bảng</span>';
                             echo "</div>";
                         echo '</div>';
+
+                        echo '<div class="row-form ">';
+                            echo "<span class='span2'>Download:</span>";
+                            echo "<div class='span5'>";
+                                echo Form::radio('isDownload', 0, $doc['isDownload'] == 0 ? true : false);
+                                echo '<span for="noDownload">Không tải văn bản</span>';
+                                echo Form::radio('isDownload', 1, $doc['isDownload'] == 1 ? true : false);
+                                echo '<span for="isDownload">Được tải văn bản</span>';
+                            echo "</div>";
+                        echo '</div>';
+
                         echo '<div class="row-form '.$errID.'">';
                             echo "<span class='span2'>Mã:</span>";
                             echo "<div class='span5'>";
