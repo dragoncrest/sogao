@@ -76,7 +76,7 @@
                         echo '<div class="row-form">';  
                             echo "<span class='span2'>Danh mục:</span>";
                             echo "<div class='span5'>"; 
-                            echo Form::select('cat', $data['options'], $doc['category']);
+                            echo Form::select('cat', $data['options'], $doc['category_id']);
                             echo "</div>";
                         echo "</div>";
 

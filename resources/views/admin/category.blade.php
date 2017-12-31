@@ -35,7 +35,8 @@
                                             <th width="5%">STT</th>
                                             <th width="10%">Mã</th>
                                             <th width="30%">Tên</th>
-                                            <th width="40%">Danh mục cha</th>
+                                            <th width="30%">Danh mục cha</th>
+                                            <th class="">Download</th>
                                             <th class="TAC">Actions</th>
                                         </tr>
                                     </thead>
@@ -58,7 +59,7 @@
                                     "url": "<?php echo url('/admin/category/ajax');?>",
                                 },
                         "columnDefs": [{ 
-                                        "targets": [ 0 ], //first column / numbering column
+                                        "targets": [ 0, 3, 4, 5 ], //first column / numbering column
                                         "orderable": false, //set not orderable
                                       }],        
                         });

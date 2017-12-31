@@ -8,7 +8,7 @@
                     {{ csrf_field() }}
                     <div class="reg-body-row">
                         <div class="reg-left">
-                            <p class="reg-body-title">Họ và tên</p>
+                            <p class="reg-body-title">Tên thành viên</p>
                         </div>
                         <div class="reg-right">
                             <div class="reg-body-ip {{ $errors->has('name') ? 'has-error' : '' }}">

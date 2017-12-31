@@ -3,7 +3,7 @@
 @section("content")
             <div class="doc-content">
         @if($content)
-            @if($isDownload)
+            @if($currentCat->isDownload)
                 <h3><a href="javascript:void(0)" id="{!! $id !!}" class="downloadLink">Tải văn bản</a></h3>
             @endif
             {!! $content !!}

@@ -41,69 +41,20 @@ class HomeController extends Controller
         echo $document;
     }
 
-    public function document($id)
-    {
-        $doc = Document::where('id', $id)->first();
-
-        if(!$doc)
-            $doc = Document::where('slug', $id)->first();
-        if(!$doc)
-            $doc = Document::where('stt', $id)->first();
-
-        if($doc){
-            $data = $this->setData('', $doc, 0);
-        }else 
-            $data = $this->setData("Không tìm thấy", null, 0);
-
-        return view('document', $data);
-    }
-
     public function search()
     {
-        $catID = '';
+        $cat = '';
         if(Input::has('_token')){
-            $catID = Input::get("cat");
+            $cat = Category::find(Input::get("cat"));
         }
-        $data = $this->setData("Tìm kiếm", null, $catID);
+        $data = $this->setData("Tìm kiếm", null, $cat);
 
         return view('search', $data);
     }
 
-    /**
-     * create table of list document by category
-     * @return json 
-     */
-    public function ajaxTable()
-    {
-        $doc  = new Document();
-        $list = $doc->get_datatables();
-
-        $data = array();
-        $no = $_GET['start'];
-        foreach ($list as $document) {
-            $no++;
-            $id    = $document->id ? $document->id : $document->stt;
-            $row   = array();
-            $row[] = $no;
-            $row[] = "<a href='".url("/document/".$id)."'>".$document->title."</a>";
-            $row[] = $document->updated_at ? date('d-m-Y',strtotime($document->updated_at)) : null;
- 
-            $data[] = $row;
-        }
- 
-        $output = array(
-            "draw"            => $_GET['draw'],
-            "recordsTotal"    => $doc->count_all(),
-            "recordsFiltered" => $doc->count_filtered(),
-            "data"            => $data,
-        );
-        //output to json format
-        echo json_encode($output);
-    }
-
     public function register()
     {
-        $data = $this->setData("Sổ tay 56", null, 0);
+        $data = $this->setData("Sổ tay 56", null);
         return view('user.register', $data);
     }
 
@@ -112,7 +63,7 @@ class HomeController extends Controller
      * @param $doc
      * @return array
      */
-    private function setData($title, $doc, $catID=null)
+    private function setData($title, $doc, $cat=null)
     {
         $content = !is_null($doc) ? DocumentHelper::ProcessContent($doc->content, $doc->hasTable) : '';
         return [
@@ -121,7 +72,7 @@ class HomeController extends Controller
             'title'      => !is_null($doc) ? $doc->title : $title,
             'content'    => $content,
             'isDownload' => !is_null($doc) ? $doc->isDownload : 0,
-            'catID'      => $catID
+            'currentCat' => !is_null($cat) ? $cat : ''
         ];
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Document;
 use App\Acronym;
+use App\Category;
 use App\Http\Requests;
 
 use File;
@@ -20,6 +21,9 @@ class DocumentController extends Controller
         $this->docPath = public_path() . "\upload\documents\\";
     }
 
+    /**
+     * get document by id
+     */
     public function document($id)
     {
         $doc = Document::where('id', $id)->first();
@@ -29,12 +33,57 @@ class DocumentController extends Controller
         if(!$doc)
             $doc = Document::where('stt', $id)->first();
 
-        if($doc){
-            $data = $this->setData($doc, 0);
-        }else 
-            $data = $this->setData(null, 0);
+        if ($doc) {
+            $cat  = $doc->category()->first();
+            $data = $this->setData($doc, $cat);
+        } else {
+            $data = $this->setData(null, null);
+        }
 
         return view('document', $data);
+    }
+
+    /**
+     * get all document by category's slug
+     */
+    public function documents($catSlug = null)
+    {
+        if (is_null($catSlug)) return;
+
+        $cat = Category::where('slug', $catSlug)->first();
+        return view('user.document_list', $this->setData(null, $cat));
+    }
+
+    /**
+     * create table of list document by category's id
+     * @return json 
+     */
+    public function ajaxTable()
+    {
+        $doc  = new Document();
+        $list = $doc->get_datatables();
+
+        $data = [];
+        $no = $_GET['start'];
+        foreach ($list as $document) {
+            $no++;
+            $id    = $document->id ? $document->id : $document->stt;
+            $row   = array();
+            $row[] = $no;
+            $row[] = "<a href='".url("/document/".$id)."'>".$document->title."</a>";
+            $row[] = $document->updated_at ? date('d-m-Y',strtotime($document->updated_at)) : null;
+ 
+            $data[] = $row;
+        }
+ 
+        $output = array(
+            "draw"            => $_GET['draw'],
+            "recordsTotal"    => $doc->count_all(),
+            "recordsFiltered" => $doc->count_filtered(),
+            "data"            => $data,
+        );
+        //output to json format
+        echo json_encode($output);
     }
 
     public function ajaxDieuKhoan($id = 0)
@@ -110,7 +159,7 @@ class DocumentController extends Controller
      * @param $doc
      * @return array
      */
-    private function setData($doc, $catID=null)
+    private function setData($doc, $cat = null)
     {
         $content = !is_null($doc) ? DocumentHelper::ProcessContent($doc->content, $doc->hasTable) : '';
         return [
@@ -119,7 +168,7 @@ class DocumentController extends Controller
             'title'      => !is_null($doc) ? $doc->title : '',
             'content'    => $content,
             'isDownload' => !is_null($doc) ? $doc->isDownload : 0,
-            'catID'      => $catID
+            'currentCat' => !is_null($cat) ? $cat : ''
         ];
     }
 

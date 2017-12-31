@@ -17,8 +17,8 @@
 
     Route::get('/register', 'HomeController@register');
 
-    Route::get('/home/ajaxTable', 'HomeController@ajaxTable');
-    Route::get('/home/ajax/{id}', 'HomeController@ajax');
+    Route::get('/document/ajaxTable', 'DocumentController@ajaxTable');
+    Route::get('/document/ajax/{id}', 'DocumentController@ajax');
 
     Route::get('/document/download/{id}', 'DocumentController@download')->where('id', '[A-Za-z0-9\-\_\.]+');
     Route::get('/document/ajaxCheckFileExits/{id}', 'DocumentController@ajaxCheckFileExits')->where('id', '[A-Za-z0-9\-\_\.]+');
@@ -28,6 +28,8 @@
 
     Route::get('/search', 'HomeController@search');
     Route::post('/search', 'HomeController@search');
+
+    Route::get('/category/{slug}', 'DocumentController@documents');
 
 Route::group(['middleware' => ['auth','roles'], 'roles'=>['admin']], function () {
     Route::get('/admin', 'Admin\HomeController@index');
@@ -50,4 +52,4 @@ Route::group(['middleware' => ['auth','roles'], 'roles'=>['admin']], function ()
     Route::any('/admin/category/delete/{id}', 'Admin\CategoryController@delete');
 });
 
-    Route::get('/{slug}', 'HomeController@document');
+    Route::get('/{slug}', 'DocumentController@document');

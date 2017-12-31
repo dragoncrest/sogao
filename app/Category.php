@@ -73,5 +73,10 @@ class Category extends Model
     public function count_all()
     {
         return DB::table($this->table)->count();
-    }    
+    }
+
+    public function documents()
+    {
+        return $this->hasMany('App\Document');
+    }
 }

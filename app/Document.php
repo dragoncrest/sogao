@@ -22,8 +22,8 @@ class Document extends Model
         $this->query->select('documents.stt', 'documents.id', 'documents.title','documents.updated_at');
         $this->query->where('categories.searchable', 1);
 
-        if (Input::get('cat') > 0)
-            $this->query->where('documents.category', Input::get('cat'));
+        if (Input::get('cat'))
+            $this->query->where('documents.category_id', Input::get('cat'));
 
          // loop column 
         foreach ($this->column_search as $item) {

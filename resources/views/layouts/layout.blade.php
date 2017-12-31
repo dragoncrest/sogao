@@ -55,7 +55,13 @@
                 <select class="sear-select" name="cat">
                     <option value="0">tất cả</option>
                 @foreach($cates as $cat)
-                    <option <?php if($cat->id==$catID) echo "selected";?> value="{!! $cat->id !!}">{!! $cat->title !!}</option>
+                    @php
+                        $select = "";
+                        if (!empty($currentCat) && ($cat->id == $currentCat->id)) {
+                            $select = "selected";
+                        }
+                    @endphp
+                    <option {!! $select !!} value="{!! $cat->id !!}">{!! $cat->title !!}</option>
                 @endforeach
                 </select>
                 <input class="sear-but" type="submit" value="" />

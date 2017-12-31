@@ -18,7 +18,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        // $this->app['request']->server->set('HTTPS', true);
+
         view()->composer('*',function($view) {
             $cats = Category::where('searchable', 1)->get();
             $view->with('cates', $cats);

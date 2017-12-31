@@ -1,10 +1,11 @@
 @extends('layouts.layout')
 
 @section('content')
+        @if(!empty($currentCat) && !is_null($currentCat))
             <div class="content">
                 <div class="block">
                     <div class="head blue">
-                        <h2>Bảng tìm kiếm</h2>
+                        <h2>{{ $currentCat->title }}</h2>
                     </div>
                     <div class="data-fluid">
                         <table class="table aTable" cellpadding="0" cellspacing="0" width="100%">
@@ -40,4 +41,7 @@
                     }],
                 });
             </script>
+        @else
+            <h3><i>Danh mục đang được cập nhật</i></h3>
+        @endif
 @endsection  

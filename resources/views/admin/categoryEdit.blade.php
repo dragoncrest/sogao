@@ -42,11 +42,21 @@
 
                         echo '<div class="row-form ">';
                             echo "<span class='span2'>Tìm kiếm:</span>";
-                            echo "<div class='span5'>";
+                            echo "<div class='span6'>";
                                 echo Form::radio('searchable', 0, $cat['searchable'] == 0 ? true : false);
-                                echo '<span for="nosearchable">Không</span>';
+                                echo '<span for="nosearchable" class="rd-txt">Không</span>';
                                 echo Form::radio('searchable', 1, $cat['searchable'] == 1 ? true : false);
                                 echo '<span for="searchable">Có (hiển thị ở chức năng tìm kiếm)</span>';
+                            echo "</div>";
+                        echo '</div>';
+
+                        echo '<div class="row-form ">';
+                            echo "<span class='span2'>Download:</span>";
+                            echo "<div class='span6'>";
+                                echo Form::radio('isDownload', 0, $cat['isDownload'] == 0 ? true : false);
+                                echo '<span for="noDownload" class="rd-txt">Không tải văn bản</span>';
+                                echo Form::radio('isDownload', 1, $cat['isDownload'] == 1 ? true : false);
+                                echo '<span for="isDownload">Được tải văn bản</span>';
                             echo "</div>";
                         echo '</div>';
 

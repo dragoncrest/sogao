@@ -10,7 +10,6 @@
     <link rel="icon" type="image/ico" href="{{ url('public/assets/admin/favicon.ico') }}"/>
 
     <link rel="stylesheet" type="text/css" href="{{ url('public/assets/admin/css/stylesheets.css') }}" />
-    <link rel="stylesheet" type="text/css" href="{{ url('public/assets/admin/css/mystyles.css') }}"  />
     <?php if($data['nav']) echo '<link rel="stylesheet" type="text/css" href="'.url("public/assets/admin/js/plugins/datatables/jquery.dataTables.min.css").'"  />';?>    
     <?php if($data['nav']) echo '<link rel="stylesheet" type="text/css" href="'.url("public/assets/js/fancybox/jquery.fancybox.css").'"  />';?>   
 
