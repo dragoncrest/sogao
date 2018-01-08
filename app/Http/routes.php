@@ -25,6 +25,7 @@
     Route::get('/document/ajaxThutuc/{id}', 'DocumentController@ajaxThutuc');
     Route::get('/document/ajaxDieuKhoan/{id}', 'DocumentController@ajaxDieuKhoan');
     Route::get('/document/{id}', 'DocumentController@document');
+    Route::get('/document/ajaxBuyDocument/{id}', 'DocumentController@ajaxBuyDocument');
 
     Route::get('/search', 'HomeController@search');
     Route::post('/search', 'HomeController@search');
@@ -37,19 +38,19 @@ Route::group(['middleware' => ['auth','roles'], 'roles'=>['admin']], function ()
 
     Route::any('/admin/document/edit/{stt}', 'Admin\DocumentController@edit');
     Route::any('/admin/document/edit', 'Admin\DocumentController@edit');
-
     Route::get('/admin/document/ajax', 'Admin\DocumentController@ajax');
     Route::get('/admin/document/{idCat}', 'Admin\DocumentController@index');
-
     Route::get('/admin/document/delete/{stt}', 'Admin\DocumentController@delete');
 
     Route::get('/admin/category', 'Admin\CategoryController@index');
     Route::get('/admin/category/ajax', 'Admin\CategoryController@ajax');
 
-    Route::get('/admin/category/edit/{stt}', 'Admin\CategoryController@edit');
+    Route::any('/admin/category/edit/{stt}', 'Admin\CategoryController@edit');
     Route::any('/admin/category/edit', 'Admin\CategoryController@edit'); 
-
     Route::any('/admin/category/delete/{id}', 'Admin\CategoryController@delete');
+
+    Route::any('/admin/user/{stt}', 'Admin\UserController@edit');
+    Route::get('/admin/user', 'Admin\UserController@index');
 });
 
     Route::get('/{slug}', 'DocumentController@document');

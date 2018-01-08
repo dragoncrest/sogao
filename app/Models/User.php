@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -26,7 +26,7 @@ class User extends Authenticatable
     
     public function role()
     {
-        return $this->hasOne('App\Role', 'id', 'role');
+        return $this->hasOne('App\Models\Role', 'id', 'role');
     }
     
     protected function checkIfUserHasRole($role)

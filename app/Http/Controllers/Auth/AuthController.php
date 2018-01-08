@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\User;
+use App\Models\User;
 use App\Models\Coin;
 
 use Validator;
@@ -82,7 +82,7 @@ class AuthController extends Controller
         if ($user) {
             $coin = Coin::create([
                 'user_id' => $user->id,
-                'coin'    => 99
+                'coin'    => 0
             ]);
             if (!$coin) {
                 $status = false;

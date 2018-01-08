@@ -276,14 +276,74 @@ body{font-family: "UTM Avo", Arial, Helvetica, sans-serif;}
 	font-size: 14px;}
 .reg-left{
     float: left;
-    width: 40%;
-}
+    width: 40%;}
 .reg-right{
     display: inline-block;
-    width: 50%;
-}
+    width: 50%;}
 .reg-body-ip{}
 .reg-body-row{margin: 25px 0;}
-.reg-body-agree{margin: 15px auto;
-text-align: center;}
+.reg-body-agree{margin: 15px auto; text-align: center;}
                     /*--> End register form <--*/
+            /**********************************************/
+                    /*--> Begin dialog <--*/
+.popup-dialog{
+    display: none;
+    position: fixed;
+    width: 500px;
+    background-color: #f9f9f9;
+    top: 50%;
+    left: 60%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    border: 2px solid #cecece;
+    border-radius: 5px;
+    -moz-box-shadow: 0 0 5px #a2a2a2;
+    -webkit-box-shadow: 0 0 5px #a2a2a2;
+    box-shadow: 0px 0px 10px #a2a2a2;
+    opacity: 0;}
+.pop-close{
+    background: url('./images/popup-close.png') no-repeat;
+    width: 25px;
+    height: 25px;
+    position: absolute;
+    right: -12px;
+    top: -12px;
+    cursor: pointer;}
+.pop-close:hover{background: url('./images/popup-close.png') no-repeat 0 -25px;}
+.pop-content{
+    width: 92%;
+    margin: 15px 0 15px 20px;
+    text-align: center;}
+.pop-but{
+    width: 50px;
+    height: 25px;
+    display: inline-block;
+    border: 1px solid;
+    font-size: 16px;
+    padding: 2px 7px 1px;
+    font-family: tahoma;
+    font-weight: bold;
+    border-radius: 4px;
+    color: white;
+    opacity: 0.6;}
+.pop-but:hover{
+    opacity: 1;}
+.pop-but-close{background-color: #b3b3b3;}
+.pop-but-buy{background-color: #266CEC;}
+._content{margin-bottom: 15px;}
+.minus-coin{
+    display: none;
+    border: 2px solid #cecece;
+    width: 50px;
+    text-align: center;
+    background-color: #f9f9f9;
+    -moz-box-shadow: 0 0 5px #a2a2a2;
+    -webkit-box-shadow: 0 0 5px #a2a2a2;
+    box-shadow: 0px 0px 10px #a2a2a2;
+    border-radius: 3px;
+    position: fixed;
+    top: -5%;
+    left: 50%;
+    font-family: arial;
+    font-weight: bold;}
+                    /*--> End dialog <--*/

@@ -44,6 +44,7 @@ class CategoryController extends Controller
             $row[] = $cat->title;
             $row[] = $cat->parent;
             $row[] = $cat->isDownload ? 'Có' : 'Không';
+            $row[] = $cat->isBuy ? 'Có' : 'Không';
             $row[] = '  <a href="'.url("admin/category/edit/".$cat->id).'" class="button green">
                             <div class="icon"><span class="ico-pencil"></span></div>
                         </a>
@@ -71,7 +72,7 @@ class CategoryController extends Controller
 
         $myData['nav']  = 'cat';
         $myData['cats'] = Category::all();    //list category on sidebar 
-        $myData['cat']  = $this->SetCatgory($cat);
+        $myData['cat']  = $this->setCategory($cat);
 
         if (Input::has('_token')) {
             $data = Input::except(array('token'));
@@ -87,14 +88,16 @@ class CategoryController extends Controller
 
                 if($id) $cat = Category::find($id); 
 
-                $cat->title      = Input::get('title');
-                $cat->slug       = str_slug(Input::get('title'));
-                $cat->parent     = Input::get('parent');
-                $cat->searchable = Input::get('searchable');
-                $cat->isDownload = Input::get('isDownload');
+                $cat->title       = Input::get('title');
+                $cat->slug        = str_slug(Input::get('title'));
+                $cat->parent      = Input::get('parent');
+                $cat->searchable  = Input::get('searchable');
+                $cat->isDownload  = Input::get('isDownload');
+                $cat->isHideTitle = Input::get('isHideTitle');
+                $cat->isBuy       = Input::get('isBuy');
                 $cat->save(); 
 
-                $myData['cat']  = $this->SetCatgory($cat);
+                $myData['cat']  = $this->setCategory($cat);
             }
         } else
             $valid = Validator::make([], [], []);
@@ -137,13 +140,15 @@ class CategoryController extends Controller
         $this->myData['doc'] = $arr;
     }
 
-    private function SetCatgory($cat)
+    private function setCategory($cat)
     {
-        $data['id']         = $cat ? $cat->id : '';
-        $data['title']      = $cat ? $cat->title : '';
-        $data['parent']     = $cat ? $cat->parent : '';
-        $data['searchable'] = $cat ? $cat->searchable : '';
-        $data['isDownload'] = $cat ? $cat->isDownload : '';
+        $data['id']          = $cat ? $cat->id : '';
+        $data['title']       = $cat ? $cat->title : '';
+        $data['parent']      = $cat ? $cat->parent : '';
+        $data['searchable']  = $cat ? $cat->searchable : '';
+        $data['isDownload']  = $cat ? $cat->isDownload : '';
+        $data['isHideTitle'] = $cat ? $cat->isHideTitle : '';
+        $data['isBuy']       = $cat ? $cat->isBuy : '';
 
         return $data;
     }

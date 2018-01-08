@@ -7,8 +7,13 @@ use Illuminate\Http\Request;
 use App\Document;
 use App\Acronym;
 use App\Category;
-use App\Http\Requests;
+use App\Models\UserCoin;
+use App\Models\UsersDocument;
 
+use App\Http\Requests;
+use Illuminate\Support\Facades\DB;
+
+use Auth;
 use File;
 use DocumentHelper;
 
@@ -155,19 +160,52 @@ class DocumentController extends Controller
     }
 
     /**
+     * Process buying document
+     * @param string $id document's id
+     * @return status
+     */
+    public function ajaxBuyDocument($id)
+    {
+        $doc = Document::where('id', $id)->first();
+        $result = $this->checkUserDocumentStatus($doc);
+        $status = FALSE;
+        if ($result == BUYED) {
+            $status = TRUE;
+        } elseif ($result == BUY) {
+            DB::beginTransaction();
+            $uDoc              = new UsersDocument;
+            $uDoc->user_id     = Auth::user()->id;
+            $uDoc->document_id = $doc->stt;
+            if ($uDoc->save()) {
+                $coin = UserCoin::where('user_id', Auth::user()->id)->first();
+                $coin = $coin->coin - 1;
+                if (UserCoin::where('user_id', Auth::user()->id)->update(['coin' => $coin])) {
+                    $status = TRUE;
+                    DB::commit();
+                }
+                if (!$status)
+                    DB::rollBack();
+            }
+        }
+        return ['status' => $status];
+    }
+
+    /**
      * Set data to display in view
      * @param $doc
      * @return array
      */
     private function setData($doc, $cat = null)
     {
-        $content = !is_null($doc) ? DocumentHelper::ProcessContent($doc->content, $doc->hasTable) : '';
+        $content = !is_null($doc) ? $doc->content : '';
+        if (!is_null($doc) && $cat['isHideTitle']) {
+            $content = DocumentHelper::ProcessContent($doc, $doc->hasTable);
+        }
         return [
             'stt'        => !is_null($doc) ? $doc->stt : '',
             'id'         => !is_null($doc) ? $doc->id : '',
             'title'      => !is_null($doc) ? $doc->title : '',
             'content'    => $content,
-            'isDownload' => !is_null($doc) ? $doc->isDownload : 0,
             'currentCat' => !is_null($cat) ? $cat : ''
         ];
     }
@@ -191,5 +229,34 @@ class DocumentController extends Controller
         } else {
             return "docx";
         }
+    }
+
+    /**
+    * check if user logged in or have coin or buyed documents
+    * @param array $doc document
+    * @return status
+    */
+    private static function checkUserDocumentStatus($doc)
+    {
+        $status = FALSE;
+        if (!empty($doc)) {
+            if (!Auth::user()) {
+                $status = LOGIN;
+            } else {
+                $uCoin = UserCoin::where('user_id', Auth::user()->id)->first();
+                $uDoc  = UsersDocument::
+                where('user_id', Auth::user()->id)
+                ->where('document_id', $doc->stt)
+                ->first();
+                if (!empty($uDoc)) {
+                    $status = BUYED;
+                } elseif ($uCoin->coin > 0) {
+                    $status = BUY;
+                } elseif (!$uCoin->coin) {
+                    $status = NOTCOIN;
+                }
+            }
+        }
+        return $status;
     }
 }

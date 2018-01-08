@@ -1,6 +1,6 @@
 $(document).ready(function(){
-    
-// 1 - animation vertical menu ---------------------------------------------------------
+
+// animation vertical menu ---------------------------------------------------------
     $("#vertical-menu p").click(function(){
         //slide up all the link lists
         $("#vertical-menu ul").slideUp();
@@ -11,9 +11,9 @@ $(document).ready(function(){
             $(this).nextAll("ul").eq(0).slideDown("slow");
         }
     });
-//  END ----------------------------- 1
+//  END -----------------------------
 
-// 2 - animation title index and request ajax ---------------------------------------------------------
+// animation title index and request ajax ---------------------------------------------------------
     $(".main-title-index").click(function(){
         var id = $(this).attr('id');
         id    = id.slice(-1);
@@ -33,26 +33,103 @@ $(document).ready(function(){
           
         $.ajaxx("home/ajax/"+id, "#content");
     });
-//  END ----------------------------- 2
+//  END -----------------------------
     
-    $.hihi = function(event) {
-        switch (event.which) {
-            case 1:
-                alert('Left Mouse button pressed.');
-                break;
-            case 2:
-                alert('Middle Mouse button pressed.');
-                break;
-            case 3:
-                alert('Right Mouse button pressed.');
-                break;
-            default:
-                alert('You have a strange Mouse!');
-        }
+// ajax ---------------------------------------------------------
+    $.ajaxx = function(link, attr) {
+        var request = $.ajax({
+            //async: false,
+              url: 'http://' + window.location.hostname + link,
+              method: "GET",
+              //data: { id : id },
+              //dataType: "html"
+        });
+
+        request.done(function( msg ) {
+          $( attr ).html( msg );
+        });
+
+        request.fail(function( jqXHR, textStatus ) {
+          console.log( "Request failed: " + textStatus );
+        });        
     };
+//  END -----------------------------
+
+// set time to hide announcement when uploading data in admin panel ---------------------------------------------------------    
+    setTimeout(function(){
+        $('#upload').fadeOut(1000);
+    }, 1500);
+//  END -----------------------------
+
+// siderbar menu toggle ---------------------------------------------------------
+    // $(".sidebar-main > li > a").click(function(e) {
+        // e.preventDefault();
+        // var $this = $(this);        
+        // $this.parent().children("ul").stop(true, true).slideToggle("normal");
+    // });
+//  END -----------------------------
+
+// check search form before submit ---------------------------------------------------------
+    $.CheckSearch = function() {
+        $v = $("#sear-inp").val();
+        if(($v == "tìm kiếm.....") || ($v == '') || ($v == ' '))
+            return false;
+        return true;
+    };
+    $("#sear-inp").focusin(function(){
+        $value = $( this ).val();
+        if($value == 'tìm kiếm.....') $( this ).val('');
+        $( this ).css("font-style", "normal");
+    });
+    $("#sear-inp").focusout(function(){
+        $value = $( this ).val();
+        if($value == '') $( this ).val('tìm kiếm.....');
+        if($value == ' ') $( this ).val('tìm kiếm.....');
+        $( this ).css("font-style", "italic");
+    });    
+//  END -----------------------------
+
+});
+
+// detect what mouse is pressed---------------------------------------------------------
+$.hihi = function(event) {
+    switch (event.which) {
+        case 1:
+            alert('Left Mouse button pressed.');
+            break;
+        case 2:
+            alert('Middle Mouse button pressed.');
+            break;
+        case 3:
+            alert('Right Mouse button pressed.');
+            break;
+        default:
+            alert('You have a strange Mouse!');
+    }
+};
+//  END -----------------------------
+
+// ---------------------------------------------------------
+$.DisplayContent = function(i) {
+    if(i==1){
+        $("#tab-header-1").addClass("tab-active");
+        $("#tab-header-2").removeClass("tab-active");
+            
+        $("#tab-content-1").css("display", "block");
+        $("#tab-content-2").css("display", "none");
+    }
+    if(i==2){
+        $("#tab-header-1").removeClass("tab-active");
+        $("#tab-header-2").addClass("tab-active");
+        
+        $("#tab-content-1").css("display", "none");
+        $("#tab-content-2").css("display", "block");
+    }
+};
+//  END -----------------------------
     
-// 3 - remove fancybox when click outside content ---------------------------------------------------------    
-//---- request ajax when click 'Thông tư 05/2014/TT-BTC' ---------------------------------------------------------    
+// remove fancybox when click outside content ---------------------------------------------------------
+//---- request ajax when click 'Thông tư 05/2014/TT-BTC' ---------
     $(document).mousedown(function(event) {
         
         var myClass = $(event.target).attr('class');
@@ -74,83 +151,25 @@ $(document).ready(function(){
                }
         }
     });
-//  END ----------------------------- 3
-    
-// 4 - ajax ---------------------------------------------------------
-    $.ajaxx = function(link, attr) {
-        var request = $.ajax({
-            //async: false,
-              url: 'http://' + window.location.hostname + link,
-              method: "GET",
-              //data: { id : id },
-              //dataType: "html"
-        });
+//  END -----------------------------
 
-        request.done(function( msg ) {
-          $( attr ).html( msg );
-        });
+// x -  ---------------------------------------------------------
+function showPopupDialg(id)
+{
+    $(id).show();
+    $(id).animate({
+        left: '55%',
+        opacity: '1'
+    }, 'slow', 'swing');
+}
+//  END ----------------------------- x
 
-        request.fail(function( jqXHR, textStatus ) {
-          console.log( "Request failed: " + textStatus );
-        });        
-    };
-//  END ----------------------------- 4
-
-// 5 -  ---------------------------------------------------------
-    $.DisplayContent = function(i) {
-        if(i==1){
-            $("#tab-header-1").addClass("tab-active");
-            $("#tab-header-2").removeClass("tab-active");
-                
-            $("#tab-content-1").css("display", "block");
-            $("#tab-content-2").css("display", "none");
-        }
-        if(i==2){
-            $("#tab-header-1").removeClass("tab-active");
-            $("#tab-header-2").addClass("tab-active");
-            
-            $("#tab-content-1").css("display", "none");
-            $("#tab-content-2").css("display", "block");
-        }
-    };
-    //  END ----------------------------- 5
-
-// 6 - set time to hide announcement when uploading data in admin panel ---------------------------------------------------------    
-    setTimeout(function(){
-        $('#upload').fadeOut(1000);
-    }, 1500);
-//  END ----------------------------- 6
-
-// 7 - siderbar menu toggle ---------------------------------------------------------
-    // $(".sidebar-main > li > a").click(function(e) {
-        // e.preventDefault();
-        // var $this = $(this);        
-        // $this.parent().children("ul").stop(true, true).slideToggle("normal");
-    // });
-//  END ----------------------------- 7
-
-// 8 - check search form before submit ---------------------------------------------------------
-    $.CheckSearch = function() {
-        $v = $("#sear-inp").val();
-        if(($v == "tìm kiếm.....") || ($v == '') || ($v == ' '))
-            return false;
-        return true;
-    };
-    $("#sear-inp").focusin(function(){
-        $value = $( this ).val();
-        if($value == 'tìm kiếm.....') $( this ).val('');
-        $( this ).css("font-style", "normal");
+function hidePopupDialg(id)
+{
+    $(id).fadeOut(function(){
+        $('#dialog').css({left:'60%', opacity: '0.5'});
+        $(id + ' .pop-content').html('');
     });
-    $("#sear-inp").focusout(function(){
-        $value = $( this ).val();
-        if($value == '') $( this ).val('tìm kiếm.....');
-        if($value == ' ') $( this ).val('tìm kiếm.....');
-        $( this ).css("font-style", "italic");
-    });    
-//  END ----------------------------- 8
-
-});
-
-
+}
 // x -  ---------------------------------------------------------
 //  END ----------------------------- x

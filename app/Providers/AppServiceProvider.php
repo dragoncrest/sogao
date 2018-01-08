@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Category;
-use App\Models\Coin;
+use App\Models\UserCoin;
 
 use Auth;
 
@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
             $cats = Category::where('searchable', 1)->get();
             $view->with('cates', $cats);
             if (Auth::user()) {
-                $coin = Coin::where('user_id', Auth::user()->id)->first();
+                $coin = UserCoin::where('user_id', Auth::user()->id)->first();
                 if (!$coin) {
                     $coin = 0;
                 } else {

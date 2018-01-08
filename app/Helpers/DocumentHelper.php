@@ -1,26 +1,39 @@
 <?php
 use App\Document;
 use App\Acronym;
+use App\Models\UserCoin;
+use App\Models\UsersDocument;
 
 class DocumentHelper
 {
+    private static $coin = 0;
+    private static $buyedDocuments = '';
+
     /**
      * processing content of document
      * @param string $str content of file
      * @param bool $hasTable check content has <table> or not
      * @return string
      */
-    public static function ProcessContent($content, $hasTable)
+    public static function ProcessContent($doc, $hasTable)
     {
+        // get buyed document and coin of login user
+        if (Auth::user()) {
+            $uCoin                = UserCoin::where('user_id', Auth::user()->id)->first();
+            self::$coin           = $uCoin->coin;
+            self::$buyedDocuments = UsersDocument::where('user_id', Auth::user()->id)->get();
+        }
+        // process document's content
+        $content = $doc->content;
         if (!$hasTable) {
-            return static::ProcessDocumentId($content);
+            return self::ProcessDocumentId($content);
         } else {
             $sTablePos  = strpos($content, '<table');
             $secondPart = $content;
             $content    = $firstPart = '';
             while ($sTablePos) {
                 $firstPart  = substr($secondPart, 0, $sTablePos);
-                $firstPart  = static::ProcessDocumentId($firstPart);
+                $firstPart  = self::ProcessDocumentId($firstPart);
                 $eTablePos  = strpos($secondPart, '</table', $sTablePos) + 8;
                 $table      = substr($secondPart, $sTablePos, ($eTablePos - $sTablePos));
                 $secondPart = substr($secondPart, $eTablePos);
@@ -32,20 +45,20 @@ class DocumentHelper
     } //end ProcessContent($content, $hasTable)
 
     /**
-     * remove token and insert link to another document
+     * remove token and insert link to document
      * @param string $str content need to insert link
      * @return string
      */
     public static function ProcessDocumentId($str)
-    {       //return $str;
+    {
         //store yellow/red text position
         $quaPos = null;
         $redPos = null;
         $yelPos = null;
-        
+
         //store ID 'XD.TT-PPP3' finded in <span> tag
         $idXDTTPPP = 0;
-        
+
         //extract all <p> tag into $pMatch
         preg_match_all("/<p(.*?)<\/p>/si", $str, $pMatch);
         $content = '';
@@ -55,17 +68,17 @@ class DocumentHelper
         for($i = 0; $i < $pLength; $i++){
             //$pMatch[$i] = str_replace("<o:p></o:p>", "", $pMatch[$i]);
 
-            //find out yellow and red color in <p>
+            //find out color in <p>
             $redPos = strpos($pMatch[$i], "red");
             $quaPos = strpos($pMatch[$i], "aqua");
             $yelPos = strpos($pMatch[$i], "yellow");
 
             if ($quaPos) {                                                  //background color = aqua
-                $pMatch[$i] = static::ProcessAquaText($pMatch[$i]);
+                $pMatch[$i] = self::ProcessAquaText($pMatch[$i]);
             } elseif($yelPos) {                                             //background color = yellow
-                $pMatch[$i] = static::ProcessYellowText($pMatch[$i]);
+                $pMatch[$i] = self::ProcessYellowText($pMatch[$i]);
             } elseif ($redPos && empty(strpos($pMatch[$i], "*"))) {         //text color = red
-                $pMatch[$i] = static::ProcessRedText($pMatch[$i]);
+                $pMatch[$i] = self::ProcessRedText($pMatch[$i]);
             }
 
             if ($redPos)
@@ -101,20 +114,29 @@ class DocumentHelper
         $redPos = strpos($str, ">", $redPos)+1;     //find close tag of '<span' from red position
         $endSpan= strpos($str, "</span", $redPos);  //find '</span' from red position
         $length = $endSpan - $redPos;
-        $subStr = substr($str, $redPos, $length); 
-        $id     = static::ExtractID($subStr);
-        $id     = static::vn_str_filter($id);
+        $subStr = substr($str, $redPos, $length);   //original name of document
+        $id     = self::ExtractID($subStr);
+        $id     = self::vn_str_filter($id);
         //insert <a> into <p> between <span>....</span>
         $strFirst = substr($str, 0, $redPos);
-        
-        $data = Document::where('id', $id)->first();
-        if($data)             
-            $subStr   = '<a target="_blank" href="'.url('/document/'.$id).'" replace>'.$subStr.'</a>'; 
-        else       
-            $subStr   = '<a target="_blank" data-fancybox data-type="ajax" data-src="'.url('/document/ajaxDieuKhoan/'.$id).'" replace href="'.$id.'">'.$subStr.'</a>';        
+
+        $data   = Document::where('id', $id)->first();
+        //check user buyed or not buy document, has coin or not
+        $result = self::checkUserStatus($data, $subStr);
+        if (!empty($data)) {
+            $subStr =
+                '<a replace onclick="checkUserStatus(\''.$result['id'].'\', \''.$result['status'].'\')">'.
+                    $result['str'].
+                '</a>';
+        } else {
+            $subStr =
+                '<a target="_blank" data-fancybox data-type="ajax" data-src="'.url('/document/ajaxDieuKhoan/'.$id).'" replace href="'.$id.'">'.
+                    $subStr.
+                '</a>';
+        }
         
         $length   = strlen($str) - $endSpan;
-        $strLast  = substr($str, $endSpan, $length);  
+        $strLast  = substr($str, $endSpan, $length);
          
         return $strFirst.$subStr.$strLast;
     }//end InsertAtag($str)
@@ -126,23 +148,23 @@ class DocumentHelper
     */  
     public static function ExtractID($str)
     {
-        $str = static::RemoveNBSP($str);             //decode some vietnamese character
+        $str = self::RemoveNBSP($str);             //decode some vietnamese character
 
-        if(strpos($str, "uật")){            
+        if(strpos($str, "uật")){
             if(strpos($str, "Đầu")){
                 $sub = preg_replace('/\D/','',$str);
                 $sub = substr($sub, 4);
                 $add = '';
-                
+
                 if(strpos($str, "phụ"))
                     $add = 'phuluc';
-                
+
                 if(strpos($str, "công"))
                     return "LDTC".$add.$sub;
                 else
                     return "LDT".$add.$sub;
             }
-            
+
             $arrL = Acronym::where('type','like','luat')->get();
             foreach ($arrL as $law) {
                 if(stripos($str, $law->search)){
@@ -153,11 +175,11 @@ class DocumentHelper
             }
 
         } elseif (stripos($str, "hông")) {
-            return static::stringToID($str, "thongtu");
+            return self::stringToID($str, "thongtu");
         } elseif(stripos($str, "ghị")) {
-            return static::stringToID($str, "nghidinh");            
+            return self::stringToID($str, "nghidinh");
         } elseif(strpos($str, "uyết")) {
-            return static::stringToID($str, "quyetdinh");
+            return self::stringToID($str, "quyetdinh");
         }
     }//end ExtractID($str)
 
@@ -255,10 +277,10 @@ class DocumentHelper
                     }
                     foreach ($extra as $ex) {
                         $exPos = stripos($str, $ex);
-                        if($exPos){                                 //if isset addendum(`extra` field stored in db) in document's name
+                        if ($exPos) {                                 //if isset addendum(`extra` field stored in db) in document's name
                             $sub = substr($str, $exPos);
                             $sub = preg_replace('/\s/','',$sub);
-                            $sub = static::vn_str_filter($sub);
+                            $sub = self::vn_str_filter($sub);
                             break;
                         }
                     }
@@ -279,7 +301,7 @@ class DocumentHelper
         $second = $str;
         do {
             //get the id "59/2015/NĐ-CP" of document and insert <a href=id>
-            $second = static::InsertAtag($second);
+            $second = self::InsertAtag($second);
             /**
             * determine if <p> have another "59/2015/NĐ-CP"
             * and cut the second part to insert <a>
@@ -322,7 +344,7 @@ class DocumentHelper
     public static function ProcessYellowText($str)
     {
         //....<span style="color:#00B050"> DIEU 11 </span>..<span style="background-color: yello">[ ID ]</span>
-        $numbs  = static::CountColor($str,'yellow');
+        $numbs  = self::CountColor($str,'yellow');
         $yelPos = strpos($str, "yellow");
         $oQuote = strpos($str, "[", $yelPos); 
         $cQuote = strpos($str, "]", $yelPos); 
@@ -346,17 +368,17 @@ class DocumentHelper
             $sFontPos = strpos($firstP, "<span", $coloPos);
             $sFontPos = strpos($firstP, ">", $sFontPos)+1;
             $eFontPos = strpos($firstP, "</span>", $sFontPos);
-            
+
             $sub1 = substr($firstP, 0, $sFontPos);
             $sub2 = substr($firstP, $sFontPos, ($eFontPos - $sFontPos));
             $sub3 = substr($firstP, $eFontPos);
-            
+
             $sub1 = $sub1 . "<a href='".url("/document/".$id)."'/>";
             $sub2 = $sub2 . "</a>";
-            
+
             $firstP = $sub1 . $sub2 . $sub3;
             //end first part      
-            
+
             //second part from ] to the end of string
             $secondP = substr($str, $cQuote+1);
             $str = $firstP.$secondP;                 //remove [ID] and insert <a> to DIEU 11                         
@@ -366,8 +388,48 @@ class DocumentHelper
             $oQuote = strpos($str, "[", $yelPos); 
             $cQuote = strpos($str, "]", $yelPos); 
             $coloPos=strpos($firstP, "00B050", $starCo+10);         //+10 to not find itself
-            $starCo = $coloPos+20;     
+            $starCo = $coloPos + 20;
         }
         return $str;
     } // end ProcessYellowText($str)
+
+    /**
+    * check if user logged in or have coin or buyed documents to display link
+    * @param array $doc document
+    * @param string $name link's name display in content
+    * @return array
+    */
+    public static function checkUserStatus($doc, $name)
+    {
+        $status = $id = '';
+        $str    = CDPL;
+        if (!empty($doc)) {
+            if (!Auth::user()) {
+                $status = LOGIN;
+            } else {
+                $isBuyed = false;
+                foreach (self::$buyedDocuments as $key => $buyedDoc) {
+                    if ($buyedDoc->document_id == $doc->stt) {
+                        $isBuyed = true;
+                        break;
+                    }
+                }
+                if ($isBuyed) {
+                    $id     = $doc->id;
+                    $str    = $name;
+                    $status = BUYED;
+                } elseif (self::$coin > 0) {
+                    $id     = $doc->id;
+                    $status = BUY;
+                } elseif (!self::$coin) {
+                    $status = NOTCOIN;
+                }
+            }
+        }
+        return [
+            'id'     => $id,
+            'str'    => $str,
+            'status' => $status
+        ];
+    }
 }// end DocumentHelper

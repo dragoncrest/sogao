@@ -65,7 +65,7 @@ class HomeController extends Controller
      */
     private function setData($title, $doc, $cat=null)
     {
-        $content = !is_null($doc) ? DocumentHelper::ProcessContent($doc->content, $doc->hasTable) : '';
+        $content = !is_null($doc) ? DocumentHelper::ProcessContent($doc, $doc->hasTable) : '';
         return [
             'stt'        => !is_null($doc) ? $doc->stt : '',
             'id'         => !is_null($doc) ? $doc->id : '',
