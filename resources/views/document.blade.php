@@ -2,7 +2,9 @@
 
 @section("content")
             <div class="doc-content">
-        @if($content)
+        @if(isset($status))
+            <h2>Bạn không được xem tài liệu này!</h2>
+        @elseif($content)
             @if($currentCat->isDownload)
                 <h3><a href="javascript:void(0)" id="{!! $id !!}" class="downloadLink">Tải văn bản</a></h3>
             @endif
@@ -89,6 +91,10 @@
                     });
                 }
                 $(document).ready(function() {
+                    @if(isset($status))
+                        var status = '{!! $status !!}';
+                        checkUserStatus('{!! $stt !!}', '{!! $status !!}');
+                    @endif
                     var buy    = parseInt(sessionStorage.buy);
                     var scroll = parseInt(sessionStorage.scrollTop);
                     if (!isNaN(buy)) {

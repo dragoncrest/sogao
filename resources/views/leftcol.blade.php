@@ -43,20 +43,20 @@
                         {{ csrf_field() }}
 
                         <div class="full login-margin">
-                            <span>Email</span>
-                            <input class="login-input" type="text" name="email" />
+                            <input class="login-input" type="text" name="email" placeholder="Email" />
                         </div>
 
                         <div class="full login-margin">
-                            <span>MẬT KHẨU</span>
-                            <input class="login-input" type="password" name="password" />
+                            <input class="login-input" type="password" name="password" placeholder="Mật khẩu" />
                         </div>
 
-                        <div class="full login-margin" style="text-align:right;"><input class="login-submit" type="submit" value="ĐĂNG NHẬP" /></div>                       
-                    <div class="full">
-                        <a href="{{ url('register') }}">ĐĂNG KÝ MỚI</a>
-                        <i><a style="float: right;" href="{{ url('password/reset') }}">QUÊN MẬT KHẨU</a></i>
-                    </div>
+                        <div class="full login-margin" style="text-align:right;">
+                            <input class="login-submit" type="submit" value="ĐĂNG NHẬP" />
+                        </div>                       
+                        <div class="full">
+                            <a href="{{ url('register') }}">ĐĂNG KÝ MỚI</a>
+                            <i><a style="float: right;" href="{{ url('password/reset') }}">QUÊN MẬT KHẨU</a></i>
+                        </div>
                     </form>
                 </div>
             @endif

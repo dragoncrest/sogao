@@ -106,7 +106,6 @@ body{font-family: "UTM Avo", Arial, Helvetica, sans-serif;}
     display: block;
     color: white;
     padding: 5px 0 5px 4%;
-    margin-bottom: 20px;
     border-radius: 7px 7px 0 0;
     -webkit-border-radius: 7px 7px 0 0;
     -moz-border-radius: 7px 7px 0 0;}
@@ -117,10 +116,11 @@ body{font-family: "UTM Avo", Arial, Helvetica, sans-serif;}
     width: 62px;
     display: inline-block;}
 .login-input{
-    width: 99px;
+    height: 20px;
+    width: 95%;
     border: none;
     font-size: 12px;
-    color: #777;
+    color: #444;
     padding: 3px 0 3px 5px;}
 .login-submit{
     font-family: "UTM Avo Bold";

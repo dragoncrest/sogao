@@ -39,8 +39,21 @@ class DocumentController extends Controller
             $doc = Document::where('stt', $id)->first();
 
         if ($doc) {
-            $cat  = $doc->category()->first();
-            $data = $this->setData($doc, $cat);
+            $cat    = $doc->category()->first();
+            if ($cat->isBuy) {
+                $status = $this->checkUserDocumentStatus($doc);
+                if ($status != BUYED) {
+                    $data['id'] = $doc->id;
+                    $data['stt'] = $doc->stt;
+                    $data['title'] = SITE_NAME;
+                    $data['currentCat'] = $cat;
+                    $data['status'] = $status;
+                } else {
+                    $data = $this->setData($doc, $cat);
+                }
+            } else {
+                $data = $this->setData($doc, $cat);
+            }
         } else {
             $data = $this->setData(null, null);
         }
@@ -167,6 +180,11 @@ class DocumentController extends Controller
     public function ajaxBuyDocument($id)
     {
         $doc = Document::where('id', $id)->first();
+        if (!$doc)
+            $doc = Document::where('slug', $id)->first();
+        if (!$doc)
+            $doc = Document::where('stt', $id)->first();
+
         $result = $this->checkUserDocumentStatus($doc);
         $status = FALSE;
         if ($result == BUYED) {

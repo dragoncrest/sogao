@@ -34,7 +34,7 @@
                     </li>
                     <li><a href="javascript:void(0)" class="blred open_file_manager">Quản lý file</a></li>
                     <li>
-                        <a href="{{ url('/admin/users') }}" class="bldblue">Tài khoản</a>
+                        <a href="{{ url('/admin/user') }}" class="bldblue">Tài khoản</a>
                     </li>
                     <li>
                         <a href="#" class="blpurple">Samples</a>

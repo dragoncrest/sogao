@@ -44,12 +44,12 @@ Route::group(['middleware' => ['auth','roles'], 'roles'=>['admin']], function ()
 
     Route::get('/admin/category', 'Admin\CategoryController@index');
     Route::get('/admin/category/ajax', 'Admin\CategoryController@ajax');
-
     Route::any('/admin/category/edit/{stt}', 'Admin\CategoryController@edit');
     Route::any('/admin/category/edit', 'Admin\CategoryController@edit'); 
     Route::any('/admin/category/delete/{id}', 'Admin\CategoryController@delete');
 
-    Route::any('/admin/user/{stt}', 'Admin\UserController@edit');
+    Route::any('/admin/user/{id}', 'Admin\UserController@editUser')->where('id', '[0-9\-\_\.]+');
+    Route::get('/admin/user/ajaxListUser', 'Admin\UserController@ajaxListUser');
     Route::get('/admin/user', 'Admin\UserController@index');
 });
 
