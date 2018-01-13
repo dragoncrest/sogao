@@ -46,7 +46,7 @@
                     </li>
                     @if (!Auth::guest())
                     <li>
-                        <a href="{{ url('admin/logout') }}"><i class="fa fa-btn fa-sign-out"></i>Logout</a>
+                        <a href="{{ url('admin/logout/u') }}"><i class="fa fa-btn fa-sign-out"></i>Logout</a>
                     </li>
                     @endif
                 </ul>

@@ -6,25 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="" />
     <title>{!! $title !!}</title>
-    
+
     <link rel="shortcut icon" href="{{ url('public/favicon.ico') }}">
     
     <link rel="stylesheet" type="text/css" href="{{ url('public/assets/css/font.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ url('public/assets/style.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ url('public/assets/js/fancybox/jquery.fancybox.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ url('public/assets/admin/css/table.css') }}" />
-    
+
     <script type="text/javascript" src="{{ url('public/assets/js/jquery-3.2.1.min.js') }}"></script>
     <script type="text/javascript" src="{{ url('public/assets/js/underscore-min.js') }}"></script>
     <script type="text/javascript" src="{{ url('public/assets/js/fancybox/jquery.fancybox.min.js') }}"></script>
     <script type="text/javascript" src="{{ url('public/assets/admin/js/plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script type="text/javascript" src="{{ url('public/assets/js/custom.js') }}"></script>
+    @yield('header')
 </head>
 <body>
     <div class="banner">
         <img src="{{ url('public/assets/images/banner.png') }}" />
     </div>
-    
+
     <div class="menu">
         <div class="wrapper">
             <ul class="clear">
@@ -42,14 +43,14 @@
             </ul>
         </div>
     </div>
-    
+
     <div class="header-hr"></div><!-- end header -->
 
     <div class="wrapper clear">
         <?php echo view('leftcol');?><!-- end body col 1 -->
 
-        <div class="body-col-2"> 
-            
+        <div class="body-col-2">
+
             <form id="sear-i" class="sear-form clear" method="post" onsubmit="return $.CheckSearch();"  action="/search">
                 {{ csrf_field() }}
                 <!--<input id="sear-inp" class="sear-inp" type="text" name="search" value="tìm kiếm....." />-->
@@ -67,12 +68,12 @@
                 </select>
                 <input class="sear-but" type="submit" value="" />
             </form><!-- end search form -->
-                               
-            @yield('content')    
-                
+
+            @yield('content')
+
         </div><!-- end body col 2 -->
     </div><!-- end main body wrapper -->
-    
+
     <?php echo view('footer');?>
 
 </body>

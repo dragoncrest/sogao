@@ -56,7 +56,8 @@ body{font-family: "UTM Avo", Arial, Helvetica, sans-serif;}
 .menu{background-color: #2454ab;height: 42px;}
 .menu ul{}
 .menu ul li{float: left;}
-.menu ul li a{color: white;
+.menu ul li a{
+    color: white;
     text-transform: uppercase;
     font-family: "UTM Avo Bold";
     padding: 10px 0;
@@ -98,23 +99,24 @@ body{font-family: "UTM Avo", Arial, Helvetica, sans-serif;}
 .sidebar-skyblue{background-color: #d1ecfe;}
 .sidebar-header{font-family: "UTM Avo Bold";}
 .sidebar-header img{margin-bottom: 1px;}
-.sidebar-header-white{color: #fff;display: block;padding: 13px 0 0 7px;}
+.sidebar-header-white{color: #fff;display: block;}
 .sidebar-body{padding: 0 10px;}
 .sidebar-header-login{
     background-color: #2454ab;
-    width: 96%;
-    display: block;
-    color: white;
-    padding: 5px 0 5px 4%;
     border-radius: 7px 7px 0 0;
     -webkit-border-radius: 7px 7px 0 0;
     -moz-border-radius: 7px 7px 0 0;}
+.sidebar-header-logged{
+    margin: 4px 0 0 10px;
+    width: 90%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 5px 0;}
 #login-form{}
 #login-form span{
-    font-family: "UTM Avo Bold";
     font-size: 11px;
-    width: 62px;
-    display: inline-block;}
+    display: inline-block;
+    margin: 4px 0 0 3px;}
 .login-input{
     height: 20px;
     width: 95%;
@@ -130,14 +132,17 @@ body{font-family: "UTM Avo", Arial, Helvetica, sans-serif;}
     background-color: #2454ab;
     border: none;
     border-radius: 3px;
-    padding: 4px 7px;}
-#login-form a{font-size: 10px;}
+    padding: 4px 7px;
+    float: right;}
+#login-form a{font-size: 10px; color: blue;}
 #login-form a:hover{text-decoration: underline;}
 .login-margin{margin-top: 10px;}
 .login-err{font-size: 12px;}
 .coin{}
 .coin img{float: left; margin: 0 5px;}
 .coin span{float: left;}
+.login-remember{float: left; color: #444; font-size: 12px;}
+.login-remember input{float:left; margin: 3px 4px 0 0;}
                     /*--> End sidebar <--*/
 .body-col-2{float: left;width: 75%;}
                     /*--> Begin index title <--*/
@@ -347,3 +352,9 @@ body{font-family: "UTM Avo", Arial, Helvetica, sans-serif;}
     font-family: arial;
     font-weight: bold;}
                     /*--> End dialog <--*/
+            /**********************************************/
+                    /*--> Begin document <--*/
+.example-blur{
+    color: transparent;
+    text-shadow: 0 0 10px #000;}
+                    /*--> End document <--*/

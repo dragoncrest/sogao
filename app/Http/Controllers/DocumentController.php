@@ -39,7 +39,8 @@ class DocumentController extends Controller
             $doc = Document::where('stt', $id)->first();
 
         if ($doc) {
-            $cat    = $doc->category()->first();
+            $cat = $doc->category()->first();
+            //check must buy by category
             if ($cat->isBuy) {
                 $status = $this->checkUserDocumentStatus($doc);
                 if ($status != BUYED) {

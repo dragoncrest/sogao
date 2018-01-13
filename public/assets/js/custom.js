@@ -153,23 +153,28 @@ $.DisplayContent = function(i) {
     });
 //  END -----------------------------
 
-// x -  ---------------------------------------------------------
-function showPopupDialg(id)
+// show popup dialoag ---------------------------------------------------------
+function showPopupDialog(id)
 {
     $(id).show();
     $(id).animate({
         left: '55%',
         opacity: '1'
     }, 'slow', 'swing');
+    $('.pop-close-but').on("click", function() {
+        hidePopupDialog('#dialog');
+    });
 }
-//  END ----------------------------- x
+//  END ----------------------------- showPopupDialog
 
-function hidePopupDialg(id)
+// hide popup dialoag ---------------------------------------------------------
+function hidePopupDialog(id)
 {
     $(id).fadeOut(function(){
         $('#dialog').css({left:'60%', opacity: '0.5'});
         $(id + ' .pop-content').html('');
     });
 }
+//  END ----------------------------- hidePopupDialog
 // x -  ---------------------------------------------------------
 //  END ----------------------------- x

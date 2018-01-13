@@ -70,10 +70,10 @@
     <div id="loader"><img src="{{ url('public/assets/images/loader.gif') }}"/></div>
     <div class="wrapper">
 
-        <?php echo view('admin.sidebar', $data);?>
+        @include('admin.sidebar', $data)
 
         <div class="body">
-            <?php echo view('admin.navigation');?>
+            @include('admin.navigation')
 
             @yield('content')
         </div><!-- end body -->

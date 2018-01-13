@@ -25,9 +25,9 @@
             <div class="sidebar sidebar-skyblue">
 
             @if(Auth::user())
-                <span class="sidebar-header sidebar-header-white sidebar-header-login">
-                    Xin chào: {{ Auth::user()->name }}
-                </span>
+                <div class="sidebar-header sidebar-header-white sidebar-header-login">
+                    <div class="sidebar-header-logged">Xin chào: {{ Auth::user()->name }}</div>
+                </div>
 
                 <div class="sidebar-body">
                     <div class="coin clear">
@@ -37,23 +37,47 @@
                     <a href="{{ url('logout') }}">Đăng xuất</a>
                 </div>
             @else
-                <span class="sidebar-header sidebar-header-white sidebar-header-login">ĐĂNG NHẬP</span>
+                <div class="sidebar-header sidebar-header-white sidebar-header-login">
+                    <div class="sidebar-header-logged">ĐĂNG NHẬP</div>
+                </div>
+                <?php
+                    $emailError = $passwordError = '';
+                    if (Session::has('isLogin')) {
+                        if ($errors->has('email')) {
+                            $emailError = 'has-error';
+                        }
+                        if ($errors->has('password')) {
+                            $passwordError = 'has-error';
+                        }
+                    }
+                ?>
                 <div class="sidebar-body">
                     <form id="login-form" method="POST" action="{{ url('login') }}">
                         {{ csrf_field() }}
 
-                        <div class="full login-margin">
+                        <div class="full login-margin {{ $emailError }}">
                             <input class="login-input" type="text" name="email" placeholder="Email" />
+                            @if ($emailError)
+                            <span class="help-block">
+                                {{ $errors->first('email') }}
+                            </span>
+                            @endif
                         </div>
 
-                        <div class="full login-margin">
+                        <div class="full login-margin {{ $passwordError }}">
                             <input class="login-input" type="password" name="password" placeholder="Mật khẩu" />
+                            @if ($passwordError)
+                            <span class="help-block">
+                                {{ $errors->first('password') }}
+                            </span>
+                            @endif
                         </div>
 
-                        <div class="full login-margin" style="text-align:right;">
+                        <div class="full login-margin clear">
+                            <div class="login-remember"><input type="checkbox" name="remember">Duy trì</div>
                             <input class="login-submit" type="submit" value="ĐĂNG NHẬP" />
                         </div>                       
-                        <div class="full">
+                        <div class="full login login-margin">
                             <a href="{{ url('register') }}">ĐĂNG KÝ MỚI</a>
                             <i><a style="float: right;" href="{{ url('password/reset') }}">QUÊN MẬT KHẨU</a></i>
                         </div>
