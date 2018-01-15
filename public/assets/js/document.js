@@ -12,11 +12,10 @@ function checkUserStatus(idDoc, status)
         str  += "Click vào <a href=''>đây</a> để nạp thêm";
         idDoc = 0;
     } else if (status == LOGIN) {
-        str   = "Bạn phải đăng nhập và là thành viên VIP";
-        str  += " mới có thể xem bài viết này.";
+        str   = "Chức năng này chỉ dành cho thành viên";
         idDoc = 0;
     } else if (status == BUY) {
-        str  = "Mất 1 xu để xem bài viết này";
+        str  = "Bạn sẽ trả 1 xu để xem bài viết này";
     }
     if (status != BUYED) {
         var template = $('#dialogStatus-template').html();

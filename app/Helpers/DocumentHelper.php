@@ -131,7 +131,7 @@ class DocumentHelper
         } else {
             $subStr =
                 '<a target="_blank" data-fancybox data-type="ajax" data-src="'.url('/document/ajaxDieuKhoan/'.$id).'" replace href="'.$id.'">'.
-                    $subStr.
+                    CDPL.
                 '</a>';
         }
         

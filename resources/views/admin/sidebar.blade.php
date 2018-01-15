@@ -19,8 +19,10 @@
                         <ul>
                             <li><a href="{{ url('/admin/document/edit') }}">Thêm mới văn bản</a></li>
                             
-                            <?php foreach($cates as $cat):?>
-                            <li><a href="<?php echo url('/admin/document/'.$cat->id)?>"><?php echo $cat->title;?></a></li>
+                            <?php foreach($catsAdmin as $cat):?>
+                            <li>
+                                <a href="<?php echo url('/admin/document/'.$cat->id)?>"><?php echo $cat->title;?></a>
+                            </li>
                             <?php endforeach;?>
                         </ul>
                     </li>

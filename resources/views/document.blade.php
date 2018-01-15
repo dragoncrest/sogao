@@ -30,8 +30,8 @@
                 <div class="_content"><%= _str %></div>
                 <% if ((typeof(_idDoc) != 'undefined') && _idDoc) { %>
                 <div class="_button">
-                    <a href="javascript:void(0)" class="pop-but pop-but-close" onclick="hidePopupDialog('#dialog');">Đóng</a>
-                    <a href="javascript:void(0)" class="pop-but pop-but-buy" onclick="buyDocument('<%= _idDoc %>')">Mở</a>
+                    <a href="javascript:void(0)" class="pop-but pop-but-close" onclick="hidePopupDialog('#dialog');">Hủy</a>
+                    <a href="javascript:void(0)" class="pop-but pop-but-buy" onclick="buyDocument('<%= _idDoc %>')">Đồng ý</a>
                 </div>
                 <% } %>
                 <% if (typeof(_isBuying) != 'undefined') { %>

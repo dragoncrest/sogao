@@ -116,7 +116,7 @@ class DocumentController extends Controller
             //echo $arr->content;
         }
         else
-            echo '<div class="WordSection1">Dữ liệu ' . $id . " đang được cập nhật</div>";
+            echo '<div class="WordSection1">Văn bản đang được cập nhật</div>';
     }
 
     public function ajaxThutuc($id = 0)

@@ -21,8 +21,10 @@ class AppServiceProvider extends ServiceProvider
         // $this->app['request']->server->set('HTTPS', true);
 
         view()->composer('*',function($view) {
-            $cats = Category::where('searchable', 1)->get();
+            $cats      = Category::where('searchable', 1)->get();
+            $catsAdmin = Category::all();
             $view->with('cates', $cats);
+            $view->with('catsAdmin', $catsAdmin);
             if (Auth::user()) {
                 $coin = UserCoin::where('user_id', Auth::user()->id)->first();
                 if (!$coin) {

@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Database\Eloquent\Model;
 
 class Document extends Model
@@ -20,7 +21,10 @@ class Document extends Model
         $this->query = DB::table($this->table);
         $this->query->join('categories', 'categories.id', '=', 'documents.category_id');
         $this->query->select('documents.stt', 'documents.id', 'documents.title','documents.updated_at');
-        $this->query->where('categories.searchable', 1);
+
+        if (strpos(URL::current(), 'admin') < 0) {
+            $this->query->where('categories.searchable', 1);
+        }
 
         if (Input::get('cat'))
             $this->query->where('documents.category_id', Input::get('cat'));
