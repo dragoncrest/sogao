@@ -80,14 +80,14 @@ class UserController extends Controller
         $uCoin = $user->Coin()->first();
         if (Input::has('_token')) {
             $this->validator($id, Input::all());
-            $user->name      = Input::get('name');
-            $user->email     = Input::get('email');
-            $user->password  = Input::get('password') ? Input::get('password') : $user['password'];
+            $user->name         = Input::get('name');
+            $user->email        = Input::get('email');
+            $user->password     = Input::get('password') ? Input::get('password') : $user['password'];
+            $user->phone_number = Input::get('phone_number');
             DB::beginTransaction();
             if ($user->save()) {
-                $coin = Input::get('coin') ? Input::get('coin') : 0;
-                $uC   = new UserCoin(['coin' => $coin]);
-                if ($user->Coin()->save($uC)) {
+                $uCoin->coin = Input::get('coin') ? Input::get('coin') : 0;
+                if ($uCoin->save()) {
                     DB::commit();
                 } else {
                     DB::rollBack();
@@ -108,9 +108,10 @@ class UserController extends Controller
     protected function validator($id, array $data)
     {
         $validator = Validator::make($data, [
-            'name'  => 'required|max:255',
-            'email' => 'required|email',
-            'coin'  => 'numeric|min:0'
+            'name'         => 'required|max:255',
+            'email'        => 'required|email',
+            'coin'         => 'numeric|min:0',
+            'phone_number' => 'max:15|regex:/(^[0-9 ]+$)+/'
         ]);
         if ($validator->fails()) {
             return redirect('admin/user/'.$id)

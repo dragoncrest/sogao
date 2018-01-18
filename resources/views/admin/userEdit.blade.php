@@ -15,64 +15,72 @@
                 </div>
                 
                 <div class="row-fluid">
-                <?php  
-                    echo Form::open(['url' => url('admin/user/'.$data['user']['id']),'id' => 'myform','method'=>'post']);
-                        echo csrf_field();
+                    {{ Form::open(['url' => url('admin/user/'.$data['user']['id']),'id' => 'myform','method'=>'post']) }}
+                        {{ csrf_field() }}
 
-                        echo '<div class="row-form">';
-                            echo "<span class='span2'>Tên:</span>";
-                            echo "<div class='span5'>";
-                                echo Form::text('name', $data['user']['name']);
-                                if ($errors->has('name')) {
-                                    echo '<span class="help-block">';
-                                        echo '<strong>' . $errors->first('name') . '</strong>';
-                                    echo '</span>';
-                                }
-                            echo "</div>";
-                        echo "</div>";
+                        <div class="row-form {{ $errors->has('name') ? 'error' : '' }}">
+                            <span class='span2'>Tên:</span>
+                            <div class='span5'>
+                                <?php echo Form::text('name', $data['user']['name']); ?>
+                                @if ($errors->has('name'))
+                                    <strong>{{ $errors->first('name') }}</strong>
+                                @endif
+                            </div>
+                        </div>
 
-                        echo '<div class="row-form">';
-                            echo "<span class='span2'>Email:</span>";
-                            echo "<div class='span5'>";
-                                echo Form::text('email', $data['user']['email']);
-                                if ($errors->has('email')) {
-                                    echo '<span class="help-block">';
-                                        echo '<strong>' . $errors->first('email') . '</strong>';
-                                    echo '</span>';
-                                }
-                            echo "</div>";
-                        echo "</div>";
+                        <div class="row-form {{ $errors->has('email') ? 'error' : '' }}">
+                            <span class='span2'>Email:</span>
+                            <div class='span5'>
+                                {{ Form::text('email', $data['user']['email']) }}
+                                @if ($errors->has('email'))
+                                    <span>
+                                        <strong>{{ $errors->first('email') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
 
-                        echo '<div class="row-form">';
-                            echo "<span class='span2'>Xu:</span>";
-                            echo "<div class='span5'>";
-                                echo Form::text('coin', $data['uCoin']['coin']);
-                                if ($errors->has('coin')) {
-                                    echo '<span class="help-block">';
-                                        echo '<strong>' . $errors->first('coin') . '</strong>';
-                                    echo '</span>';
-                                }
-                            echo "</div>";
-                        echo "</div>";
+                        <div class="row-form {{ $errors->has('coin') ? 'error' : '' }}">
+                            <span class='span2'>Xu:</span>
+                            <div class='span5'>
+                                {{ Form::text('coin', $data['uCoin']['coin']) }}
+                                @if ($errors->has('coin'))
+                                    <span>
+                                        <strong>{{ $errors->first('coin') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
 
-                        echo '<div class="row-form">';
-                            echo "<span class='span2'>Mật khẩu mới:</span>";
-                            echo "<div class='span5'>";
-                                echo Form::password('password');
-                                if ($errors->has('password')) {
-                                    echo '<span class="help-block">';
-                                        echo '<strong>' . $errors->first('password') . '</strong>';
-                                    echo '</span>';
-                                }
-                            echo "</div>";
-                        echo "</div>";
+                        <div class="row-form {{ $errors->has('password') ? 'error' : '' }}">
+                            <span class='span2'>Mật khẩu mới:</span>
+                            <div class='span5'>
+                                {{ Form::password('password') }}
+                                @if ($errors->has('password')) {
+                                    <span>
+                                        <strong>{{ $errors->first('password') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
 
-                        echo '<div style="width:100%; text-align:center;">'.
-                                '<input type="submit" value="Cập nhật!" class="btn" />'. 
-                            '</div>';
+                        <div class="row-form {{ $errors->has('phone_number') ? 'error' : '' }}">
+                            <span class='span2'>Số điện thoại:</span>
+                            <div class='span5'>
+                                {{ Form::text('phone_number', $data['user']['phone_number']) }}
+                                @if ($errors->has('phone_number'))
+                                    <span>
+                                        <strong>{{ $errors->first('phone_number') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
 
-                    echo Form::close();
-                ?>
+                        <div style="width:100%; text-align:center;">
+                            <input type="submit" value="Cập nhật!" class="btn" />
+                        </div>
+
+                    {{ Form::close() }}
                 </div><!-- end row-fluid -->
             </div><!-- end content -->
 @endsection

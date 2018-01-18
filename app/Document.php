@@ -14,7 +14,7 @@ class Document extends Model
     protected $table = 'documents';
     protected $column_order = [null, 'documents.id','documents.title','documents.updated_at']; //set column field database for datatable orderable
     protected $column_search = ['documents.title']; //set column field database for datatable searchable 
-    protected $order = ['documents.id' => 'asc']; // default order 
+    protected $order = ['documents.stt' => 'asc']; // default order 
 
     private function _get_datatables_query()
     {
@@ -32,58 +32,22 @@ class Document extends Model
          // loop column 
         foreach ($this->column_search as $item) {
             if(Input::has('search.value')) {
-                //remove duplicate white space
-                $search = preg_replace('/\s\s+/', ' ', Input::get('search.value'));
-                $search = rtrim($search);
-                // Quote regular expression characters
-                $search = preg_quote($search);
-                // count " in string
-                $cQuote = preg_match_all('/"/', $search);
-                // check if exits two of " or '
-                if ($cQuote > 1) {
-                    $sQuote = '"';
-                } else {
-                    $cQuote = preg_match_all("/'/", $search);
-                    if ($cQuote > 1)
-                        $sQuote = "'";
-                }
-                // only search text between " " or ' '
-                if ($cQuote > 1) {
-                    $posBegin = strpos($search, $sQuote) + 1;
-                    $posEnd   = strpos($search, $sQuote, $posBegin);
-                    $length   = $posEnd - $posBegin;
-                    $search   = substr($search, $posBegin, $length);
-                    // remove " and '
-                    $search = preg_replace('/"/', '', $search);
-                    $search = preg_replace("/'/", '', $search);
-                    $this->query->where($item, 'like', '%'.$search.'%');
-                    Input::merge(['sSearch' => $search]);
-                    continue;
-                }
-                // remove " and '
-                $search = preg_replace('/"/', '', $search);
-                $search = preg_replace("/'/", '', $search);
-                // creat new input to use when highlight
-                Input::merge(['sSearch' => $search]);
-
+                $search = $this->_processText(Input::get('search.value'));
                 $this->query->where( function($q) use($item, $search) {
-                    // searching whole string
+                    // searching whole word
                     $q->where($item, 'like', '%'.$search.'%');
-                    // then each part of string
-                    if (strpos($search, " ")) {
-                        //searching 1 by 2
-                        $strs      = explode(" ", $search);
-                        $strsCount = count($strs)/2 + 1;
-                        for ($j = 0; $j < $strsCount; $j += 2) {
-                            $subStr = $strs[$j];
-                            if (isset($strs[$j + 1])) {
-                                $subStr = $subStr." ".$strs[$j + 1];
-                            }
-                            $q->orWhere($item, 'like', '%'.$subStr.'%');
+                    // searching each part of word. For example:
+                    // 'thu tuc lap' will be cut to: thu tuc - thu
+                    $words    = explode(' ', $search);
+                    $wordNumb = count($words);
+                    for ($i = $wordNumb; $i > 0; $i--) {
+                        unset($words[$i - 1]);
+                        $str = implode(' ', $words);
+                        if ($str) {
+                            $q->orWhere($item, 'like', '%'.$str.'%');
                         }
                     }
                 });
-
             }
         }
         // here order processing
@@ -92,8 +56,7 @@ class Document extends Model
                 $this->column_order[$_GET['order']['0']['column']],
                 $_GET['order']['0']['dir']
             );
-        } 
-        else if(isset($this->order)) {
+        } else if (isset($this->order)) {
             $order = $this->order;
             $this->query->orderBy(key($order), $order[key($order)]);
         }
@@ -109,14 +72,15 @@ class Document extends Model
         }
         // get all match result
         $result = $this->query->get();
-
         if (empty($result)) return $result;
 
         //highlight matching result
         if (Input::has('search.value')) {
-            $full      = $part = [];
+            $full      = $part = $partTmp = [];
             $numResult = count($result);
             $search    = Input::get('sSearch');
+            $words     = explode(' ', $search);
+            $wordNumb  = count($words);
 
             for ($i = 0; $i < $numResult; $i++) {
                 $result[$i]->title = preg_replace(
@@ -130,24 +94,36 @@ class Document extends Model
                     continue;
                 }
                 // add "highlight each part" to $part array
-                if (strpos($search, " ") && (substr_count($search, ' ') >= 2)) {
-                    $strs = explode(" ", $search);
-                    $strsCount = count($strs)/2 + 1;
-                    for ($j = 0; $j < $strsCount; $j += 2) {
-                        $subStr = $strs[$j];
-                        if (isset($strs[$j + 1])) {
-                            $subStr = $subStr." ".$strs[$j + 1];
+                // searching each part of word. For example:
+                // 'thu tuc lap' will be cut to: thu tuc - thu
+                $wordTmp = $words;
+                for ($j = $wordNumb; $j > 0; $j--) {
+                    if (!strpos($result[$i]->title, "yellow")) {
+                        unset($wordTmp[$j - 1]);
+                        $subStr = implode(' ', $wordTmp);
+                        if (!$subStr) continue;
+                        // check if searched string is exits in title
+                        $pos = stripos($result[$i]->title, $subStr);
+                        if (is_numeric($pos)) {
+                            $result[$i]->title = preg_replace(
+                                "/\p{L}*?".$subStr."\p{L}*/ui",
+                                "<b style='background-color:yellow;'>$0</b>",
+                                $result[$i]->title
+                            );
+                            $part[$j - 1][] = $result[$i];
                         }
-                        $result[$i]->title = preg_replace(
-                            "/\p{L}*?".$subStr."\p{L}*/ui",
-                            "<b style='background-color:yellow;'>$0</b>",
-                            $result[$i]->title
-                        );
-                        $part[] = $result[$i];
                     }
                 }
             }
-            $result = array_merge($full, $part);
+
+            for ($j = $wordNumb; $j > 0; $j--) {
+                if (isset($part[$j - 1])) {
+                    foreach ($part[$j - 1] as $value) {
+                        $partTmp[] = $value;
+                    }
+                }
+            }
+            $result = array_merge($full, $partTmp);
             // paging by cutting array
             $end = Input::get('start') + Input::get('length');
             $tmp = [];
@@ -177,4 +153,45 @@ class Document extends Model
     {
         return $this->belongsTo('App\Category', 'category_id');
     }
+
+    private function _processText ($str)
+    {
+        //remove duplicate white space
+        $search = preg_replace('/\s\s+/', ' ', $str);
+        $search = rtrim($search);
+        // Quote regular expression characters
+        $search = preg_quote($search);
+        // count " in string
+        $cQuote = preg_match_all('/"/', $search);
+        // check if exits two of " or '
+        if ($cQuote > 1) {
+            $sQuote = '"';
+        } else {
+            $cQuote = preg_match_all("/'/", $search);
+            if ($cQuote > 1)
+                $sQuote = "'";
+        }
+        // only search text between " " or ' '
+        if ($cQuote > 1) {
+            $posBegin = strpos($search, $sQuote) + 1;
+            $posEnd   = strpos($search, $sQuote, $posBegin);
+            $length   = $posEnd - $posBegin;
+            $search   = substr($search, $posBegin, $length);
+            // remove " and '
+            $search = preg_replace('/"/', '', $search);
+            $search = preg_replace("/'/", '', $search);
+            $this->query->where($item, 'like', '%'.$search.'%');
+            Input::merge(['sSearch' => $search]);
+            continue;
+        }
+        // remove " and '
+        $search = preg_replace('/"/', '', $search);
+        $search = preg_replace("/'/", '', $search);
+
+        // creat new input to use when highlight
+        Input::merge(['sSearch' => $search]);
+
+        return $search;
+    }
+
 }
