@@ -13,10 +13,13 @@ class Document extends Model
     protected $query;
     protected $table = 'documents';
     protected $column_order = [null, 'documents.id','documents.title','documents.updated_at']; //set column field database for datatable orderable
-    protected $column_search = ['documents.title']; //set column field database for datatable searchable 
-    protected $order = ['documents.stt' => 'asc']; // default order 
+    protected $column_search = ['documents.title']; //set column field database for datatable searchable
+    protected $order = ['documents.stt' => 'asc']; // default order
 
-    private function _get_datatables_query()
+    private $count_filtered = 0;        //store number of matching document
+    private $sSearch        = '';    //store separate of search string
+
+    private function _getDatatablesQuery()
     {
         $this->query = DB::table($this->table);
         $this->query->join('categories', 'categories.id', '=', 'documents.category_id');
@@ -29,27 +32,10 @@ class Document extends Model
         if (Input::get('cat'))
             $this->query->where('documents.category_id', Input::get('cat'));
 
-         // loop column 
-        foreach ($this->column_search as $item) {
-            if(Input::has('search.value')) {
-                $search = $this->_processText(Input::get('search.value'));
-                $this->query->where( function($q) use($item, $search) {
-                    // searching whole word
-                    $q->where($item, 'like', '%'.$search.'%');
-                    // searching each part of word. For example:
-                    // 'thu tuc lap' will be cut to: thu tuc - thu
-                    $words    = explode(' ', $search);
-                    $wordNumb = count($words);
-                    for ($i = $wordNumb; $i > 0; $i--) {
-                        unset($words[$i - 1]);
-                        $str = implode(' ', $words);
-                        if ($str) {
-                            $q->orWhere($item, 'like', '%'.$str.'%');
-                        }
-                    }
-                });
-            }
+        if(Input::has('search.value')) {
+            $this->_getSearchStringQuery();
         }
+
         // here order processing
         if (isset($_GET['order'])) {
             $this->query->orderBy(
@@ -64,7 +50,7 @@ class Document extends Model
 
     public function get_datatables()
     {
-        $this->_get_datatables_query();
+        $this->_getDatatablesQuery();
         // when not use searching
         if (!Input::has('search.value')) {
             $this->query->offset(Input::get('start'));
@@ -76,72 +62,20 @@ class Document extends Model
 
         //highlight matching result
         if (Input::has('search.value')) {
-            $full      = $part = $partTmp = [];
-            $numResult = count($result);
-            $search    = Input::get('sSearch');
-            $words     = explode(' ', $search);
-            $wordNumb  = count($words);
-
-            for ($i = 0; $i < $numResult; $i++) {
-                $result[$i]->title = preg_replace(
-                    "/\p{L}*?".$search."\p{L}*/ui",
-                    "<b style='background-color:yellow;'>$0</b>",
-                    $result[$i]->title
-                );
-                // add "highlight all text" to $full array
-                if (strpos($result[$i]->title, "</b") > 0) {
-                    $full[] = $result[$i];
-                    continue;
-                }
-                // add "highlight each part" to $part array
-                // searching each part of word. For example:
-                // 'thu tuc lap' will be cut to: thu tuc - thu
-                $wordTmp = $words;
-                for ($j = $wordNumb; $j > 0; $j--) {
-                    if (!strpos($result[$i]->title, "yellow")) {
-                        unset($wordTmp[$j - 1]);
-                        $subStr = implode(' ', $wordTmp);
-                        if (!$subStr) continue;
-                        // check if searched string is exits in title
-                        $pos = stripos($result[$i]->title, $subStr);
-                        if (is_numeric($pos)) {
-                            $result[$i]->title = preg_replace(
-                                "/\p{L}*?".$subStr."\p{L}*/ui",
-                                "<b style='background-color:yellow;'>$0</b>",
-                                $result[$i]->title
-                            );
-                            $part[$j - 1][] = $result[$i];
-                        }
-                    }
-                }
-            }
-
-            for ($j = $wordNumb; $j > 0; $j--) {
-                if (isset($part[$j - 1])) {
-                    foreach ($part[$j - 1] as $value) {
-                        $partTmp[] = $value;
-                    }
-                }
-            }
-            $result = array_merge($full, $partTmp);
-            // paging by cutting array
-            $end = Input::get('start') + Input::get('length');
-            $tmp = [];
-            for ($i = Input::get('start'); $i < $end; $i++) {
-                if (isset($result[$i])) {
-                    $tmp[] = $result[$i];
-                }
-            }
-            return $tmp;
+            return $this->_highlightMatchingWord($result);
         }
         return $result;
     }
 
     public function count_filtered()
     {
-        $this->_get_datatables_query();
-        
-        return $this->query->count();
+        if ($this->count_filtered) {
+            $numb = $this->count_filtered;
+        } else {
+            $this->_getDatatablesQuery();
+            $numb = $this->query->count();
+        }
+        return $numb;
     }
 
     public function count_all()
@@ -154,44 +88,89 @@ class Document extends Model
         return $this->belongsTo('App\Category', 'category_id');
     }
 
-    private function _processText ($str)
+    /**
+    * create searching query with each part of search string
+    */
+    private function _getSearchStringQuery()
     {
-        //remove duplicate white space
-        $search = preg_replace('/\s\s+/', ' ', $str);
-        $search = rtrim($search);
-        // Quote regular expression characters
-        $search = preg_quote($search);
-        // count " in string
-        $cQuote = preg_match_all('/"/', $search);
-        // check if exits two of " or '
-        if ($cQuote > 1) {
-            $sQuote = '"';
-        } else {
-            $cQuote = preg_match_all("/'/", $search);
-            if ($cQuote > 1)
-                $sQuote = "'";
+        $words = [];
+        //split string depend on quote
+        preg_match_all('/"(?:\\\\.|[^\\\\"])*"|\S+/', Input::get('search.value'), $matches);
+        if (!empty($matches[0])) {
+            //remove quote in each part
+            foreach ($matches[0] as $key => $word) {
+                $words[$key] = preg_replace('/"|\'/', '', $word);
+                if (empty($words[$key])) {
+                    unset($words[$key]);
+                }
+            }
+            //create query with each search column
+            foreach ($this->column_search as $item) {
+                // create query with each part of search string
+                $this->query->where( function($q) use($item, $words) {
+                    $q->where($item, 'like', '%'.$words[0].'%');
+                    $wordNumb = count($words);
+                    for ($i = 1; $i < $wordNumb; $i++) {
+                        $q->orWhere($item, 'like', '%'.$words[$i].'%');
+                    }
+                });
+            }
         }
-        // only search text between " " or ' '
-        if ($cQuote > 1) {
-            $posBegin = strpos($search, $sQuote) + 1;
-            $posEnd   = strpos($search, $sQuote, $posBegin);
-            $length   = $posEnd - $posBegin;
-            $search   = substr($search, $posBegin, $length);
-            // remove " and '
-            $search = preg_replace('/"/', '', $search);
-            $search = preg_replace("/'/", '', $search);
-            $this->query->where($item, 'like', '%'.$search.'%');
-            Input::merge(['sSearch' => $search]);
-            continue;
-        }
-        // remove " and '
-        $search = preg_replace('/"/', '', $search);
-        $search = preg_replace("/'/", '', $search);
-
-        // creat new input to use when highlight
-        Input::merge(['sSearch' => $search]);
-
-        return $search;
+        // store to hightligh matching word in title of document
+        $this->sSearch = $words;
     }
 
+    /**
+    * hightligh matching word in title of document
+    * order from hight to low matching each part of search string
+    * @param array $datas document
+    * @return array of document with highlight title
+    */
+    private function _highlightMatchingWord($datas)
+    {
+        $numResult = count($datas);
+        for ($i = 0; $i < $numResult; $i++) {
+            //store how much word matching
+            $match = 0;
+            //searching each word in title
+            foreach ($this->sSearch as $word) {
+                $pos = mb_stripos($datas[$i]->title, $word);
+                if (is_numeric($pos) && (strlen($word) > 1)) {
+                    $word = mb_strtolower($word);
+                    $datas[$i]->title = mb_strtolower($datas[$i]->title);
+                    $datas[$i]->title = str_ireplace(
+                        $word,
+                        "<b style='background-color:#ffc107;'>$word</b>",
+                        $datas[$i]->title
+                    );
+                    $match++;
+                }
+            }
+            //push to each array depend on how much word matching
+            if ($match) {
+                $part[$match][] = $datas[$i];
+            }
+        }
+        //merge all document ordered by matching number form hight to low
+        $wordNumb = count($this->sSearch);
+        $partTmp = [];
+        for ($j = $wordNumb; $j > 0; $j--) {
+            if (isset($part[$j])) {
+                foreach ($part[$j] as $value) {
+                    $partTmp[] = $value;
+                }
+            }
+        }
+        // store total of matching title
+        $this->count_filtered = count($partTmp);
+        // paging by cutting array
+        $end = Input::get('start') + Input::get('length');
+        $tmp = [];
+        for ($i = Input::get('start'); $i < $end; $i++) {
+            if (isset($partTmp[$i])) {
+                $tmp[] = $partTmp[$i];
+            }
+        }
+        return $tmp;
+    }
 }

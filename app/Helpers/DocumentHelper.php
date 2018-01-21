@@ -332,7 +332,7 @@ class DocumentHelper
         if($data)
             $link = '<a target="_blank" href="'.url('/document/'.$id).'">';
         else
-            $link = '<a data-fancybox data-type="ajax" data-src="'.url('/document/ajaxDieuKhoan/'.$id).'" href="javascript:;">';
+            $link = '<a data-fancybox data-type="ajax" data-src="'.url('/document/ajaxDieuKhoan/'.$id).'" href="javascript:void(0);">';
         $str = preg_replace("/<a(.*?)>/si",$link,$str);
 
         //remove "-> XD.TT-PPP3" token

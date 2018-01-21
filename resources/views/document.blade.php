@@ -58,7 +58,7 @@
                     status = '{!! $status !!}';
                 @endif
 
-            @if($currentCat->isDownload)
+            @if($currentCat && $currentCat->isDownload)
                 $('.downloadLink').on("click", function() {
                     id = {!! $id ? $id : 0 !!};
                     if (!id) {
