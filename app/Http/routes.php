@@ -24,8 +24,10 @@
     Route::get('/document/ajaxCheckFileExits/{id}', 'DocumentController@ajaxCheckFileExits')->where('id', '[A-Za-z0-9\-\_\.]+');
     Route::get('/document/ajaxThutuc/{id}', 'DocumentController@ajaxThutuc');
     Route::get('/document/ajaxDieuKhoan/{id}', 'DocumentController@ajaxDieuKhoan');
-    Route::get('/document/{id}', 'DocumentController@document');
     Route::get('/document/ajaxBuyDocument/{id}', 'DocumentController@ajaxBuyDocument');
+    Route::get('/document/{id}', 'DocumentController@document');
+
+    Route::get('/vanbandamua', 'DocumentController@documentBuyeds');
 
     Route::get('/search', 'HomeController@search');
     Route::post('/search', 'HomeController@search');

@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Database\Eloquent\Model;
 
+use Auth;
+
 class Document extends Model
 {
     protected $primaryKey = 'stt';
@@ -22,7 +24,7 @@ class Document extends Model
     private function _getDatatablesQuery()
     {
         $this->query = DB::table($this->table);
-        $this->query->join('categories', 'categories.id', '=', 'documents.category_id');
+        $this->query->leftJoin('categories', 'categories.id', '=', 'documents.category_id');
         $this->query->select('documents.stt', 'documents.id', 'documents.title','documents.updated_at');
 
         if (strpos(URL::current(), 'admin') < 0) {
@@ -31,6 +33,11 @@ class Document extends Model
 
         if (Input::get('cat'))
             $this->query->where('documents.category_id', Input::get('cat'));
+
+        if (Input::get('isBuyed')) {
+            $this->query->join('users_documents', 'users_documents.document_id', '=', 'documents.stt');
+            $this->query->where('users_documents.user_id', Auth::user()->id);
+        }
 
         if(Input::has('search.value')) {
             $this->_getSearchStringQuery();
@@ -59,7 +66,6 @@ class Document extends Model
         // get all match result
         $result = $this->query->get();
         if (empty($result)) return $result;
-
         //highlight matching result
         if (Input::has('search.value')) {
             return $this->_highlightMatchingWord($result);

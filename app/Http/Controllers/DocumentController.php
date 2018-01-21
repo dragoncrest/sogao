@@ -23,7 +23,7 @@ class DocumentController extends Controller
 
     public function __construct()
     {
-        $this->docPath = public_path() . "\upload\documents\\";
+        $this->docPath = public_path() . "\upload\documents\\";     // use "/upload/documents/" running on hosting
     }
 
     /**
@@ -40,9 +40,9 @@ class DocumentController extends Controller
 
         if ($doc) {
             $cat = $doc->category()->first();
-            //check must buy by category
-            if ($cat->isBuy) {
-                $status = $this->checkUserDocumentStatus($doc);
+            //check have buy by category or not
+            if ($cat->isBuy || $doc->isBuy) {
+                $status = $this->_checkUserDocumentStatus($doc);
                 if ($status != BUYED) {
                     $data['id'] = $doc->id;
                     $data['stt'] = $doc->stt;
@@ -50,13 +50,13 @@ class DocumentController extends Controller
                     $data['currentCat'] = $cat;
                     $data['status'] = $status;
                 } else {
-                    $data = $this->setData($doc, $cat);
+                    $data = $this->_setData($doc, $cat);
                 }
             } else {
-                $data = $this->setData($doc, $cat);
+                $data = $this->_setData($doc, $cat);
             }
         } else {
-            $data = $this->setData(null, null);
+            $data = $this->_setData(null, null);
         }
 
         return view('document', $data);
@@ -70,7 +70,15 @@ class DocumentController extends Controller
         if (is_null($catSlug)) return;
 
         $cat = Category::where('slug', $catSlug)->first();
-        return view('user.document_list', $this->setData(null, $cat));
+        return view('user.document_list', $this->_setData(null, $cat));
+    }
+
+    /**
+     * get all document by category's slug
+     */
+    public function documentBuyeds()
+    {
+        return view('user.document_list_buyed', $this->_setData(null, null));
     }
 
     /**
@@ -139,14 +147,14 @@ class DocumentController extends Controller
      * @param string $id file's id
      * @return array
      */
-    public function ajaxCheckFileExits($id = 0)
+    public function ajax_checkFileExits($id = 0)
     {
         $doc     = Document::where('id', $id)->first();
         $catSlug = $doc->category()->first()->slug;
         $status  = TRUE;
         $message = "";
 
-        if (!$this->checkFileExits($doc->id, $catSlug)) {
+        if (!$this->_checkFileExits($doc->id, $catSlug)) {
             $status  = FALSE;
             $message = "'" . $doc->title . "' không tồn tại.";
         }
@@ -166,8 +174,8 @@ class DocumentController extends Controller
     {
         $doc      = Document::where('id', $id)->first();
         $catSlug  = $doc->category()->first()->slug;
-        $extend   = $this->checkFileExits($doc->id, $catSlug);
-        $catSlug .= '\\';
+        $extend   = $this->_checkFileExits($doc->id, $catSlug);
+        $catSlug .= '\\';    // use '/' running on hosting
         $file     = $this->docPath . $catSlug . $doc->id . "." . $extend;
         $headers  = ['Content-Type' => 'application/'.$extend];
         return response()->download($file, $doc->slug.".".$extend, $headers);
@@ -186,7 +194,7 @@ class DocumentController extends Controller
         if (!$doc)
             $doc = Document::where('stt', $id)->first();
 
-        $result = $this->checkUserDocumentStatus($doc);
+        $result = $this->_checkUserDocumentStatus($doc);
         $status = FALSE;
         if ($result == BUYED) {
             $status = TRUE;
@@ -214,7 +222,7 @@ class DocumentController extends Controller
      * @param $doc
      * @return array
      */
-    private function setData($doc, $cat = null)
+    private function _setData($doc, $cat = null)
     {
         $content = !is_null($doc) ? $doc->content : '';
         if (!is_null($doc) && $cat['isHideTitle']) {
@@ -234,9 +242,9 @@ class DocumentController extends Controller
      * @param string $id file's id
      * @return string file's extention
      */
-    private function checkFileExits($id, $catSlug)
+    private function _checkFileExits($id, $catSlug)
     {
-        $catSlug .= '\\';
+        $catSlug .= '\\';   // use '/' when running on hosting
         $file     = $this->docPath.$catSlug.$id.".docx";
         if (!File::exists($file)) {
             $file = $this->docPath.$catSlug.$id.".doc";
@@ -255,7 +263,7 @@ class DocumentController extends Controller
     * @param array $doc document
     * @return status
     */
-    private static function checkUserDocumentStatus($doc)
+    private static function _checkUserDocumentStatus($doc)
     {
         $status = FALSE;
         if (!empty($doc)) {

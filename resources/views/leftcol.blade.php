@@ -34,6 +34,7 @@
                         <img src="{{ url('public/assets/images/coin.gif') }}"/>
                         <span>{{ $coin }}</span>
                     </div>
+                    <a href="{{ url('vanbandamua') }}">- Văn bản đã mua</a><br/>
                     <a href="{{ url('logout') }}">Đăng xuất</a>
                 </div>
             @else

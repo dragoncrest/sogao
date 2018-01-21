@@ -1,5 +1,9 @@
 @extends('layouts.layout')
 
+@section('title')
+    {{ empty($currentCat) ? 'Sổ tay 56' : $currentCat->title }}
+@endsection 
+
 @section('content')
         @if(!empty($currentCat) && !is_null($currentCat))
             <div class="content">
@@ -32,7 +36,7 @@
                     "ajax":{
                         "url": "<?php echo url('/document/ajaxTable');?>",
                         "data": function ( d ) {
-                            d.cat = <?php echo isset($currentCat->id) ? $currentCat->id : 0;?>;
+                            d.cat = {{ !empty($currentCat) ? $currentCat->id : 0 }};
                         }
                     },
                     "columnDefs": [{

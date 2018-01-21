@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="" />
-    <title>{!! $title !!}</title>
+    <title>@yield('title')</title>
 
     <link rel="shortcut icon" href="{{ url('public/favicon.ico') }}">
     
@@ -33,7 +33,7 @@
                 <li class="menu-separate"></li>
                 <li><a href="{{ url('/gioi-thieu') }}">giới thiệu</a></li>
                 <li class="menu-separate"></li>
-                <li><a href="{{ url('/cac-goi-dich-vu') }}">gói dịch vụ</a></li>
+                <li><a href="{{ url('/phi-dich-vu') }}">phí dịch vụ</a></li>
                 <li class="menu-separate"></li>
                 <li><a href="{{ url('/huong-dan-su-dung') }}">hướng dẫn</a></li>
                 <li class="menu-separate"></li>

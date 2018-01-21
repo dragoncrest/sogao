@@ -21,7 +21,7 @@
                         <div class="row-form {{ $errors->has('name') ? 'error' : '' }}">
                             <span class='span2'>Tên:</span>
                             <div class='span5'>
-                                <?php echo Form::text('name', $data['user']['name']); ?>
+                                {{ Form::text('name', $data['user']['name']) }}
                                 @if ($errors->has('name'))
                                     <strong>{{ $errors->first('name') }}</strong>
                                 @endif

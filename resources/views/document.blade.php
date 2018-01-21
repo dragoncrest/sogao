@@ -4,6 +4,10 @@
     <script type="text/javascript" src="{{ url('public/assets/js/document.js') }}"></script>
 @endsection
 
+@section('title')
+    {!! $title ? $title : 'Sổ tay 56' !!}
+@endsection 
+
 @section('content')
             <div class="doc-content">
         @if(isset($status))

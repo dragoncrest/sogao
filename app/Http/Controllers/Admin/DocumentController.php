@@ -118,6 +118,7 @@ class DocumentController extends Controller
             $doc->category_id = Input::get('cat');
             $doc->hasTable    = Input::get('hasTable');
             $doc->isDownload  = Input::get('isDownload');
+            $doc->isBuy       = Input::get('isBuy');
             $doc->updated_at  = time();
             $doc->save();
             
@@ -143,6 +144,7 @@ class DocumentController extends Controller
         $arr['category_id'] = ($doc) ? $doc->category_id : 1;
         $arr['hasTable']    = ($doc) ? $doc->hasTable : 0;
         $arr['isDownload']  = ($doc) ? $doc->isDownload : 0;
+        $arr['isBuy']       = ($doc) ? $doc->isBuy : 0;
 
         $this->myData['doc'] = $arr;
     }
