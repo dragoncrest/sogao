@@ -6,7 +6,7 @@
 
 @section('title')
     {!! $title ? $title : 'Sổ tay 56' !!}
-@endsection 
+@endsection
 
 @section('content')
             <div class="doc-content">
@@ -52,6 +52,7 @@
                 var BUY     = '{!! BUY !!}';
 
                 var urlDocument = "{!! url('/document/') !!}/";
+                var urlHowToBuy = "{!! url('/phi-dich-vu/') !!}/";
                 var urlDownload = "{!! url('/document/download/'.$id) !!}";
                 var urlAjaxBuyDocument    = "{!! url('/document/ajaxBuyDocument/') !!}/";
                 var urlAjaxCheckFileExits = "{!! url('/document/ajaxCheckFileExits/'.$id) !!}";

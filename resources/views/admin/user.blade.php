@@ -36,6 +36,7 @@
                                             <th width="10%">Tên</th>
                                             <th width="30%">Email</th>
                                             <th width="10%"><img src="{{ url('public/assets/images/coin.gif') }}"/></th>
+                                            <th width="10%">Trạng thái</th>
                                             <th width="10%">Ngày tạo</th>
                                             <th class="TAC">Actions</th>
                                         </tr>
@@ -57,7 +58,7 @@
                         "url": "<?php echo url('/admin/user/ajaxListUser');?>",
                     },
                     "columnDefs": [{ 
-                        "targets": [ 0, 5 ],
+                        "targets": [ 0, 6 ],
                         "orderable": false, //set not orderable
                     }]
                 });

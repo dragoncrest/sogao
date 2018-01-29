@@ -12,7 +12,6 @@
                                 <tr>
                                     <th width="5%">STT</th>
                                     <th width="55%">Tên</th>
-                                    <th width="15%">Ngày</th>
                                 </tr>
                             </thead>
                             <tbody>

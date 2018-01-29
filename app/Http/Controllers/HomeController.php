@@ -54,12 +54,24 @@ class HomeController extends Controller
 
     public function register()
     {
-        $data = $this->setData("Sổ tay 56", null);
+        $data = $this->setData("Đăng ký tài khoản", null);
         return view('user.register', $data);
     }
 
     /**
+     * Create view to display message "verify email" after register
+     * 
+     * @return view
+     */
+    public function verifyEmail()
+    {
+        $data = $this->setData("Sổ tay 56", null);
+        return view('user.verifyemail', $data);
+    }
+
+    /**
      * Set data to display in view
+     *
      * @param $doc
      * @return array
      */

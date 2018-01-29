@@ -16,6 +16,8 @@
     Route::auth();
 
     Route::get('/register', 'HomeController@register');
+    Route::get('/verifyemail', 'HomeController@verifyEmail');
+    Route::get('/verify/{code}', 'Auth\AuthController@verifyUser')->where('code', '[A-Za-z0-9\-\_\.]+');
 
     Route::get('/document/ajaxTable', 'DocumentController@ajaxTable');
     Route::get('/document/ajax/{id}', 'DocumentController@ajax');
@@ -34,7 +36,7 @@
 
     Route::get('/category/{slug}', 'DocumentController@documents');
 
-Route::group(['middleware' => ['auth','roles'], 'roles'=>['admin']], function () {
+Route::group(['middleware' => ['auth','roles'], 'roles'=>[STR_ADMIN]], function () {
     Route::get('/admin', 'Admin\HomeController@index');
     Route::get('/admin/upload', 'Admin\HomeController@upload');
 

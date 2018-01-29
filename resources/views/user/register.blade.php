@@ -1,5 +1,9 @@
 @extends('layouts.layout')
 
+@section('title')
+    {{ $title }}
+@endsection
+
 @section("content")
             <div class="reg-header"><h2>đăng ký tài khoản</h2></div>
             <div class="reg-body">

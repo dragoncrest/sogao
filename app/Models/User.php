@@ -14,7 +14,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'phone_number'
+        'name', 'email', 'password', 'phone_number', 'verification_code', 'isActive'
     ];
 
     /**
@@ -28,13 +28,13 @@ class User extends Authenticatable
 
     protected $query;
     protected $table = 'users';
-    protected $column_order = [null, 'users.name','users.email', 'user_coins.coin']; //set column field database for datatable orderable
+    protected $column_order = [null, 'users.name','users.email', 'user_coins.coin', 'users.isActive']; //set column field database for datatable orderable
     protected $column_search = ['name', 'email']; //set column field database for datatable searchable 
     protected $order = ['users.created_at' => 'desc']; // default order 
 
     public function role()
     {
-        return $this->hasOne('App\Models\Role', 'id', 'role');
+        return $this->hasOne('App\Models\Role', 'id', 'role_id');
     }
 
     protected function checkIfUserHasRole($role)
@@ -65,7 +65,7 @@ class User extends Authenticatable
 
         $this->query = DB::table($this->table);
         $this->query->leftJoin('user_coins', 'user_coins.user_id', '=', 'users.id');
-        $this->query->select('users.id', 'users.name', 'users.email', 'users.created_at', 'user_coins.coin');
+        $this->query->select('users.id', 'users.name', 'users.email', 'users.created_at', 'user_coins.coin', 'users.isActive');
 
         $i = 0;
         foreach ($this->column_search as $item) {

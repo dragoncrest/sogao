@@ -37,7 +37,7 @@
                 <li class="menu-separate"></li>
                 <li><a href="{{ url('/huong-dan-su-dung') }}">hướng dẫn</a></li>
                 <li class="menu-separate"></li>
-                <li><a href="{{ url('/huong-dan-su-dung') }}">liên hệ</a></li>
+                <li><a href="{{ url('/lien-he') }}">liên hệ</a></li>
                 <li class="menu-separate"></li>
                 <li><a href="{{ url('/quy-uoc-su-dung') }}">quy ước</a></li>
             </ul>

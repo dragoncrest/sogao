@@ -18,6 +18,20 @@
                     {{ Form::open(['url' => url('admin/user/'.$data['user']['id']),'id' => 'myform','method'=>'post']) }}
                         {{ csrf_field() }}
 
+                        @if($data['uRole']['name'] != STR_ADMIN)
+                        <div class="row-form ">
+                            <span class='span2'>Kích hoạt:</span>
+                            <div class='span2'>
+                                {{ Form::radio('isActive', 0, $data['user']['isActive'] == 0 ? true : false) }}
+                                <span for="unActive">Không</span>
+                            </div>
+                            <div class='span2'>
+                                {{ Form::radio('isActive', 1, $data['user']['isActive'] == 1 ? true : false) }}
+                                <span for="isActive">Có</span>
+                            </div>
+                        </div>
+                        @endif
+
                         <div class="row-form {{ $errors->has('name') ? 'error' : '' }}">
                             <span class='span2'>Tên:</span>
                             <div class='span5'>

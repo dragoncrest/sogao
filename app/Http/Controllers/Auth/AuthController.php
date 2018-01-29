@@ -3,14 +3,17 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
-use App\Models\Coin;
+use App\Models\UserCoin;
 
 use Validator;
+use Mail;
+use Hash;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -32,7 +35,7 @@ class AuthController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/';
+    protected $redirectTo = '/verifyemail';
     protected $registerView = 'auth.register';
 
     /**
@@ -43,6 +46,26 @@ class AuthController extends Controller
     public function __construct()
     {
         $this->middleware($this->guestMiddleware(), ['except' => 'logout']);
+    }
+
+    /**
+    * verify user when user click verify link from email
+    *
+    * @param string $confirmation_code
+    */
+    public function verifyUser($confirmation_code)
+    {
+        if (!$confirmation_code) {
+            throw new InvalidConfirmationCodeException;
+        }
+        $user = User::whereVerificationCode(htmlentities($confirmation_code, ENT_QUOTES))->first();
+        if (!$user) {
+            throw new InvalidConfirmationCodeException;
+        }
+        $user->isActive = 1;
+        $user->save();
+        Auth::guard($this->getGuard())->login($user);
+        return redirect('/');
     }
 
     /**
@@ -64,7 +87,7 @@ class AuthController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
+     * @param  array $data
      * @return User
      */
     protected function create(array $data)
@@ -72,21 +95,34 @@ class AuthController extends Controller
         DB::beginTransaction();
 
         $status = true;
+        $code   = str_random(5) . time();
         $user   = User::create([
-            'name'         => $data['name'],
-            'email'        => $data['email'],
-            'password'     => bcrypt($data['password']),
-            'phone_number' => $data['phone_number']
+            'name'              => $data['name'],
+            'email'             => $data['email'],
+            'password'          => bcrypt($data['password']),
+            'phone_number'      => $data['phone_number'],
+            'verification_code' => $code
         ]);
 
         if ($user) {
-            $coin = Coin::create([
+            $coin = UserCoin::create([
                 'user_id' => $user->id,
                 'coin'    => 0
             ]);
             if (!$coin) {
                 $status = false;
                 DB::rollBack();
+            } else {
+                // Mail::send(
+                //     'mail.verify',
+                //     ['verification_code' => $code],
+                //     function($message) use ($data) {
+                //         $message
+                //         ->from('sotay56@gmail.com', 'Sổ tay 56')
+                //         ->to($data['email'], $data['name'])
+                //         ->subject('Xác nhận tài khoản');
+                //     }
+                // );
             }
         } else {
             $status = false;
@@ -96,5 +132,26 @@ class AuthController extends Controller
         if ($status) DB::commit();
 
         return $user;
+    }
+
+    /**
+     * Check if user is actived or not
+     *
+     * @param  array $request
+     * @return status
+     */
+    protected function checkActiveUser($request)
+    {
+        $user = User::where('email', $request->get($this->loginUsername()))->first();
+        if (empty($user)) return false;
+
+        $isMatch = Hash::check($request->get('password'), $user->password, []);
+        if (!$isMatch) return false;
+
+        if ($isMatch && !$user->isActive) {
+            return UNACTIVE;
+        } else {
+            return ACTIVED;
+        }
     }
 }

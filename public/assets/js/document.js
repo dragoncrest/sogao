@@ -8,14 +8,14 @@ function checkUserStatus(idDoc, status)
     if (status == BUYED) {
         window.open(urlDocument + idDoc, '_blank');
     } else if (status == NOTCOIN) {
-        str   = "Số xu của bạn không đủ để mở văn bản này. ";
-        str  += "Click vào <a href=''>đây</a> để nạp thêm";
+        str   = "Số KEY của bạn không đủ để mở văn bản này. ";
+        str  += "Click vào <a href='" + urlHowToBuy + "'>đây</a> để nạp thêm";
         idDoc = 0;
     } else if (status == LOGIN) {
         str   = "Chức năng này chỉ dành cho thành viên";
         idDoc = 0;
     } else if (status == BUY) {
-        str  = "Bạn sẽ trả 1 xu để xem bài viết này";
+        str  = "Bạn sẽ trả 1 KEY để xem bài viết này";
     }
     if (status != BUYED) {
         var template = $('#dialogStatus-template').html();

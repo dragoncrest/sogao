@@ -1,15 +1,14 @@
 @extends('layouts.layout')
 
 @section('title')
-    {{ empty($currentCat) ? 'Sổ tay 56' : $currentCat->title }}
+    Văn bản đã mua
 @endsection
 
 @section('content')
-        @if(!empty($currentCat) && !is_null($currentCat))
             <div class="content">
                 <div class="block">
                     <div class="head blue">
-                        <h2>{{ $currentCat->title }}</h2>
+                        <h2>Danh sách văn bản đã mua</h2>
                     </div>
                     <div class="data-fluid">
                         <table class="table aTable" cellpadding="0" cellspacing="0" width="100%">
@@ -17,6 +16,7 @@
                                 <tr>
                                     <th width="5%">STT</th>
                                     <th width="55%">Tên</th>
+                                    <th width="15%">Ngày</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -35,7 +35,7 @@
                     "ajax":{
                         "url": "<?php echo url('/document/ajaxTable');?>",
                         "data": function ( d ) {
-                            d.cat = {{ !empty($currentCat) ? $currentCat->id : 0 }};
+                            d.isBuyed = true;
                         }
                     },
                     "columnDefs": [{
@@ -44,7 +44,4 @@
                     }],
                 });
             </script>
-        @else
-            <h3><i>Danh mục đang được cập nhật</i></h3>
-        @endif
 @endsection  

@@ -98,7 +98,6 @@ class DocumentController extends Controller
             $row   = array();
             $row[] = $no;
             $row[] = "<a href='".url("/document/".$id)."'>".$document->title."</a>";
-            $row[] = $document->updated_at ? date('d-m-Y',strtotime($document->updated_at)) : null;
  
             $data[] = $row;
         }

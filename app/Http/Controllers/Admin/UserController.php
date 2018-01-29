@@ -48,6 +48,7 @@ class UserController extends Controller
             $row[] = $u->name;
             $row[] = $u->email;
             $row[] = $u->coin ? $u->coin : 0;
+            $row[] = $u->isActive ? '<span class="user-active">'.ACTIVED.'</span>' : UNACTIVE;
             $row[] = $u->created_at ? date('d-m-Y',strtotime($u->created_at)) : null;
             $row[] = '
                 <a href="'.url("admin/user/".$u->id).'" class="button green">
@@ -78,12 +79,16 @@ class UserController extends Controller
         $myData['cats'] = Category::all();
         $user  = User::find($id);
         $uCoin = $user->Coin()->first();
+        $uRole = $user->Role()->first();
         if (Input::has('_token')) {
             $this->validator($id, Input::all());
             $user->name         = Input::get('name');
             $user->email        = Input::get('email');
             $user->password     = Input::get('password') ? Input::get('password') : $user['password'];
             $user->phone_number = Input::get('phone_number');
+            if ($uRole['name'] != STR_ADMIN) {
+                $user->isActive     = Input::get('isActive');
+            }
             DB::beginTransaction();
             if ($user->save()) {
                 $uCoin->coin = Input::get('coin') ? Input::get('coin') : 0;
@@ -96,6 +101,7 @@ class UserController extends Controller
         }
         $myData['user']  = $user;
         $myData['uCoin'] = $uCoin;
+        $myData['uRole'] = $uRole;
         return view('admin.userEdit', ['data' => $myData]);
     }
 
