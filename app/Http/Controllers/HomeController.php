@@ -7,8 +7,11 @@ use App\Category;
 
 use App\Http\Requests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 use Input;
+use Mail;
+use Validator;
 use DocumentHelper;
 
 class HomeController extends Controller
@@ -67,6 +70,48 @@ class HomeController extends Controller
     {
         $data = $this->setData("Sổ tay 56", null);
         return view('user.verifyemail', $data);
+    }
+
+    /**
+     * send feedback from user
+     * 
+     * @return view
+     */
+    public function feedback()
+    {
+        $data = $this->setData("Sổ tay 56", null);
+        if (Input::has('_token')) {
+            $validator = Validator::make(Input::all(), [
+                'content' => 'required'
+            ]);
+            if ($validator->fails()) {
+                return redirect('feedback')
+                        ->withErrors($validator)
+                        ->withInput();
+            }
+            $fb = [
+                'title'    => Input::get('title'),
+                'category' => Input::get('category'),
+                'content'  => Input::get('content'),
+            ];
+            if (!Auth::user()) {
+                $userName = 'Khách';
+            } else {
+                $userName = Auth::user()->name . ' - ' . Auth::user()->id;
+            }
+            // Mail::send(
+            //     'mail.feedback',
+            //     $fb,
+            //     function($message) use ($userName) {
+            //         $message
+            //         ->from('sotay56@gmail.com', $userName)
+            //         ->to('sotay56@gmail.com', 'Sổ tay 56')
+            //         ->subject('[Góp ý]');
+            //     }
+            // );
+            $data['isFeedback'] = true;
+        }
+        return view('user.feedback', $data);
     }
 
     /**

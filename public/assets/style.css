@@ -205,8 +205,8 @@ body{font-family: "UTM Avo", Arial, Helvetica, sans-serif;}
 #footer{margin-top: 10px;}    
 .footer-1{background:url('images/bg_footer_1.png') repeat-x; width: 100%; height: 29px;}
 .footer-2{position: relative;overflow: hidden;height: 167px;width: 100%;margin: 8px 0;color: #363636;}                    
-.footer-2 img{position: absolute;left: -100%;right: -100%;margin: 0 auto;z-index: -1;}
 .footer-3{background:url('images/bg_footer_2.png') repeat-x; width: 100%; height: 29px;}
+.ft-bg{position: absolute;left: -100%;right: -100%;margin: 0 auto;z-index: -1;}
 .ft-bl{width: 40%;margin: 10px 0 0 20px;}
 .ft-bl-lf{text-align: right;margin-right: 10px;margin-right: 10px;}
 .copyright{width: 100%; background-color: #2454ab;height: 40px;padding: 17px 0 0 15px;margin-top: 15px;}    
@@ -214,8 +214,9 @@ body{font-family: "UTM Avo", Arial, Helvetica, sans-serif;}
 .ft-lf-1{font-size: 28px;font-weight: bold;font-family: UTM Avo Bold;}
 .ft-lf-2{font-size: 12px;}
 .ft-hr{height: 2px;border: none;background-color: black;margin: 10px 0 8px;width: 80%;}
-.ft-ri-1{font-family: UTM Avo Bold;font-size: 25px;margin-bottom: 15px;}
+.ft-ri-1{font-family: UTM Avo Bold;font-size: 25px;margin-bottom: 5px;}
 .ft-ri{font-size: 12px;margin: 3px 0;}
+.ft-bct{display: block;}
                     /*--> End footer <--*/
             /**********************************************/
                     /*--> Begin search form <--*/    
@@ -358,3 +359,20 @@ body{font-family: "UTM Avo", Arial, Helvetica, sans-serif;}
     color: transparent;
     text-shadow: 0 0 10px #000;}
                     /*--> End document <--*/
+            /**********************************************/
+                    /*--> Start feedback form <--*/
+.feedback-header{text-align: center; margin-bottom: 15px;}
+.feedback-body{}
+.feedback-form{text-align: center;}
+.feedback-row-1{margin-bottom: 10px;}
+.fb-ip-title{
+    width: 37%;
+    height: 30px;
+    padding-left: 15px;}
+.feedback-row-2{margin-bottom: 10px;}
+.fb-txtarea{width: 75%; padding: 10px 0 0 10px;}
+.feedback-done{
+    border: 2px solid #00b508;
+    border-radius: 5px;
+    padding: 1% 2%;}
+                    /*--> End feedback form <--*/

@@ -40,6 +40,8 @@
                 <li><a href="{{ url('/lien-he') }}">liên hệ</a></li>
                 <li class="menu-separate"></li>
                 <li><a href="{{ url('/quy-uoc-su-dung') }}">quy ước</a></li>
+                <li class="menu-separate"></li>
+                <li><a href="{{ url('/feedback') }}">góp ý</a></li>
             </ul>
         </div>
     </div>

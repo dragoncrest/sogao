@@ -36,6 +36,8 @@
 
     Route::get('/category/{slug}', 'DocumentController@documents');
 
+    Route::any('/feedback', 'HomeController@feedback');
+
 Route::group(['middleware' => ['auth','roles'], 'roles'=>[STR_ADMIN]], function () {
     Route::get('/admin', 'Admin\HomeController@index');
     Route::get('/admin/upload', 'Admin\HomeController@upload');
