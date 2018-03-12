@@ -14,3 +14,4 @@
     define('UNACTIVE', 'unactive');
     // user's role
     define('STR_ADMIN', 'admin');
+    define('ROLE_ADMIN', 2);

@@ -41,7 +41,7 @@
                 <li class="menu-separate"></li>
                 <li><a href="{{ url('/quy-uoc-su-dung') }}">quy ước</a></li>
                 <li class="menu-separate"></li>
-                <li><a href="{{ url('/feedback') }}">góp ý</a></li>
+                <li><a href="{{ url('/chinh-sach-bao-mat-thong-tin') }}">chính sách bảo mật</a></li>
             </ul>
         </div>
     </div>
@@ -56,6 +56,7 @@
             <form id="sear-i" class="sear-form clear" method="post" onsubmit="return $.CheckSearch();"  action="/search">
                 {{ csrf_field() }}
                 <!--<input id="sear-inp" class="sear-inp" type="text" name="search" value="tìm kiếm....." />-->
+                <span class="sear-legend">Chuyên mục: </span>
                 <select class="sear-select" name="cat">
                     <option value="0">tất cả</option>
                 @foreach($cates as $cat)

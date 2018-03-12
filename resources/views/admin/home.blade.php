@@ -51,10 +51,10 @@
                                 </div>
                                 <div class="bottom">
                                     <a href="#">Server information</a>
-                                </div>                            
+                                </div>
                             </div>
                             <div class="widget orange chart nmr">
-                                <div class="left">                                    
+                                <div class="left">
                                     <span class="mChartBar" sparkWidth="90" sparkHeight="90" sparkType="bar" sparkBarColor="#FFFFFF" sparkBarWidth="10">10,9,8.5,8,9,8,7,7.5</span>
                                 </div>
                                 <div class="right">
@@ -64,8 +64,8 @@
                                 </div>
                                 <div class="bottom">
                                     <a href="#">List visits</a>
-                                </div>                            
-                            </div>                        
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -66,7 +66,7 @@ body{font-family: "UTM Avo", Arial, Helvetica, sans-serif;}
     background: url('./images/menu_separate.jpg') no-repeat;
     height: 27px;
     width: 2px;
-    margin: 7px 3% 0;}
+    margin: 7px 2% 0;}
 .header-hr{
     background: url('./images/bg-hr.jpg') repeat-x;
     width: 100%;
@@ -220,12 +220,13 @@ body{font-family: "UTM Avo", Arial, Helvetica, sans-serif;}
                     /*--> End footer <--*/
             /**********************************************/
                     /*--> Begin search form <--*/    
-.sear-form{margin: 10px auto;width: 385px;width: 300px;}
+.sear-form{margin: 10px auto;width: 365px;}
 .sear-inp{
     float: left;
     height: 31px;
     padding-left: 5px;
     width: 200px;}
+.sear-legend{float: left; margin: 5px 5px 0 0;}
 .sear-select{height: 35px;float: left;margin: 0 5px;width: 200px;}
 .sear-but{
     background: #092966 url(./images/but_search.png) no-repeat 2px 4px;

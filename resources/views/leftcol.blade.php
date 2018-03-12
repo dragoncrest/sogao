@@ -1,4 +1,5 @@
         <div class="body-col-1">
+
             <div class="sidebar sidebar-blue">
                 <!--<span class="sidebar-header sidebar-header-white"><img src="{{ url('public/assets/images/dot.png') }}"/> CHUYÊN MỤC</span>-->
                 <ul class="sidebar-body sidebar-main">
@@ -6,7 +7,7 @@
                     <li><a href="{{ url('category/giai-thich-tu-ngu') }}">giải thích từ ngữ</a></li>
                     <li><a href="{{ url('category/bieu-mau') }}">biểu mẫu</a></li>
                     <li>
-                        <a href="{{ url('document/thu-tuc-dau-tu') }}">thủ tục đầu tư</a>
+                        <a href="{{ url('document/tong-quan-ve-du-an-dau-tu-xay-dung') }}">thủ tục đầu tư</a>
                         <ul class="sub-menu">
                             <li><a href="{{ url('document/trinh-tu-thu-tuc-quyet-dinh-chu-truong-dau-tu-xay-dung') }}">chủ trương đầu tư</a></li>
                             <li><a href="{{ url('document/trinh-tu-thu-tuc-quyet-dinh-dau-tu-xay-dung') }}">quyết định đầu tư</a></li>
@@ -18,12 +19,12 @@
                     <li><a href="{{ url('document/quan-ly-chi-phi') }}">quản lý chi phí</a></li>
                     <li><a href="{{ url('document/quan-ly-hop-dong') }}">quản lý hợp đồng</a></li>
                     <li><a href="{{ url('document/tien-ich') }}">tiện ích</a></li>
-                    <li><a href="{{ url('document/ky-nang-mem') }}">kỹ năng mềm</a></li>
+                    <li><a href="{{ url('category/ky-nang-mem') }}">kỹ năng mềm</a></li>
+                    <li><a href="{{ url('/feedback') }}">góp ý</a></li>
                 </ul>
             </div><!-- end menu sidebar -->
 
             <div class="sidebar sidebar-skyblue">
-
             @if(Auth::user())
                 <div class="sidebar-header sidebar-header-white sidebar-header-login">
                     <div class="sidebar-header-logged">Xin chào: {{ Auth::user()->name }}</div>
@@ -87,4 +88,15 @@
             @endif
 
             </div><!-- end login sidebar -->
+        @if(Auth::user() && (Auth::user()->role_id == ROLE_ADMIN))
+            <div class="sidebar">
+                <div style="width: 100%;text-align: center;">
+                    <!-- GoStats Simple HTML Based Code -->
+                    <a target="_blank" title="web site traffic statistics"
+                    href="http://www.gostats.org"><img alt="web site traffic statistics"
+                    src="//www.gostats.org/0.png?a=701069856&ct=3&ci=12" style="border-width:0" /></a>
+                    <!-- End GoStats Simple HTML Based Code -->
+                </div>
+            </div>
+        @endif
         </div><!-- end body col 1 -->

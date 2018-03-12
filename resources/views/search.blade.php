@@ -1,5 +1,9 @@
 @extends('layouts.layout')
 
+@section('title')
+    {!! $title ? $title : 'Sổ tay 56 - Tìm kiếm' !!}
+@endsection
+
 @section('content')
             <div class="content">
                 <div class="block">

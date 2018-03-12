@@ -17,7 +17,10 @@
                 <h3><a href="javascript:void(0)" id="{!! $id !!}" class="downloadLink">Tải văn bản</a></h3>
             @endif
             {!! $content !!}
-            <h3><a href="{{ url("/admin/document/edit/$stt") }}">*Chỉnh sửa bài viết*</a></h3>
+
+            @if(Auth::user() && (Auth::user()->role_id == ROLE_ADMIN))
+                <h3><a href="{{ url("/admin/document/edit/$stt") }}">*Chỉnh sửa bài viết*</a></h3>
+            @endif
         @else
             <h3><i>Tài liệu đang được cập nhật</i></h3>
         @endif

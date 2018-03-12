@@ -3,7 +3,7 @@
 * @param string idDoc
 * @param string status
 */
-function checkUserStatus(idDoc, status)
+function checkUserStatus(idDoc, status, coin)
 {
     if (status == BUYED) {
         window.open(urlDocument + idDoc, '_blank');
@@ -15,7 +15,7 @@ function checkUserStatus(idDoc, status)
         str   = "Chức năng này chỉ dành cho thành viên";
         idDoc = 0;
     } else if (status == BUY) {
-        str  = "Bạn sẽ trả 1 KEY để xem bài viết này";
+        str  = "Bạn đang có " + coin + " KEY, mất 1 KEY để xem bài viết này";
     }
     if (status != BUYED) {
         var template = $('#dialogStatus-template').html();

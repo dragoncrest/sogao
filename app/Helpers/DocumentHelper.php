@@ -125,7 +125,7 @@ class DocumentHelper
         $result = self::checkUserStatus($data, $subStr);
         if (!empty($data)) {
             $subStr =
-                '<a replace onclick="checkUserStatus(\''.$result['id'].'\', \''.$result['status'].'\')">'.
+                '<a replace onclick="checkUserStatus(\''.$result['id'].'\', \''.$result['status'].'\', \''.$result['coin'].'\')">'.
                     $result['str'].
                 '</a>';
         } else {
@@ -429,7 +429,8 @@ class DocumentHelper
         return [
             'id'     => $id,
             'str'    => $str,
-            'status' => $status
+            'status' => $status,
+            'coin'   => self::$coin,
         ];
     }
 }// end DocumentHelper
