@@ -5,6 +5,8 @@
 @endsection
 
 @section('content')
+            <?php echo view('templates/search_form', ['currentCat' => $currentCat]);?>
+
         @if(!empty($currentCat) && !is_null($currentCat))
             <div class="content">
                 <div class="block">
@@ -42,6 +44,16 @@
                         "targets": [ 0 ], //first column / numbering column
                         "orderable": false, //set not orderable
                     }],
+                    "initComplete": function(){
+                        var api = this.api();
+                        $('#DataTables_Table_0_filter input')
+                            .off('.DT')
+                            .on('keyup.DT', function (e) {
+                                if (e.keyCode == 13) {
+                                    api.search(this.value).draw();
+                                }
+                            });
+                    },
                 });
             </script>
         @else

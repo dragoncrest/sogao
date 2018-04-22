@@ -22,26 +22,34 @@
     @yield('header')
 </head>
 <body>
-    <div class="banner">
-        <img src="{{ url('public/assets/images/banner.png') }}" />
-    </div>
-
     <div class="menu">
         <div class="wrapper">
-            <ul class="clear">
-                <li><a href="{{ url('') }}">trang chủ</a></li>
+            <ul class="menu-1 clear">
+                <li class="menu-title menu-home"><a href="{{ url('') }}">chỉ dẫn pháp lý</a></li>
+                <li class="menu-title menu-title-1"><a href="{{ url('/gioi-thieu') }}">giới thiệu</a></li>
                 <li class="menu-separate"></li>
-                <li><a href="{{ url('/gioi-thieu') }}">giới thiệu</a></li>
+                <li class="menu-title menu-title-1"><a href="{{ url('/phi-dich-vu') }}">dịch vụ</a></li>
                 <li class="menu-separate"></li>
-                <li><a href="{{ url('/phi-dich-vu') }}">phí dịch vụ</a></li>
+                <li class="menu-title menu-title-1"><a href="{{ url('/quy-uoc-su-dung') }}">quy ước</a></li>
                 <li class="menu-separate"></li>
-                <li><a href="{{ url('/huong-dan-su-dung') }}">hướng dẫn</a></li>
+                <li class="menu-title menu-title-1"><a href="{{ url('/huong-dan-su-dung') }}">hướng dẫn sử dụng</a></li>
                 <li class="menu-separate"></li>
-                <li><a href="{{ url('/lien-he') }}">liên hệ</a></li>
+                <li class="menu-title menu-title-1"><a href="{{ url('/chinh-sach-bao-mat-thong-tin') }}">chính sách bảo mật</a></li>
                 <li class="menu-separate"></li>
-                <li><a href="{{ url('/quy-uoc-su-dung') }}">quy ước</a></li>
+                <li class="menu-title menu-title-1"><a href="{{ url('/lien-he') }}">liên hệ</a></li>
+            </ul>
+            <ul class="menu-2 clear">
+                <li class="menu-title menu-title-2"><a href="{{ url('') }}">trang chủ</a></li>
                 <li class="menu-separate"></li>
-                <li><a href="{{ url('/chinh-sach-bao-mat-thong-tin') }}">chính sách bảo mật</a></li>
+                <li class="menu-title menu-title-2"><a href="{{ url('/document/tong-quan-ve-du-an-dau-tu-xay-dung') }}">thủ tục đầu tư</a></li>
+                <li class="menu-separate"></li>
+                <li class="menu-title menu-title-2"><a href="{{ url('/document/quan-ly-dau-thau') }}">đấu thầu</a></li>
+                <li class="menu-separate"></li>
+                <li class="menu-title menu-title-2"><a href="{{ url('/document/quan-ly-chi-phi') }}">chi phí</a></li>
+                <li class="menu-separate"></li>
+                <li class="menu-title menu-title-2"><a href="{{ url('/document/quan-ly-hop-dong') }}">hợp đồng</a></li>
+                <li class="menu-separate"></li>
+                <li class="menu-title menu-title-2"><a href="{{ url('/feedback') }}">hỏi đáp</a></li>
             </ul>
         </div>
     </div>
@@ -52,25 +60,6 @@
         <?php echo view('leftcol');?><!-- end body col 1 -->
 
         <div class="body-col-2">
-
-            <form id="sear-i" class="sear-form clear" method="post" onsubmit="return $.CheckSearch();"  action="/search">
-                {{ csrf_field() }}
-                <!--<input id="sear-inp" class="sear-inp" type="text" name="search" value="tìm kiếm....." />-->
-                <span class="sear-legend">Chuyên mục: </span>
-                <select class="sear-select" name="cat">
-                    <option value="0">tất cả</option>
-                @foreach($cates as $cat)
-                    @php
-                        $select = "";
-                        if (!empty($currentCat) && ($cat->id == $currentCat->id)) {
-                            $select = "selected";
-                        }
-                    @endphp
-                    <option {!! $select !!} value="{!! $cat->id !!}">{!! $cat->title !!}</option>
-                @endforeach
-                </select>
-                <input class="sear-but" type="submit" value="" />
-            </form><!-- end search form -->
 
             @yield('content')
 

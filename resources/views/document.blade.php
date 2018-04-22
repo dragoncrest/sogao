@@ -9,6 +9,8 @@
 @endsection
 
 @section('content')
+            <?php echo view('templates/search_form', ['currentCat' => $currentCat]);?>
+
             <div class="doc-content">
         @if(isset($status))
             @include('templates.example')
