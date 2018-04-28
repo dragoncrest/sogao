@@ -12,7 +12,7 @@
                     <p class="ft-lf-2">Người đại diện: Nguyễn Vinh Cường</p>
                 </div>
                 <div class="ft-bl right ft-bl-lf">
-                    <p class="ft-ri-1"><a href="" target="_blank" class="ft-bct"><img src="{{ url('public/assets/images/bct.png') }}"/></a></p>
+                    <p class="ft-ri-1"><a target="_blank" href="http://online.gov.vn/HomePage/CustomWebsiteDisplay.aspx?DocId=40484" class="ft-bct"><img src="{{ url('public/assets/images/bct.png') }}"/></a></p>
                     <p class="ft-ri">VP: Số 117 ngõ 580 đường Trường Chinh, Đống Đa, Hà Nội</p>
                     <p class="ft-ri">Điện thoại: 0905831500</p>
                     <p class="ft-ri">Email: congtykhoithuan@gmail.com</p>

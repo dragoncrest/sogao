@@ -27,6 +27,7 @@ a{outline: none !important;}
                 .content .block .head > .icon{margin-right: 3px;}
 
                 .content .block .head h2{font-size: 20px; color: #fff; line-height: 20px; font-weight: normal; display: inline-block; margin: 0px; padding: 0px;}
+                .content .block .head h3{font-size: 17px; color: #fff; line-height: 20px; font-weight: normal; display: inline-block; margin: 0 0 0 5px; padding: 0 0 2px 0;}
                 .content .block .head .buttons{list-style: none; display: block; float: right; margin: 0px; padding: 0px;}
                     .content .block .head .buttons > li{display: block; float: left; margin-left: 5px; position: relative;} 
 
@@ -139,5 +140,12 @@ a{outline: none !important;}
             background: transparent;
             box-shadow: none;
         }
-
+    .dataTables_search{width: 85%}
+    .dataTables_search .dataTables_filter{float: left; width: 100%}
+    .dataTables_search input{width: 95%}
+    .dataTables_btnSearch{float: left; margin-top: 11px; cursor: pointer;}
+    .dataTables_category{float: left; padding-top: 4px; margin-left: 20px; margin-right: 15%;}
+    .dataTables_category span{font-size: 14px; margin-right: 5px;}
+    .dataTables_select{height: 30px;}
+    .dataTables_addQA{float: right; margin-right: 20px;}
     /* eof datatables */

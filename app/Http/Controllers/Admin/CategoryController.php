@@ -95,7 +95,7 @@ class CategoryController extends Controller
                 $cat->isDownload  = Input::get('isDownload');
                 $cat->isHideTitle = Input::get('isHideTitle');
                 $cat->isBuy       = Input::get('isBuy');
-                $cat->save(); 
+                $cat->save();
 
                 $myData['cat']  = $this->setCategory($cat);
             }

@@ -49,7 +49,9 @@
                 <li class="menu-separate"></li>
                 <li class="menu-title menu-title-2"><a href="{{ url('/document/quan-ly-hop-dong') }}">hợp đồng</a></li>
                 <li class="menu-separate"></li>
-                <li class="menu-title menu-title-2"><a href="{{ url('/feedback') }}">hỏi đáp</a></li>
+                <li class="menu-title menu-title-2"><a href="{{ url('/hoidaps') }}">hỏi đáp</a></li>
+                <li class="menu-separate"></li>
+                <li class="menu-title menu-title-2"><a href="{{ url('/search') }}">tìm kiếm</a></li>
             </ul>
         </div>
     </div>

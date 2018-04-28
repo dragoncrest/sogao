@@ -7,6 +7,7 @@
 
     define('CDPL', 'CDPL');
     define('USER', 'user');
+    define('QA', 'QuestionAnswer');
 
     define('SITE_NAME', 'Sotay56');
     // user's status

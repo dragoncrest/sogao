@@ -1,7 +1,7 @@
 @extends('layouts.layout')
 
 @section('title')
-    {{ $title }}
+    Sổ tay 56
 @endsection
 
 @section("content")

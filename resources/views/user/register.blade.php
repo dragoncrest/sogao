@@ -1,7 +1,7 @@
 @extends('layouts.layout')
 
 @section('title')
-    {{ $title }}
+    Đăng ký tài khoản
 @endsection
 
 @section("content")

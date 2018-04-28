@@ -17,12 +17,7 @@
                 <form id="sear-i" class="sear-form clear" method="post" onsubmit="return $.CheckSearch();"  action="/search">
                     <div class="feedback-row-1">
                         {{ Form::text('title', '', ['class' => 'fb-ip-title', 'placeholder' => 'Tên bài viết']) }}
-                        <select type="text" class="fb-ip-title" name="category">
-                            <option value=''>-- Chuyên mục --</option>
-                            @foreach($cates as $cat)
-                            <option value="{!! $cat->title !!}">{!! $cat->title !!}</option>
-                            @endforeach
-                        </select>
+                        {{ Form::select('category', [null=>'-- Chuyên mục --'] + $cats, '', ['class' => 'fb-ip-title']) }}
                     </div>
                     <div class="feedback-row-2 {{ $errors->has('content') ? 'error' : '' }}">
                         {{ Form::textarea('content', '', ['class' => 'fb-txtarea', 'placeholder' => 'Nội dung', 'rows' => '20']) }}

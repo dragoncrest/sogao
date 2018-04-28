@@ -3,7 +3,7 @@
             <div class="top">
                 <a href="{{ url('/admin') }}" class="logo"></a>
                 <div class="search">
-                    <a href="http://sotay.dev"><h2>Local Sotay</h2></a>
+                    <a href="http://sotay.test"><h2>Local Sotay</h2></a>
                     <!--<div class="input-prepend">
                         <span class="add-on orange"><span class="icon-search icon-white"></span></span>
                         <input type="text" placeholder="search..."/>                                                      
@@ -39,12 +39,7 @@
                         <a href="{{ url('/admin/user') }}" class="bldblue">Tài khoản</a>
                     </li>
                     <li>
-                        <a href="#" class="blpurple">Samples</a>
-                        <div class="open"></div>
-                        <ul>
-                            <li><a href="faq.html">FAQ</a></li>
-                            <li><a href="login.html">Login</a></li>
-                        </ul>
+                        <a href="{{ url('/admin/qa') }}" class="blpurple">Hỏi đáp</a>
                     </li>
                     @if (!Auth::guest())
                     <li>
@@ -64,6 +59,6 @@
 
         <script type="text/javascript">
             $('.open_file_manager').on("click", function() {
-                window.open('//sotay.dev/public/assets/admin/js/plugins/elfinder/elfinder.html?lang=vi','name','width=800,height=500');
+                window.open('//sotay.test/public/assets/admin/js/plugins/elfinder/elfinder.html?lang=vi','name','width=800,height=500');
             });
         </script>

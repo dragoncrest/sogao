@@ -58,7 +58,6 @@ body{font-family: "UTM Avo", Arial, Helvetica, sans-serif;}
 .menu ul li{float: left;}
 .menu ul li a{
     text-transform: uppercase;
-    padding: 10px 0;
     display: block;
     font-family: arial;
     font-weight: bold;
@@ -75,11 +74,12 @@ body{font-family: "UTM Avo", Arial, Helvetica, sans-serif;}
     margin: 5px 0;}
 .menu-1{background-color: #ffffff;}
 .menu-2{background-color: #2454ab;}
+.menu-title a{padding: 10px 18px;}
 .menu-title a:hover{text-decoration: underline;}
-.menu-title-1{padding: 0 2%;}
+.menu-title-1{}
 .menu-title-1 a{color: black;}
-.menu-title-2{padding: 0 35px;}
-.menu-title-2 a{color: white;}
+.menu-title-2{}
+.menu-title-2 a{color: white; padding: 10px 32px;}
 .menu-home{background-color: #ce1212; padding: 0 10px}
 .menu-home a{color: #c3f520;}
                     /*--> End main menu <--*/
@@ -271,15 +271,17 @@ body{font-family: "UTM Avo", Arial, Helvetica, sans-serif;}
     font-size: 16px;}
 .reg-body-button{
     margin: 0 auto 10px;
-    width: 85px;
-    height: 25px;
+    width: 90px;
+    height: 35px;
     display: block;
     background: #448ccb;
     border: none;
     color: white;
     font-weight: bold;
     border-radius: 3px;
-	cursor: pointer;}
+    cursor: pointer;
+    opacity: 0.8;}
+.reg-body-button:hover{opacity: 1;}
 .reg-hr{
     color: #082965;
     background-color: #082965;
@@ -383,7 +385,48 @@ body{font-family: "UTM Avo", Arial, Helvetica, sans-serif;}
 .feedback-row-2{margin-bottom: 10px;}
 .fb-txtarea{width: 75%; padding: 10px 0 0 10px;}
 .feedback-done{
+    display: none;
     border: 2px solid #00b508;
     border-radius: 5px;
     padding: 1% 2%;}
                     /*--> End feedback form <--*/
+            /**********************************************/
+                    /*--> Start QA form <--*/
+.qa-form{}
+.qa-label{}
+.qa-inp{}
+.qa-row{margin-bottom: 15px;}
+.qa-col{float: left; font-size: 14px;}
+.qa-col-l{
+    width: 15%;
+    text-align: right;
+    margin-right: 10px;}
+.qa-col-r{width: 80%;}
+.qa-input{
+    width: 100%;
+    height: 30px;
+    padding-left: 10px;}
+.qa-select{
+    width: 102%;
+    height: 30px;
+    padding-left: 10px;}
+.qa-textarea{width: 100%; padding: 10px 0 0 10px;}
+.btn{
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    border-radius: 0px;
+    border: 0px;
+    background: #009AD7;
+    color: #F9F9F9;
+    text-shadow: none;
+    margin-bottom: 3px;
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 14px;
+    cursor: pointer;}
+.btn:hover, .btn-primary:active, .btn[disabled], .btn.disabled {
+    background: #008DC4;
+    color: #FFF;
+}
+.cred{color: #C22439;}
+                    /*--> End QA form <--*/
