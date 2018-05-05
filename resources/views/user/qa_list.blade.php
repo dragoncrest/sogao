@@ -67,8 +67,7 @@
                 $("div.dataTables_addQA").html(button);
                 $('.dataTables_btnSearch .btn').on( 'click', '', function () {
                     table
-                    .columns(1)
-                    .search($(this).text())
+                    .search($('.dataTables_filter input').val())
                     .draw();
                 });
             </script>

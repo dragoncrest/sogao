@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
@@ -91,7 +91,7 @@ class Document extends Model
 
     public function category()
     {
-        return $this->belongsTo('App\Category', 'category_id');
+        return $this->belongsTo('App\Models\Category', 'category_id');
     }
 
     /**

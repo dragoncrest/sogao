@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
@@ -75,6 +75,6 @@ class Category extends Model
 
     public function documents()
     {
-        return $this->hasMany('App\Document');
+        return $this->hasMany('App\Models\Document');
     }
 }

@@ -4,11 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 
-use App\Document;
-use App\Category;
+use App\Models\Document;
+use App\Models\Category;
 
 use App\Http\Requests;
-use App\Http\Controllers\Controller;
 
 use Input;
 use Validator;

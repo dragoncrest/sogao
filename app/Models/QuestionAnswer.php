@@ -57,7 +57,7 @@ class QuestionAnswer extends Model
 
     public function category()
     {
-        return $this->belongsTo('App\Category');
+        return $this->belongsTo('App\Models\Category');
     }
 
     protected function validator(array $data)

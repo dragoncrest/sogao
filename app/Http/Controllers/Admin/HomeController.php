@@ -4,11 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 
-use App\Category;
-use App\Document;
+use App\Models\Category;
+use App\Models\Document;
 
 use App\Http\Requests;
-use App\Http\Controllers\Controller;
 
 class HomeController extends Controller
 {
@@ -19,9 +18,9 @@ class HomeController extends Controller
     public function index()
     {
         $content['nav']  = null;
-        
-        $data = array('data' => $content) ;
-        
+
+        $data = ['data' => $content];
+
         return view('admin.home', $data);
     }
 

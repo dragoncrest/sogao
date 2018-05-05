@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+use Validator;
+
 class User extends Authenticatable
 {
     /**
@@ -115,5 +117,21 @@ class User extends Authenticatable
     public function coin()
     {
         return $this->hasOne('App\Models\UserCoin');
+    }
+
+    /**
+     * Get a validator for an incoming edit request.
+     *
+     * @param int $id user's id
+     * @param array $data
+     */
+    protected function validator(array $data)
+    {
+        return Validator::make($data, [
+            'name'         => 'required|max:255',
+            'email'        => 'required|email',
+            'coin'         => 'numeric|min:0',
+            'phone_number' => 'max:15|regex:/(^[0-9 ]+$)+/'
+        ]);
     }
 }

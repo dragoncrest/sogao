@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Category;
+use App\Models\Category;
 use App\Models\User;
 use App\Models\UserCoin;
 
-use Validator;
 use DB;
-
-use App\Http\Controllers\Admin\Controller;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
@@ -81,7 +78,13 @@ class UserController extends Controller
         $uCoin = $user->Coin()->first();
         $uRole = $user->Role()->first();
         if (Input::has('_token')) {
-            $this->validator($id, Input::all());
+            $validator = User::validator(Input::all());
+            if ($validator->fails()) {
+                return redirect('admin/user/'.$id)
+                        ->withErrors($validator)
+                        ->withInput();
+            }
+
             $user->name         = Input::get('name');
             $user->email        = Input::get('email');
             $user->password     = Input::get('password') ? Input::get('password') : $user['password'];
@@ -90,7 +93,7 @@ class UserController extends Controller
                 $user->isActive     = Input::get('isActive');
             }
             DB::beginTransaction();
-            if ($user->save()) {
+            if ($user->save() && $uCoin) {
                 $uCoin->coin = Input::get('coin') ? Input::get('coin') : 0;
                 if ($uCoin->save()) {
                     DB::commit();
@@ -103,26 +106,5 @@ class UserController extends Controller
         $myData['uCoin'] = $uCoin;
         $myData['uRole'] = $uRole;
         return view('admin.userEdit', ['data' => $myData]);
-    }
-
-    /**
-     * Get a validator for an incoming edit request.
-     *
-     * @param int $id user's id
-     * @param array $data
-     */
-    protected function validator($id, array $data)
-    {
-        $validator = Validator::make($data, [
-            'name'         => 'required|max:255',
-            'email'        => 'required|email',
-            'coin'         => 'numeric|min:0',
-            'phone_number' => 'max:15|regex:/(^[0-9 ]+$)+/'
-        ]);
-        if ($validator->fails()) {
-            return redirect('admin/user/'.$id)
-                    ->withErrors($validator)
-                    ->withInput();
-        }
     }
 }

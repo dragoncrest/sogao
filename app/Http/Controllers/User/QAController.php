@@ -1,7 +1,7 @@
 <?php
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
-use App\Category;
+use App\Models\Category;
 use App\Models\QuestionAnswer;
 
 use App\Http\Requests;

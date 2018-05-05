@@ -9,7 +9,7 @@ use Validator;
 use Mail;
 use Hash;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\User\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;

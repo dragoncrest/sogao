@@ -1,9 +1,9 @@
 <?php
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
-use App\Document;
-use App\Acronym;
-use App\Category;
+use App\Models\Document;
+use App\Models\Acronym;
+use App\Models\Category;
 
 use App\Http\Requests;
 use Illuminate\Http\Request;
@@ -31,7 +31,7 @@ class HomeController extends Controller
     public function index()
     {
         $doc = Document::where('slug', 'trang-chu')->first();
-        $data = $this->setData("Sổ tay 56", $doc, 0);
+        $data = $this->setData($doc, 0);
         return view('home', $data);
     }
 
@@ -50,14 +50,14 @@ class HomeController extends Controller
         if(Input::has('_token')){
             $cat = Category::find(Input::get("cat"));
         }
-        $data = $this->setData("Tìm kiếm", null, $cat);
+        $data = $this->setData(null, $cat);
 
         return view('search', $data);
     }
 
     public function register()
     {
-        $data = $this->setData("Đăng ký tài khoản", null);
+        $data = $this->setData(null);
         return view('user.register', $data);
     }
 
@@ -68,7 +68,7 @@ class HomeController extends Controller
      */
     public function verifyEmail()
     {
-        $data = $this->setData("Sổ tay 56", null);
+        $data = $this->setData(null);
         return view('user.verifyemail', $data);
     }
 
@@ -79,7 +79,7 @@ class HomeController extends Controller
      */
     public function feedback()
     {
-        $data = $this->setData("Sổ tay 56", null);
+        $data = $this->setData(null);
         if (Input::has('_token')) {
             $validator = Validator::make(Input::all(), [
                 'content' => 'required'
@@ -120,16 +120,22 @@ class HomeController extends Controller
      * @param $doc
      * @return array
      */
-    private function setData($title, $doc, $cat=null)
+    private function setData($doc, $cat=null)
     {
         $content = !is_null($doc) ? $doc->content : '';
+        $cats    = [];
+
+        foreach ($this->cates as $cate) {
+            $cats[$cate->id] = $cate->title;
+        }
+
         return [
             'stt'        => !is_null($doc) ? $doc->stt : '',
             'id'         => !is_null($doc) ? $doc->id : '',
-            'title'      => !is_null($doc) ? $doc->title : $title,
             'content'    => $content,
             'isDownload' => !is_null($doc) ? $doc->isDownload : 0,
-            'currentCat' => !is_null($cat) ? $cat : ''
+            'currentCat' => !is_null($cat) ? $cat : '',
+            'cats'       => $cats,
         ];
     }
 }

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
 use Illuminate\Http\Request;
 
-use App\Document;
-use App\Acronym;
-use App\Category;
+use App\Models\Document;
+use App\Models\Acronym;
+use App\Models\Category;
 use App\Models\UserCoin;
 use App\Models\UsersDocument;
 

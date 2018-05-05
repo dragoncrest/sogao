@@ -11,36 +11,36 @@
 |
 */
 
-    Route::get('/', 'HomeController@index');
+    Route::get('/', 'User\HomeController@index');
 
     Route::auth();
 
-    Route::get('/register', 'HomeController@register');
-    Route::get('/verifyemail', 'HomeController@verifyEmail');
+    Route::get('/register', 'User\HomeController@register');
+    Route::get('/verifyemail', 'User\HomeController@verifyEmail');
     Route::get('/verify/{code}', 'Auth\AuthController@verifyUser')->where('code', '[A-Za-z0-9\-\_\.]+');
 
-    Route::get('/document/ajaxTable', 'DocumentController@ajaxTable');
-    Route::get('/document/ajax/{id}', 'DocumentController@ajax');
+    Route::get('/document/ajaxTable', 'User\DocumentController@ajaxTable');
+    Route::get('/document/ajax/{id}', 'User\DocumentController@ajax');
 
-    Route::get('/document/download/{id}', 'DocumentController@download')->where('id', '[A-Za-z0-9\-\_\.]+');
-    Route::get('/document/ajaxCheckFileExits/{id}', 'DocumentController@ajaxCheckFileExits')->where('id', '[A-Za-z0-9\-\_\.]+');
-    Route::get('/document/ajaxThutuc/{id}', 'DocumentController@ajaxThutuc');
-    Route::get('/document/ajaxDieuKhoan/{id}', 'DocumentController@ajaxDieuKhoan');
-    Route::get('/document/ajaxBuyDocument/{id}', 'DocumentController@ajaxBuyDocument');
-    Route::get('/document/{id}', 'DocumentController@document');
+    Route::get('/document/download/{id}', 'User\DocumentController@download')->where('id', '[A-Za-z0-9\-\_\.]+');
+    Route::get('/document/ajaxCheckFileExits/{id}', 'User\DocumentController@ajaxCheckFileExits')->where('id', '[A-Za-z0-9\-\_\.]+');
+    Route::get('/document/ajaxThutuc/{id}', 'User\DocumentController@ajaxThutuc');
+    Route::get('/document/ajaxDieuKhoan/{id}', 'User\DocumentController@ajaxDieuKhoan');
+    Route::get('/document/ajaxBuyDocument/{id}', 'User\DocumentController@ajaxBuyDocument');
+    Route::get('/document/{id}', 'User\DocumentController@document');
 
-    Route::get('/vanbandamua', 'DocumentController@documentBuyeds');
+    Route::get('/vanbandamua', 'User\DocumentController@documentBuyeds');
 
-    Route::get('/search', 'HomeController@search');
-    Route::post('/search', 'HomeController@search');
+    Route::get('/search', 'User\HomeController@search');
+    Route::post('/search', 'User\HomeController@search');
 
-    Route::get('/category/{slug}', 'DocumentController@documents');
+    Route::get('/category/{slug}', 'User\DocumentController@documents');
 
-    Route::any('/feedback', 'HomeController@feedback');
+    Route::any('/feedback', 'User\HomeController@feedback');
 
-    Route::any('/hoidap/{id?}', 'QAController@qa')->where('id', '[0-9\-\_\.]+');
-    Route::get('/hoidaps/ajaxListQA', 'QAController@ajaxListQA');
-    Route::get('/hoidaps', 'QAController@qas');
+    Route::any('/hoidap/{id?}', 'User\QAController@qa')->where('id', '[0-9\-\_\.]+');
+    Route::get('/hoidaps/ajaxListQA', 'User\QAController@ajaxListQA');
+    Route::get('/hoidaps', 'User\QAController@qas');
 
 Route::group(['middleware' => ['auth','roles'], 'roles'=>[STR_ADMIN]], function () {
     Route::get('/admin', 'Admin\HomeController@index');
@@ -67,4 +67,4 @@ Route::group(['middleware' => ['auth','roles'], 'roles'=>[STR_ADMIN]], function 
     Route::get('/admin/qa', 'Admin\QAController@index');
 });
 
-    Route::get('/{slug}', 'DocumentController@document');
+    Route::get('/{slug}', 'User\DocumentController@document');

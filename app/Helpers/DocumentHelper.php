@@ -1,6 +1,6 @@
 <?php
-use App\Document;
-use App\Acronym;
+use App\Models\Document;
+use App\Models\Acronym;
 use App\Models\UserCoin;
 use App\Models\UsersDocument;
 

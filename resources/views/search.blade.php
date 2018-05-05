@@ -65,8 +65,7 @@
                 $("div.dataTables_category").html('<span>Chuyên mục</span>' + category);
                 $('.dataTables_btnSearch .btn').on( 'click', '', function () {
                     table
-                    .columns(1)
-                    .search($(this).text())
+                    .search($('.dataTables_filter input').val())
                     .draw();
                 });
             </script>
