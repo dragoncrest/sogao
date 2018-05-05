@@ -38,12 +38,17 @@
                     <li>
                         <a href="{{ url('/admin/user') }}" class="bldblue">Tài khoản</a>
                     </li>
-                    <li>
-                        <a href="{{ url('/admin/qa') }}" class="blpurple">Hỏi đáp</a>
+                    <li  class="<?php if($nav==QA) echo 'active';?>">
+                        <a href="#" class="blgreen">Hỏi đáp</a>
+                        <div class="open"></div>
+                        <ul>
+                            <li><a href="{{ url('/admin/qa/edit') }}">Thêm mới</a></li>
+                            <li><a href="{{ url('/admin/qa') }}">Danh sách</a></li>
+                        </ul>
                     </li>
                     @if (!Auth::guest())
                     <li>
-                        <a href="{{ url('admin/logout/u') }}"><i class="fa fa-btn fa-sign-out"></i>Logout</a>
+                        <a href="{{ url('admin/logout') }}"><i class="fa fa-btn fa-sign-out"></i>Logout</a>
                     </li>
                     @endif
                 </ul>

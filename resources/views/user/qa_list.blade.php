@@ -42,6 +42,7 @@
                         "url": "<?php echo url('/hoidaps/ajaxListQA');?>",
                         "data": function ( d ) {
                             d.catId = $(".dataTables_select option").filter(":selected").val();
+                            d.user  = true;
                         }
                     },
                     "columnDefs": [{ 

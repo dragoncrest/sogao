@@ -12,7 +12,6 @@ class QuestionAnswer extends Model
 {
     protected $guarded = [];
     protected $query;
-    protected $table = 'question_answers';
     protected $column_order = []; //set column field database for datatable orderable
     protected $column_search = []; //set column field database for datatable searchable 
     protected $order = []; // default order
@@ -22,9 +21,11 @@ class QuestionAnswer extends Model
         parent::__construct($attributes);
 
         $this->column_order = [
+            $this->getTable() . '.id',
             $this->getTable() . '.title',
             $this->getTable() . '.email',
             $this->getTable() . '.status',
+            $this->getTable() . '.display',
             $this->getTable() . '.created_at',
           ];
         $this->column_search = [$this->getTable() . '.title'];
@@ -77,11 +78,16 @@ class QuestionAnswer extends Model
             $this->getTable() . '.title',
             $this->getTable() . '.email',
             $this->getTable() . '.status',
+            $this->getTable() . '.display',
             $this->getTable() . '.created_at'
         );
 
         if (Input::get('catId')) {
             $this->query->where($this->getTable() . '.category_id', Input::get('catId'));
+        }
+
+        if (Input::get('user')) {
+            $this->query->where($this->getTable() . '.display', TRUE);
         }
 
         $i = 0;

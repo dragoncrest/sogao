@@ -36,6 +36,7 @@
                                             <th width="20%">Tên</th>
                                             <th width="30%">Email</th>
                                             <th width="10%">Trạng thái</th>
+                                            <th width="10%">Hiển thị</th>
                                             <th width="10%">Ngày tạo</th>
                                             <th class="TAC">Actions</th>
                                         </tr>
@@ -49,6 +50,7 @@
             </div><!-- end content -->
             
             <script type="text/javascript">
+                var deleteUrl = "{!! url('/admin/qa/ajaxDelete/') !!}";
                 $(".aTable").DataTable({
                     "dom": '<"abc">lfrtip',
                     "processing": true,
@@ -58,10 +60,13 @@
                         "url": "<?php echo url('/admin/qa/ajaxListQA');?>",
                     },
                     "columnDefs": [{ 
-                        "targets": [ 0, 5 ],
+                        "targets": [ 0, 6 ],
                         "orderable": false, //set not orderable
-                    }]
+                    }],
+                    "createdRow": function ( row, data, index ) {
+                        var idDocument = $(row).find('.delete-').attr('id');
+                        $(row).attr('id', idDocument);
+                    }
                 });
-                $("div.abc").html('<b>Custom tool bar! Text/images etc.</b>');
             </script>
 @endsection  

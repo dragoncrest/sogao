@@ -65,25 +65,25 @@ $(document).ready(function(){
     $(".navigation.narrow > li > a").click(function(){
         var li = $(this).parent('li');
         if(li.find('ul').length > 0){
-            
+
             if(li.hasClass('active'))
                 li.removeClass('active');
             else
                 li.addClass('active');
-            
+
             return false;
         }
-        
+
     });
     
-    $(".navButton a, .sidebar .close").click(function(){        
+    $(".navButton a, .sidebar .close").click(function(){       
         if($(".sidebar").is(":visible"))
             $(".sidebar").slideUp();
         else
-            $(".sidebar").slideDown();        
+            $(".sidebar").slideDown();
     });
 
-    
+
     $(".sbutton a").click(function(){
         var popup = $(this).parent('.sbutton').find('.popup');
         if(popup.length > 0){
@@ -97,9 +97,9 @@ $(document).ready(function(){
             return false;
         }
     });
-    
+
     /* input file */
-    $(".file .btn, .file input:text").click(function(){        
+    $(".file .btn, .file input:text").click(function(){
         var block = $(this).parent('.file');
         block.find('input:file').click();
         block.find('input:file').change(function(){
@@ -111,25 +111,25 @@ $(document).ready(function(){
     //temp as example
     $(".ublock").click(function(){
         var block = $(this).parents('[class^=block]');
-        
+
         add_loader(block);
-        
+
         setTimeout(function(){
             remove_loader(block);
         },2000);
-        
+
         return false;
     });
-    
-    
-    $(".head .buttons > li > a").click(function(event){        
-        var li = $(this).parent('li');        
+
+
+    $(".head .buttons > li > a").click(function(event){
+        var li = $(this).parent('li');
         if(li.find('ul').length > 0){
             if(li.hasClass('active'))
                 li.removeClass('active');
             else
                 li.addClass('active');
-            return false;            
+            return false;
         }
         event.stopPropagation();
     });
@@ -138,16 +138,16 @@ $(document).ready(function(){
     $(".cblock").click(function(){
         var block = $(this).parents('.block').find("[class^=data]");
         if(block.is(':visible')){
-            block.fadeOut();            
+            block.fadeOut();
         }else{
-            block.fadeIn();            
+            block.fadeIn();
         }
 
         return false;
     });
 
 
-    $(".body .navigation li a").click(function(){       
+    $(".body .navigation li a").click(function(){
         if($(this).attr('href') == '#'){
             if($(this).parent('li').hasClass("active")){
                 $(this).parent('li').removeClass('active');
@@ -163,7 +163,7 @@ $(document).ready(function(){
     $(".sidebar .navigation > li > a, .sidebar .navigation > li > .open").click(function(){
         if($(this).parent('li').find('ul').length > 0){
             if($(this).parent('li').hasClass('active')){
-                $(this).parent('li').removeClass('active');            
+                $(this).parent('li').removeClass('active');
             }else{
                 $(this).parent('li').addClass('active');
             }    
@@ -173,42 +173,42 @@ $(document).ready(function(){
 
     /* table checkall */
     $("table .checkall").click(function(){
-        
+
         var iC = $(this).parents('th').index(); //index of checkall checkbox
         var tB = $(this).parents('table').find('tbody'); // tbody of table
-        
+
         if($(this).is(':checked'))
-            tB.find('tr').each(function(){                
+            tB.find('tr').each(function(){
                 $(this).addClass('active').find('td:eq('+iC+') input:checkbox').attr('checked',true).parent('span').addClass('checked');
             });
         else
             tB.find('tr').each(function(){
                 $(this).removeClass('active').find('td:eq('+iC+') input:checkbox').attr('checked',false).parent('span').removeClass('checked');
-            });            
-        
-    });    
+            });
+
+    });
     /* eof table checkall */
 
     $("table .checker").click(function(event){
-        
+
         var tr = $(this).parents('tr');
-        
+
         if(tr.hasClass('active'))
             tr.removeClass('active');
         else
-            tr.addClass('active');       
-       
+            tr.addClass('active');
+
        event.stopPropagation();
     });
 
     /* table row check */
     $(".table-row-check tbody tr").click(function(){
-        
+
        if($(this).hasClass('active'))
             $(this).removeClass('active');
         else
             $(this).addClass('active');
-        
+
         $(this).find('input:checkbox').each(function(){
             
             if($(this).is(':checked')){
@@ -216,21 +216,21 @@ $(document).ready(function(){
             }else{
                 $(this).attr('checked',true).parent('span').addClass('checked');
             }
-                            
+
         });
         
     });
-    /* eof table row check */  
+    /* eof table row check */
     
-    /* alert click */    
+    /* alert click */
     $(".alert").click(function(){
         $(this).animate({opacity: 0},'200','linear',function(){
             $(this).remove();
         });
-    });    
-    /* eof alert click*/    
-    
-    /* alert delete document */    
+    });
+    /* eof alert click*/
+
+    /* alert delete document */
     $.confirmdelete = function(id, stt){
         if (confirm("Xóa văn bản mã "+id) == true) {
             link = deleteUrl + '/' + stt;
@@ -250,13 +250,13 @@ $(document).ready(function(){
             });
         }
     }; 
-    /* eof alert delete*/ 
-    
+    /* eof alert delete document */ 
+
     setTimeout(function(){
         $('.alert').fadeOut(1000);
-    }, 1500);     
-       
-    /* alert delete category */    
+    }, 1500);
+
+    /* alert delete category */
     $.deleteCat = function(title, id){
         var link = window.location.href;
             link = link + '/delete/' + id;
@@ -264,6 +264,29 @@ $(document).ready(function(){
         if (confirm("Xóa danh mục " + title) == true)
             window.location.replace(link);
     }; 
+    /* eof alert delete category */
+
+    /* alert delete QA */
+    $.deleteQA = function(id){
+        if (confirm("Xóa câu hỏi mã "+id) == true) {
+            link = deleteUrl + '/' + id;
+            $.ajax({
+                type: "GET",
+                url: link,
+                success: function (data) {
+                    if (data.status) {
+                        $('tr#'+id).fadeOut(500, 'swing', function(){
+                            $('tr#'+id).remove();
+                        });
+                    }
+                },
+                error: function (data) {
+                    console.log('Error:', data);
+                }
+            });
+        }
+    }; 
+    /* eof alert delete QA */ 
 });
 
 $(window).load(function(){    

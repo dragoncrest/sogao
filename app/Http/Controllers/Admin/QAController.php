@@ -48,10 +48,14 @@ class QAController extends Controller
             $row[] = $qa->title;
             $row[] = $qa->email;
             $row[] = $qa->status ? $answered : $notAnswer;
+            $row[] = $qa->display ? 'Có' : 'Không';
             $row[] = $qa->created_at ? date('d-m-Y',strtotime($qa->created_at)) : null;
             $row[] = '
-                <a href="'.url("admin/qa/".$qa->id).'" class="button green">
+                <a href="'.url("admin/qa/edit/".$qa->id).'" class="button green">
                     <div class="icon"><span class="ico-pencil"></span></div>
+                </a>
+                <a id="'.$qa->id.'" onclick=$.deleteQA('.$qa->id.') href="javascript:void(0);" class="button red delete-">
+                    <div class="icon"><span class="ico-remove"></span></div>
                 </a>
             ';
             $data[] = $row;
@@ -70,45 +74,72 @@ class QAController extends Controller
      * edit qa
      * @return array qa's data
      */
-    public function editQA($id)
+    public function edit($id=null)
     {
-        if (!$id) return redirect('admin/qa/');
-
         $cates          = Category::all();
-        $qa             = QuestionAnswer::find($id);
         $myData['nav']  = QA;
         $myData['cats'] = [];
+
+        if (empty($id)) {
+            $qa = new QuestionAnswer();
+        } else {
+            $qa = QuestionAnswer::find($id);
+        }
 
         if (Input::has('_token')) {
             $validator = QuestionAnswer::validator(Input::all());
             if ($validator->fails()) {
-                return redirect('admin/qa/'.$id)
+                return redirect('admin/qa/edit/'.$id)
                         ->withErrors($validator)
                         ->withInput();
             }
+
             if (Input::get('category')) {
                 $qa->category_id = Input::get('category');
             }
-
             if (Input::get('answer')) {
                 $qa->status = TRUE;
             } else {
                 $qa->status = FALSE;
             }
-            $qa->answer = Input::get('answer');
+
+            $qa->title    = Input::get('title');
+            $qa->question = Input::get('question');
+            $qa->answer   = Input::get('answer');
+            $qa->display  = Input::get('display');
+
             if ($qa->save()) {
-                $myData['isEditted']  = TRUE;
-                if ($qa->status) {
+                $myData['isEditted'] = TRUE;
+                if ($qa->status && $qa->email) {
                     $this->sendMail($qa);
+                }
+                if (empty($id)) {
+                    return redirect('admin/qa/');
                 }
             }
         }
-        $myData['qa']  = $qa;
 
         foreach ($cates as $cate) {
             $myData['cats'][$cate->id] = $cate->title;
         }
-        return view('admin.qaEdit', ['data' => $myData]);
+        return view('admin.qaEdit', ['data' => $myData, 'qa' => $qa]);
+    }
+
+    /**
+     * delete qa
+     * @return boll $status
+     */
+    public function ajaxDelete($id=null)
+    {
+        $status = false;
+        if (empty($id)) return $status;
+
+        if (QuestionAnswer::find($id)->delete()) {
+            $status = true;
+        }
+        return [
+            'status' => $status
+        ];
     }
 
     /**

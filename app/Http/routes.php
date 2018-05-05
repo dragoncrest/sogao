@@ -62,7 +62,9 @@ Route::group(['middleware' => ['auth','roles'], 'roles'=>[STR_ADMIN]], function 
     Route::get('/admin/user/ajaxListUser', 'Admin\UserController@ajaxListUser');
     Route::get('/admin/user', 'Admin\UserController@index');
 
-    Route::any('/admin/qa/{id}', 'Admin\QAController@editQA')->where('id', '[0-9\-\_\.]+');
+    Route::any('/admin/qa/ajaxDelete/{id}', 'Admin\QAController@ajaxDelete')->where('id', '[0-9\-\_\.]+');
+    Route::any('/admin/qa/edit/{id}', 'Admin\QAController@edit')->where('id', '[0-9\-\_\.]+');
+    Route::any('/admin/qa/edit', 'Admin\QAController@edit');
     Route::get('/admin/qa/ajaxListQA', 'Admin\QAController@ajaxListQA');
     Route::get('/admin/qa', 'Admin\QAController@index');
 });
