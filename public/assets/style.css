@@ -245,6 +245,7 @@ body{font-family: "UTM Avo", Arial, Helvetica, sans-serif;}
     border: none;
     float: left;
     cursor: pointer;}
+.ellipsis{float: left;}
                     /*--> End search form <--*/
             /**********************************************/
                     /*--> Begin register form <--*/
@@ -371,6 +372,12 @@ body{font-family: "UTM Avo", Arial, Helvetica, sans-serif;}
 .example-blur{
     color: transparent;
     text-shadow: 0 0 10px #000;}
+.LV{
+    cursor: pointer;    
+}
+.SLV{
+    display: none;
+}
                     /*--> End document <--*/
             /**********************************************/
                     /*--> Start feedback form <--*/

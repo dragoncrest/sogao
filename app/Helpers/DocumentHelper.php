@@ -6,6 +6,7 @@ use App\Models\UsersDocument;
 
 class DocumentHelper
 {
+    private static $doc;
     private static $coin = 0;
     private static $buyedDocuments = '';
 
@@ -24,7 +25,8 @@ class DocumentHelper
             self::$buyedDocuments = UsersDocument::where('user_id', Auth::user()->id)->get();
         }
         // process document's content
-        $content = $doc->content;
+        self::$doc = $doc;
+        $content   = $doc->content;
         if (!$hasTable) {
             return self::ProcessDocumentId($content);
         } else {
@@ -67,6 +69,15 @@ class DocumentHelper
 
         for($i = 0; $i < $pLength; $i++){
             //$pMatch[$i] = str_replace("<o:p></o:p>", "", $pMatch[$i]);
+
+            //process content has -LV format
+            if (self::$doc->hasLV) {
+                $strLV = self::ProcessLV($pMatch[$i]);
+                if ($strLV) {
+                    $content = $content . $strLV;
+                    continue;
+                }
+            }
 
             //find out color in <p>
             $redPos = strpos($pMatch[$i], "red");
@@ -432,5 +443,32 @@ class DocumentHelper
             'status' => $status,
             'coin'   => self::$coin,
         ];
+    }
+
+    /**
+    * add <div> into content which has -LV format
+    * @param string $str
+    * @return string
+    */
+    public static function ProcessLV($str)
+    {
+        $posLV  = strpos($str, '-LV');
+        $posSLV = strpos($str, 'SLV');
+        $posELV = strpos($str, 'ELV');
+
+        if ($posLV) {
+            $idLV = substr($str, $posLV + 3, 1);
+            $str  = str_replace('-LV'.$idLV, '', $str);
+            $str  = '<div class="LV LV'.$idLV.'" onclick="toogleLV(this)">' . $str . '</div>';
+        } elseif ($posSLV) {
+            $idLV = substr($str, $posSLV + 3, 1);
+            $str  = '<div class="SLV SLV' . $idLV .'">';
+        } elseif ($posELV) {
+            $str  = '</div>';
+        } else {
+            $str = '';
+        }
+
+        return $str;
     }
 }// end DocumentHelper

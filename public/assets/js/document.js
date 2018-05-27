@@ -57,6 +57,16 @@ function buyDocument(id)
         }
     });
 }
+
+/**
+* toogle LV in document has LV format
+* @param string id
+*/
+function toogleLV(e)
+{
+    $(e).next().toggle();
+}
+
 $(document).ready(function() {
     //check status of user with document when directly accessing to document
     if (status) {

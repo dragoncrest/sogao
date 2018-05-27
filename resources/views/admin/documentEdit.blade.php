@@ -70,6 +70,18 @@
                             </div>
                         </div>
 
+                        <div class="row-form ">
+                            <span class='span2'>LV:</span>
+                            <div class='span2'>
+                                {{ Form::radio('hasLV', 0, $doc['hasLV'] == 0 ? true : false) }}
+                                <span for="noTable">Không</span>
+                            </div>
+                            <div class='span2'>
+                                {{ Form::radio('hasLV', 1, $doc['hasLV'] == 1 ? true : false) }}
+                                <span for="hasTable">Có</span>
+                            </div>
+                        </div>
+
                         <div class="row-form {{ $errors->has('id') ? 'error' : '' }}">
                             <span class='span2'>Mã:</span>
                             <div class='span5'>

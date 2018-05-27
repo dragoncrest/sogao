@@ -5,8 +5,6 @@
 @endsection
 
 @section('content')
-            <?php echo view('templates/search_form', ['currentCat' => $currentCat]);?>
-
             <div class="content">
                 <div class="block">
                     <div class="head blue">
@@ -42,7 +40,7 @@
                     "ajax":{
                         "url": "<?php echo url('/document/ajaxTable');?>",
                         "data": function ( d ) {
-                            d.cat = <?php echo isset($currentCat->id) ? $currentCat->id : 0;?>;
+                            d.cat = $(".dataTables_select option").filter(":selected").val();
                         }
                     },
                     "columnDefs": [{
