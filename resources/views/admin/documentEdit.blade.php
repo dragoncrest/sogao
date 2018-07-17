@@ -1,5 +1,12 @@
 @extends('admin.layout')
 
+@section('head')
+    <script type='text/javascript' src='{{ url('public/assets/admin/js/plugins/ckeditor/new/ckeditor.js') }}'></script>
+    <script type='text/javascript' src='{{ url('public/assets/admin/js/plugins/ckeditor/new/sample.js') }}'></script>
+    <script type='text/javascript' src='{{ url('public/assets/admin/js/plugins/cleditor/jquery.cleditor.js') }}'></script>
+    <script type='text/javascript' src='{{ url('public/assets/js/fancybox/jquery.fancybox.min.js') }}'></script>
+@endsection
+
 @section('content')
             <?php $doc = $data['doc'];?>
             <div class="content">
@@ -16,6 +23,18 @@
                 </div>
 
                 <div class="row-fluid">
+                    @if(session()->has('created'))
+                    <div class="alert alert-success">
+                        {{ session()->get('created') }}
+                    </div>
+                    @endif
+
+                    @if(isset($data['updated']))
+                    <div class="alert alert-success">
+                        {{ $data['updated'] }}
+                    </div>
+                    @endif
+
                     @if($doc['stt'])
                         <?php $id = ($doc['id']) ? $doc['id'] : $doc['stt'];?>
                         <div class="row-form">
@@ -105,7 +124,7 @@
                         <div class="row-form">  
                             <span class='span2'>Danh mục:</span>
                             <div class='span5'> 
-                                {{ Form::select('cat', $data['options'], $doc['category_id']) }}
+                                {{ Form::select('cat', $data['cats'], $doc['category_id']) }}
                             </div>
                         </div>
 

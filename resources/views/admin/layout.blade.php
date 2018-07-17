@@ -46,14 +46,6 @@
 
     <script type='text/javascript' src='{{ url('public/assets/admin/js/plugins/uniform/jquery.uniform.min.js') }}'></script>
 
-    <?php if($data['nav']=='doc'):?>
-        <script type='text/javascript' src='{{ url('public/assets/admin/js/plugins/ckeditor/new/ckeditor.js') }}'></script>
-        <script type='text/javascript' src='{{ url('public/assets/admin/js/plugins/ckeditor/new/sample.js') }}'></script>
-        <script type='text/javascript' src='{{ url('public/assets/admin/js/plugins/cleditor/jquery.cleditor.js') }}'></script>
-
-        <script type='text/javascript' src='{{ url('public/assets/js/fancybox/jquery.fancybox.min.js') }}'></script>
-    <?php endif;?>
-
     <script type='text/javascript' src='{{ url('public/assets/admin/js/plugins/shbrush/XRegExp.js') }}'></script>
     <script type='text/javascript' src='{{ url('public/assets/admin/js/plugins/shbrush/shCore.js') }}'></script>
     <script type='text/javascript' src='{{ url('public/assets/admin/js/plugins/shbrush/shBrushXml.js') }}'></script>
@@ -65,6 +57,8 @@
     <script type='text/javascript' src='{{ url('public/assets/admin/js/actions.js') }}'></script>
 
     <script type='text/javascript' src='{{ url('public/assets/js/custom.js') }}'></script>
+
+    @yield('head')
 </head>
 <body>
     <div id="loader"><img src="{{ url('public/assets/images/loader.gif') }}"/></div>

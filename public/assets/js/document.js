@@ -46,7 +46,10 @@ function buyDocument(id)
         success: function (data) {
             if (data.status) {
                 sessionStorage.buy = 1;
-                location.reload();
+                // location.reload();
+                var buyLink = '<a style="color:red;" onclick="checkUserStatus(\''+id+'\', \''+data.result+'\', \''+data.coin+'\')">'+data.str+'</a>';
+                $('.'+id).html(buyLink);
+                hidePopupDialog('#dialog');
             } else {
                 hidePopupDialog('#dialog');
             }

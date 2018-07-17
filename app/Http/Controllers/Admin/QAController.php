@@ -107,9 +107,11 @@ class QAController extends Controller
             $qa->question = Input::get('question');
             $qa->answer   = Input::get('answer');
             $qa->display  = Input::get('display');
+            $qa->hasTable = Input::get('hasTable');
+            $qa->hasLV    = Input::get('hasLV');
 
             if ($qa->save()) {
-                $myData['isEditted'] = TRUE;
+                $myData['updated'] = UPDATED;
                 if ($qa->status && $qa->email) {
                     $this->sendMail($qa);
                 }
@@ -152,6 +154,7 @@ class QAController extends Controller
             $category = $qa->Category()->first();
         }
         $data = [
+            'id'       => $qa->id,
             'title'    => $qa->title,
             'question' => $qa->question,
             'answer'   => $qa->answer,

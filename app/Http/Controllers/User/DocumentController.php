@@ -183,7 +183,7 @@ class DocumentController extends Controller
     /**
      * Process buying document
      * @param string $id document's id
-     * @return status
+     * @return array
      */
     public function ajaxBuyDocument($id)
     {
@@ -193,8 +193,10 @@ class DocumentController extends Controller
         if (!$doc)
             $doc = Document::where('stt', $id)->first();
 
+        $coin   = UserCoin::where('user_id', Auth::user()->id)->first();
         $result = $this->_checkUserDocumentStatus($doc);
         $status = FALSE;
+        $str    = CDPL;
         if ($result == BUYED) {
             $status = TRUE;
         } elseif ($result == BUY) {
@@ -203,17 +205,23 @@ class DocumentController extends Controller
             $uDoc->user_id     = Auth::user()->id;
             $uDoc->document_id = $doc->stt;
             if ($uDoc->save()) {
-                $coin = UserCoin::where('user_id', Auth::user()->id)->first();
                 $coin = $coin->coin - 1;
                 if (UserCoin::where('user_id', Auth::user()->id)->update(['coin' => $coin])) {
-                    $status = TRUE;
                     DB::commit();
+                    $status = TRUE;
+                    $str = $doc->title;
+                    $result = BUYED;
                 }
                 if (!$status)
                     DB::rollBack();
             }
         }
-        return ['status' => $status];
+        return [
+            'status' => $status,
+            'result' => $result,
+            'coin' => $coin,
+            'str' => $str,
+        ];
     }
 
     /**

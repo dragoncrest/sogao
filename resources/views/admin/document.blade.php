@@ -7,7 +7,7 @@
                     <div class="icon">
                         <span class="ico-layout-7"></span>
                     </div>
-                    <h1>Danh sách <?php echo $data['catTitle'];?><small>METRO STYLE ADMIN PANEL</small></h1>
+                    <h1>Danh sách văn bản<small>METRO STYLE ADMIN PANEL</small></h1>
                 </div>
 
                 <div class="row-fluid">
@@ -52,13 +52,17 @@
             <script type="text/javascript">
                 var deleteUrl = '{!! url('/admin/document/delete/') !!}';
                 $(".aTable").DataTable( {
+                    "dom": 'l<"dataTables_category">frtip',
                     "processing": true,
                     "serverSide": true,
                     "order": [],
                     "ajax":{ 
                         "url": "<?php echo url('/admin/document/ajax');?>",
                         "data": function ( d ) {
-                            d.cat = <?php echo $data['catID'];?>;
+                            d.cat = $(".dataTables_select option").filter(":selected").val();
+                            if (d.cat == undefined) {
+                                d.cat = 0;
+                            }
                         }
                     },
                     "columnDefs": [{
@@ -68,7 +72,19 @@
                     "createdRow": function ( row, data, index ) {
                         var idDocument = $(row).find('.delete-').attr('id');
                         $(row).attr('id', idDocument);
-                    }
+                    },
+                    "initComplete": function(){
+                        var api = this.api();
+                        $('#DataTables_Table_0_filter input')
+                            .off('.DT')
+                            .on('keyup.DT', function (e) {
+                                if (e.keyCode == 13) {
+                                    api.search(this.value).draw();
+                                }
+                            });
+                    },
                 });
+                var category = '<?php echo Form::select('category', [0 => '-- Chuyên mục --'] + $data['cats'], '', ['class' => 'dataTables_select']) ?>';
+                $("div.dataTables_category").html(category);
             </script>
 @endsection  

@@ -16,3 +16,6 @@
     // user's role
     define('STR_ADMIN', 'admin');
     define('ROLE_ADMIN', 2);
+
+    define('CREATED', 'Thêm mới thành công');
+    define('UPDATED', 'Cập nhật thành công');

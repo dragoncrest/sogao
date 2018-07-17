@@ -16,7 +16,7 @@ class DocumentHelper
      * @param bool $hasTable check content has <table> or not
      * @return string
      */
-    public static function ProcessContent($doc, $hasTable)
+    public static function ProcessContent($doc, $hasTable=null)
     {
         // get buyed document and coin of login user
         if (Auth::user()) {
@@ -26,8 +26,14 @@ class DocumentHelper
         }
         // process document's content
         self::$doc = $doc;
-        $content   = $doc->content;
-        if (!$hasTable) {
+        $secondPart = '';
+        if (isset($doc->content)) {
+            $content = $doc->content;
+        } else {
+            $content = $doc->answer;
+        }
+
+        if (!$doc->hasTable) {
             return self::ProcessDocumentId($content);
         } else {
             $sTablePos  = strpos($content, '<table');
@@ -42,8 +48,8 @@ class DocumentHelper
                 $sTablePos  = strpos($secondPart, '<table');
                 $content   .= $firstPart . $table;
             }
+            return $content . $secondPart;
         }
-        return $content . $secondPart;
     } //end ProcessContent($content, $hasTable)
 
     /**
@@ -136,13 +142,13 @@ class DocumentHelper
         $result = self::checkUserStatus($data, $subStr);
         if (!empty($data)) {
             $subStr =
-                '<a replace onclick="checkUserStatus(\''.$result['id'].'\', \''.$result['status'].'\', \''.$result['coin'].'\')">'.
+                '<span class="'.$result['id'].'"><a replace onclick="checkUserStatus(\''.$result['id'].'\', \''.$result['status'].'\', \''.$result['coin'].'\')">'.
                     $result['str'].
-                '</a>';
+                '</a></span>';
         } else {
             $subStr =
                 '<a target="_blank" data-fancybox data-type="ajax" data-src="'.url('/document/ajaxDieuKhoan/'.$id).'" replace href="'.$id.'">'.
-                    CDPL.
+                    $subStr.
                 '</a>';
         }
         
@@ -175,16 +181,7 @@ class DocumentHelper
                 else
                     return "LDT".$add.$sub;
             }
-
-            $arrL = Acronym::where('type','like','luat')->get();
-            foreach ($arrL as $law) {
-                if(stripos($str, $law->search)){
-                    $str = preg_replace('/\D/','',$str);
-                    $str = substr($str, 4);
-                    return $law->acronym.$str;
-                }
-            }
-
+            return self::stringToID($str, "luat");
         } elseif (stripos($str, "hông")) {
             return self::stringToID($str, "thongtu");
         } elseif(stripos($str, "ghị")) {
@@ -275,10 +272,22 @@ class DocumentHelper
             $lawPos = stripos($str, $law->search);
             if ($lawPos) {                                          //if isset acronym(`search` field in db) in document's name
                 $sub    = '';
-                $exPos  = stripos($str, 'iều');                     //finding addendum in document's name
+                $exPos  = stripos($str, 'iều');                     //finding "điều" in document's name
                 if ($exPos) {
-                    $sub = substr($str, $exPos);
-                    $sub = preg_replace('/\D/','',$sub);
+                    $khoanPos = stripos($str, 'khoản');
+                    if ($khoanPos) {
+                        $l       = $khoanPos - $exPos;
+                        $subDieu = substr($str, $exPos, $l);
+                    } else {
+                        $subDieu = substr($str, $exPos);
+                    }
+                    $dieu = preg_replace('/\D/','',$subDieu);
+                    $sub  = $dieu;
+
+                    if ($khoanPos) {
+                        $khoan = substr($str, $khoanPos + 8);
+                        $sub  .= 'k' . $khoan;
+                    }
                 } elseif ($law->extra != null) {                    //if that acronym has addendum stored in db
                     $extra = [];
                     if (stripos($law->extra, ',')) {                //if that acronym has multi addendum

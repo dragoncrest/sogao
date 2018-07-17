@@ -42,6 +42,8 @@
     Route::get('/hoidaps/ajaxListQA', 'User\QAController@ajaxListQA');
     Route::get('/hoidaps', 'User\QAController@qas');
 
+    Route::any('/thongtincanhan', 'User\HomeController@user');
+
 Route::group(['middleware' => ['auth','roles'], 'roles'=>[STR_ADMIN]], function () {
     Route::get('/admin', 'Admin\HomeController@index');
     Route::get('/admin/upload', 'Admin\HomeController@upload');
@@ -49,7 +51,7 @@ Route::group(['middleware' => ['auth','roles'], 'roles'=>[STR_ADMIN]], function 
     Route::any('/admin/document/edit/{stt}', 'Admin\DocumentController@edit');
     Route::any('/admin/document/edit', 'Admin\DocumentController@edit');
     Route::get('/admin/document/ajax', 'Admin\DocumentController@ajax');
-    Route::get('/admin/document/{idCat}', 'Admin\DocumentController@index');
+    Route::get('/admin/document', 'Admin\DocumentController@index');
     Route::get('/admin/document/delete/{stt}', 'Admin\DocumentController@delete');
 
     Route::get('/admin/category', 'Admin\CategoryController@index');

@@ -5,15 +5,11 @@
     </head>
     <body>
         <div style="font-size: 14px;">
-            <div>Dưới đây là nội dung trả lời câu hỏi của bạn.</div>
-            <div>============================================================</div>
-            <div>Chuyên mục: <b>{{ $category }}</b></div>
-            <br/>
-            <div>Câu hỏi: <b>{{ $question }}</b></div>
-            <br/>
-            <div>Trả lời: <b>{{ $answer }}</b></div>
+            <div>Bạn hãy click vào link dưới đây để xem câu trả lời.</div>
+            <a href="{{ url('/hoidap/'.$id) }}">{{ $title }}</a>
             <br/>
             <div>============================================================</div>
+            <br/>
             <div>
                 Cám ơn Quý khách đã đăng ký sử dụng <b><a href="https://sotay56.vn">Sotay56</a></b> của chúng tôi<br/>
                 <div style="margin-top: 5px;">

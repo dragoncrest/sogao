@@ -18,3 +18,7 @@
                     /*--> Begin user <--*/
 .user-active{color: #00b402;}
                     /*--> End user <--*/
+            /**********************************************/
+                    /*--> Begin datable <--*/
+.dataTables_category{float: left; padding: 5px; margin-left: 15px;}
+                    /*--> End datable <--*/

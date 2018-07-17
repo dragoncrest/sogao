@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 use Input;
+use DocumentHelper;
 
 class QAController extends Controller
 {
@@ -66,6 +67,8 @@ class QAController extends Controller
             }
         } elseif (!is_null($id)) {
             $qa = QuestionAnswer::find($id);
+            $qa->answer = DocumentHelper::ProcessContent($qa);
+
             $data['qa'] = $qa;
 
             return view('user.qa_detail', $data);

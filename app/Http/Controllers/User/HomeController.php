@@ -4,10 +4,12 @@ namespace App\Http\Controllers\User;
 use App\Models\Document;
 use App\Models\Acronym;
 use App\Models\Category;
+use App\Models\User;
 
 use App\Http\Requests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 use Input;
 use Mail;
@@ -115,12 +117,51 @@ class HomeController extends Controller
     }
 
     /**
+     * edit user's information
+     *
+     */
+    public function user()
+    {
+        if (!Auth::user()) {
+            return redirect('/');
+        }
+
+        if (Input::has('_token')) {
+            $validator = User::validatorEdit(Input::all());
+            if ($validator->fails()) {
+                return redirect('thongtincanhan')
+                        ->withErrors($validator)
+                        ->withInput();
+            }
+
+            if (Hash::check(Input::get('passwordOld'), Auth::user()->password)) {
+                $user               = User::find(Auth::user()->id);
+                $user->name         = Input::get('name');
+                $user->phone_number = Input::get('phone_number');
+                if (Input::get('password')) {
+                    $user->password = Hash::make(Input::get('password'));
+                }
+                $user->save();
+                $data['updated'] = UPDATED;
+            } else {
+                $validator->getMessageBag()->add('passwordOld', 'mật khẩu cũ không chính xác');
+                return redirect('thongtincanhan')
+                        ->withErrors($validator)
+                        ->withInput();
+            }
+        }
+        $data['name']         = Auth::user()->name;
+        $data['phone_number'] = Auth::user()->phone_number;
+        return view('user.user', $data);
+    }
+
+    /**
      * Set data to display in view
      *
      * @param $doc
      * @return array
      */
-    private function setData($doc, $cat=null)
+    private function setData($doc=null, $cat=null)
     {
         $content = !is_null($doc) ? $doc->content : '';
         $cats    = [];

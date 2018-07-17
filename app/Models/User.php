@@ -122,8 +122,7 @@ class User extends Authenticatable
     /**
      * Get a validator for an incoming edit request.
      *
-     * @param int $id user's id
-     * @param array $data
+     * @param array $data input form data
      */
     protected function validator(array $data)
     {
@@ -132,6 +131,21 @@ class User extends Authenticatable
             'email'        => 'required|email',
             'coin'         => 'numeric|min:0',
             'phone_number' => 'max:15|regex:/(^[0-9 ]+$)+/'
+        ]);
+    }
+
+    /**
+     * Get a validator for an incoming edit request.
+     *
+     * @param array $data input form data
+     */
+    protected function validatorEdit(array $data)
+    {
+        return Validator::make($data, [
+            'name'         => 'required|max:255',
+            'passwordOld'  => 'required|min:6',
+            'password'     => 'min:6',
+            'phone_number' => 'max:15|regex:/(^[0-9 ]+$)+/',
         ]);
     }
 }

@@ -1,5 +1,10 @@
 @extends('admin.layout')
- 
+
+@section('head')
+    <script type='text/javascript' src='{{ url('public/assets/admin/js/plugins/ckeditor/new/ckeditor.js') }}'></script>
+    <script type='text/javascript' src='{{ url('public/assets/admin/js/plugins/ckeditor/new/sample.js') }}'></script>
+@endsection
+
 @section('content')
             <div class="content">
                 
@@ -11,12 +16,12 @@
                 </div>
                 
                 <div class="row-fluid">
-                @if(isset($data['isEditted']))
+                @if(isset($data['updated']))
                     <div class="row-form editted">
                         <span class='span2'></span>
                         <div class="span10 alert-1 alert-success-1">
                             <img class="" src="{{ url('public/assets/images/accept.png') }}"/>
-                            <strong>Cập nhật thành công!</strong>
+                            <strong>{{ $data['updated'] }}</strong>
                        </div>
                     </div>
                     <script type="text/javascript">
@@ -36,6 +41,30 @@
                             </div>
                             <div class='span2'>
                                 {{ Form::radio('display', 1, $qa['display'] == 1 ? true : false) }}
+                                <span for="noDisplay">Có</span>
+                            </div>
+                        </div>
+
+                        <div class="row-form ">
+                            <span class='span2'>Bảng:</span>
+                            <div class='span2'>
+                                {{ Form::radio('hasTable', 0, $qa['hasTable'] == 0 ? true : false) }}
+                                <span for="display">Không</span>
+                            </div>
+                            <div class='span2'>
+                                {{ Form::radio('hasTable', 1, $qa['hasTable'] == 1 ? true : false) }}
+                                <span for="noDisplay">Có</span>
+                            </div>
+                        </div>
+
+                        <div class="row-form ">
+                            <span class='span2'>LV:</span>
+                            <div class='span2'>
+                                {{ Form::radio('hasLV', 0, $qa['hasLV'] == 0 ? true : false) }}
+                                <span for="display">Không</span>
+                            </div>
+                            <div class='span2'>
+                                {{ Form::radio('hasLV', 1, $qa['hasLV'] == 1 ? true : false) }}
                                 <span for="noDisplay">Có</span>
                             </div>
                         </div>
@@ -84,7 +113,7 @@
                         <div class="row-form {{ $errors->has('answer') ? 'error' : '' }}">
                             <span class='span2'>Trả lời:</span>
                             <div class='span10'>
-                                {{ Form::textarea('answer', $qa['answer'], ['class' => 'qa-textarea']) }}
+                                {{ Form::textarea('answer', $qa['answer'], ['id'=> 'ckeditor', 'class' => 'qa-textarea']) }}
                                 @if ($errors->has('answer'))
                                     <span>
                                         <strong>{{ $errors->first('answer') }}</strong>
@@ -97,6 +126,10 @@
                             <input type="submit" value="Cập nhật!" class="btn" />
                         </div>
                     {{ Form::close() }}
+
+                    <script>
+                        initSample();
+                    </script>
                 </div><!-- end row-fluid -->
             </div><!-- end content -->
 @endsection

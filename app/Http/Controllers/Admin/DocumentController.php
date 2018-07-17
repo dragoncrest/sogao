@@ -16,9 +16,9 @@ class DocumentController extends Controller
 {
     private $myData;
 
-    public function index($idCat=1)
+    public function index()
     {
-        $this->SetCategory($idCat);
+        $this->SetCategory();
         return view('admin.document', ['data' => $this->myData]);
     }
 
@@ -103,11 +103,10 @@ class DocumentController extends Controller
        //when submit update or create new
         if (!$valid->fails() && Input::has('_token'))
         {
-            $doc = new Document;
-            $stt = Input::get('stt');
-
             if($stt){
-                $doc = Document::find($stt);
+                $doc = Document::where('stt', $stt)->first(); 
+            } else {
+                $doc = new Document;
             }
 
             $doc->id          = preg_replace('/\W/', '', Input::get('id'));
@@ -121,15 +120,13 @@ class DocumentController extends Controller
             $doc->hasLV       = Input::get('hasLV');
             $doc->updated_at  = time();
             $doc->save();
-            
-            $this->SetDocument($doc);
-        }
 
-        $option = array();
-        foreach($this->myData['cats'] as $cat){
-            $option[$cat->id] = $cat->title;
+            if(!$stt){
+                return redirect('admin/document/edit/'.$doc->stt)->with('created', CREATED);
+            } else {
+                $this->myData['updated'] = UPDATED;
+            }
         }
-        $this->myData['options'] = $option;
 
         return view('admin/documentEdit', ['data' => $this->myData]);
     }
@@ -156,16 +153,14 @@ class DocumentController extends Controller
     private function SetCategory($idCat=1)
     {
         $this->myData['nav']      = 'doc';
-        $this->myData['cats']     = Category::all();
         $this->myData['catID']    = $idCat;
-        $this->myData['catTitle'] = '';
-        
-        foreach($this->myData['cats'] as $cat) {
-            if($cat->id == $idCat){
-                $this->myData['catTitle'] = $cat->title;
-                break;
-            }
+
+        $cats  = Category::all();
+        $cates = [];
+        foreach ($cats as $cat) {
+            $cates[$cat->id] = $cat->title;
         }
+        $this->myData['cats'] = $cates;
     }
 
     /**
