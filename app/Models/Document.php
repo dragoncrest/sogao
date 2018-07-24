@@ -44,12 +44,12 @@ class Document extends Model
         }
 
         // here order processing
-        if (isset($_GET['order'])) {
+        if (isset($_GET['order']) && !Input::has('search.value')) {
             $this->query->orderBy(
                 $this->column_order[$_GET['order']['0']['column']],
                 $_GET['order']['0']['dir']
             );
-        } else if (isset($this->order)) {
+        } else if (isset($this->order) && !Input::has('search.value')) {
             $order = $this->order;
             $this->query->orderBy(key($order), $order[key($order)]);
         }
@@ -58,14 +58,13 @@ class Document extends Model
     public function get_datatables()
     {
         $this->_getDatatablesQuery();
-        // when not use searching
-        if (!Input::has('search.value')) {
-            $this->query->offset(Input::get('start'));
-            $this->query->limit(Input::get('length'));
-        }
+        $this->query->offset(Input::get('start'));
+        $this->query->limit(Input::get('length'));
+
         // get all match result
         $result = $this->query->get();
         if (empty($result)) return $result;
+
         //highlight matching result
         if (Input::has('search.value')) {
             return $this->_highlightMatchingWord($result);
@@ -75,12 +74,8 @@ class Document extends Model
 
     public function count_filtered()
     {
-        if ($this->count_filtered) {
-            $numb = $this->count_filtered;
-        } else {
-            $this->_getDatatablesQuery();
-            $numb = $this->query->count();
-        }
+        $this->_getDatatablesQuery();
+        $numb = $this->query->count();
         return $numb;
     }
 
@@ -121,6 +116,40 @@ class Document extends Model
                     }
                 });
             }
+
+             /* create order like
+             CASE 
+                 WHEN documents.title LIKE '%luật%' AND documents.title LIKE '%đầu%' AND documents.title LIKE '%tư%' THEN 1 
+                 WHEN documents.title LIKE '%luật%' AND documents.title LIKE '%đầu%' THEN 2 
+                 WHEN documents.title LIKE '%luật%' THEN 3 
+                 WHEN documents.title LIKE '%đầu%' THEN 3 
+                 WHEN documents.title LIKE '%tư%' THEN 3 
+                 ELSE 999 
+             END ASC
+             */
+            $orderCondition = ' CASE ';
+            $wordNumb = count($words);
+            $i = $wordNumb - 1;
+            foreach ($this->column_search as $colSearch) {
+                for (; $i >=0 ; $i--) {
+                    $orderCondition .= 'WHEN ';
+                    $subStr = '';
+                    for ($j = 0; $j <= $i ; $j++) {
+                        $subStr .= $colSearch.' LIKE \'%'.$words[$j].'%\' ';
+                        if ($j != $i) {
+                            $subStr .= 'AND ';
+                        }
+                    }
+                    $orderCondition .= $subStr . 'THEN '.($wordNumb - $i).' ';
+                }
+                $subStr = '';
+                for ($i = 1; $i < $wordNumb; $i++) {
+                    $subStr .= 'WHEN '.$colSearch.' LIKE \'%'.$words[$i].'%\' THEN '.$wordNumb.' ';
+                }
+                $orderCondition .= $subStr;
+            }
+            $orderCondition .= 'ELSE 999 END ASC';
+            $this->query->orderByRaw($orderCondition);
         }
         // store to hightligh matching word in title of document
         $this->sSearch = $words;
@@ -167,16 +196,7 @@ class Document extends Model
                 }
             }
         }
-        // store total of matching title
-        $this->count_filtered = count($partTmp);
-        // paging by cutting array
-        $end = Input::get('start') + Input::get('length');
-        $tmp = [];
-        for ($i = Input::get('start'); $i < $end; $i++) {
-            if (isset($partTmp[$i])) {
-                $tmp[] = $partTmp[$i];
-            }
-        }
-        return $tmp;
+
+        return $partTmp;
     }
 }

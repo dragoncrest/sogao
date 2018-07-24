@@ -169,17 +169,18 @@ class DocumentHelper
 
         if(strpos($str, "uật")){
             if(strpos($str, "Đầu")){
-                $sub = preg_replace('/\D/','',$str);
-                $sub = substr($sub, 4);
-                $add = '';
+                $sub  = preg_replace('/\D/','',$str);
+                $year = substr($sub, 0, 4);
+                $sub  = substr($sub, 4);
+                $add  = '';
 
                 if(strpos($str, "phụ"))
                     $add = 'phuluc';
 
                 if(strpos($str, "công"))
-                    return "LDTC".$add.$sub;
+                    return "LDTC".$year.$add.$sub;
                 else
-                    return "LDT".$add.$sub;
+                    return "LDT".$year.$add.$sub;
             }
             return self::stringToID($str, "luat");
         } elseif (stripos($str, "hông")) {
@@ -275,6 +276,9 @@ class DocumentHelper
                 $exPos  = stripos($str, 'iều');                     //finding "điều" in document's name
                 if ($exPos) {
                     $khoanPos = stripos($str, 'khoản');
+
+                    //if 'khoản' in document's name, cutting from 'điều' to 'khoản'
+                    //otherwise cuttong form 'điều' to the end
                     if ($khoanPos) {
                         $l       = $khoanPos - $exPos;
                         $subDieu = substr($str, $exPos, $l);
@@ -284,8 +288,13 @@ class DocumentHelper
                     $dieu = preg_replace('/\D/','',$subDieu);
                     $sub  = $dieu;
 
+                    //get 'khoản' in document's name
                     if ($khoanPos) {
                         $khoan = substr($str, $khoanPos + 8);
+                        //convert 'đ' to 'f', because can't use 'đ' in url
+                        if  (strpos($khoan, 'đ')) {
+                            $khoan = str_replace('đ', 'f', $khoan);
+                        }
                         $sub  .= 'k' . $khoan;
                     }
                 } elseif ($law->extra != null) {                    //if that acronym has addendum stored in db
