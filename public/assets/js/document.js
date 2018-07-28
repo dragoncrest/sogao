@@ -46,15 +46,14 @@ function buyDocument(id)
         success: function (data) {
             if (data.status) {
                 sessionStorage.buy = 1;
-                if (typeof reload != 'undefined') {
+                var buyLink = '<a style="color:red;" onclick="checkUserStatus(\''+id+'\', \''+data.result+'\', \''+data.coin+'\')">'+data.str+'</a>';
+                if ($('.'+id).length) {
+                    $('.'+id).html(buyLink);
+                } else {
                     location.reload();
                 }
-                var buyLink = '<a style="color:red;" onclick="checkUserStatus(\''+id+'\', \''+data.result+'\', \''+data.coin+'\')">'+data.str+'</a>';
-                $('.'+id).html(buyLink);
-                hidePopupDialog('#dialog');
-            } else {
-                hidePopupDialog('#dialog');
             }
+            hidePopupDialog('#dialog');
         },
         error: function (data) {
             hidePopupDialog('#dialog');

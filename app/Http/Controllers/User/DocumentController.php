@@ -51,7 +51,6 @@ class DocumentController extends Controller
                     $data['currentCat'] = $cat;
                     $data['status']     = $status;
                     $data['coin']       = $uCoin->coin;
-                    $data['reload']     = TRUE;                 // for reloading page when buy a document in case of directly access.
                 } else {
                     $data = $this->_setData($doc, $cat);
                 }
