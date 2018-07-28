@@ -165,9 +165,6 @@ class Document extends Model
     {
         $numResult = count($datas);
         for ($i = 0; $i < $numResult; $i++) {
-            //store how much word matching
-            $match = 0;
-            //searching each word in title
             foreach ($this->sSearch as $word) {
                 $pos = mb_stripos($datas[$i]->title, $word);
                 if (is_numeric($pos) && (strlen($word) > 1)) {
@@ -178,25 +175,10 @@ class Document extends Model
                         "<b style='background-color:#ffc107;'>$word</b>",
                         $datas[$i]->title
                     );
-                    $match++;
-                }
-            }
-            //push to each array depend on how much word matching
-            if ($match) {
-                $part[$match][] = $datas[$i];
-            }
-        }
-        //merge all document ordered by matching number form hight to low
-        $wordNumb = count($this->sSearch);
-        $partTmp = [];
-        for ($j = $wordNumb; $j > 0; $j--) {
-            if (isset($part[$j])) {
-                foreach ($part[$j] as $value) {
-                    $partTmp[] = $value;
                 }
             }
         }
 
-        return $partTmp;
+        return $datas;
     }
 }

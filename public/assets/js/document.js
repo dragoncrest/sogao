@@ -46,7 +46,9 @@ function buyDocument(id)
         success: function (data) {
             if (data.status) {
                 sessionStorage.buy = 1;
-                // location.reload();
+                if (typeof reload != 'undefined') {
+                    location.reload();
+                }
                 var buyLink = '<a style="color:red;" onclick="checkUserStatus(\''+id+'\', \''+data.result+'\', \''+data.coin+'\')">'+data.str+'</a>';
                 $('.'+id).html(buyLink);
                 hidePopupDialog('#dialog');
@@ -73,7 +75,7 @@ function toogleLV(e)
 $(document).ready(function() {
     //check status of user with document when directly accessing to document
     if (status) {
-        checkUserStatus(sttDoc, status);
+        checkUserStatus(sttDoc, status, coin);
     }
 
     var buy    = parseInt(sessionStorage.buy);

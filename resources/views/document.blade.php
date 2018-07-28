@@ -62,6 +62,8 @@
                 var urlAjaxBuyDocument    = "{!! url('/document/ajaxBuyDocument/') !!}/";
                 var urlAjaxCheckFileExits = "{!! url('/document/ajaxCheckFileExits/'.$id) !!}";
 
+                var coin   = {!! $coin !!};
+                var reload = {!! isset($reload) ? 1 : 0 !!};
                 var status = '';
                 var sttDoc = '{!! $stt !!}';
                 @if(isset($status))
@@ -70,7 +72,7 @@
 
             @if($currentCat && $currentCat->isDownload)
                 $('.downloadLink').on("click", function() {
-                    id = {!! $id ? $id : 0 !!};
+                    id = "{!! $id ? $id : 0 !!}";
                     if (!id) {
                         alert( "Mã không tồn tại" );
                         return;

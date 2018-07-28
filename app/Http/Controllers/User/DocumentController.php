@@ -23,7 +23,7 @@ class DocumentController extends Controller
 
     public function __construct()
     {
-        $this->docPath = public_path() . "\upload\documents\\";     // use "/upload/documents/" running on hosting
+        $this->docPath = public_path() . "\upload\documents\\";     // use "/upload/documents/" when running on hosting
     }
 
     /**
@@ -43,12 +43,15 @@ class DocumentController extends Controller
             //check have buy by category or not
             if ($cat->isBuy || $doc->isBuy) {
                 $status = $this->_checkUserDocumentStatus($doc);
+                $uCoin  = UserCoin::where('user_id', Auth::user()->id)->first();
                 if ($status != BUYED) {
-                    $data['id'] = $doc->id;
-                    $data['stt'] = $doc->stt;
-                    $data['title'] = SITE_NAME;
+                    $data['id']         = $doc->id;
+                    $data['stt']        = $doc->stt;
+                    $data['title']      = SITE_NAME;
                     $data['currentCat'] = $cat;
-                    $data['status'] = $status;
+                    $data['status']     = $status;
+                    $data['coin']       = $uCoin->coin;
+                    $data['reload']     = TRUE;                 // for reloading page when buy a document in case of directly access.
                 } else {
                     $data = $this->_setData($doc, $cat);
                 }
