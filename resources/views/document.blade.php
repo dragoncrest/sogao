@@ -62,7 +62,7 @@
                 var urlAjaxBuyDocument    = "{!! url('/document/ajaxBuyDocument/') !!}/";
                 var urlAjaxCheckFileExits = "{!! url('/document/ajaxCheckFileExits/'.$id) !!}";
 
-                var coin   = {!! $coin !!};
+                var coin   = {!! isset($coin) ? $coin : 0 !!};
                 var status = '';
                 var sttDoc = '{!! $stt !!}';
                 @if(isset($status))

@@ -168,20 +168,6 @@ class DocumentHelper
         $str = self::RemoveNBSP($str);             //decode some vietnamese character
 
         if(strpos($str, "uật")){
-            if(strpos($str, "Đầu")){
-                $sub  = preg_replace('/\D/','',$str);
-                $year = substr($sub, 0, 4);
-                $sub  = substr($sub, 4);
-                $add  = '';
-
-                if(strpos($str, "phụ"))
-                    $add = 'phuluc';
-
-                if(strpos($str, "công"))
-                    return "LDTC".$year.$add.$sub;
-                else
-                    return "LDT".$year.$add.$sub;
-            }
             return self::stringToID($str, "luat");
         } elseif (stripos($str, "hông")) {
             return self::stringToID($str, "thongtu");
